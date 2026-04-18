@@ -1,969 +1,853 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PySeekho — Master Python Interactively</title>
+<title>PySeekho — Master Python</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a0c16;--bg2:#111425;--bg3:#191d34;--card:#1a1e36;--border:#282d52;--accent:#7c6af7;--accent2:#5ee7b5;--accent3:#f7c76a;--accent4:#f76a8a;--text:#e8eaf6;--muted:#7a7e9e;--correct:#5ee7b5;--wrong:#f76a8a;--mono:'Space Mono',monospace;--sans:'Nunito',sans-serif;}
+/* ══════ THEME SYSTEM ══════ */
+[data-theme="dark"]{
+  --bg:#080a14;--bg2:#0e1120;--bg3:#161a30;--card:#141830;--card2:#1a1f3a;
+  --border:#252a48;--border2:#2d3360;--accent:#8b7aff;--accent2:#4aeabc;--accent3:#ffc46b;
+  --accent4:#ff6b8a;--text:#eef0ff;--text2:#c8cce8;--muted:#6a70a0;
+  --glow:rgba(139,122,255,.12);--glow2:rgba(74,234,188,.08);--code-bg:#0c0f1c;
+  --input-bg:#121628;--hover:rgba(139,122,255,.06);
+}
+[data-theme="light"]{
+  --bg:#f4f5fb;--bg2:#ffffff;--bg3:#eef0f8;--card:#ffffff;--card2:#f8f9fd;
+  --border:#dde0f0;--border2:#cdd1e8;--accent:#6c5ce7;--accent2:#00b894;--accent3:#fdcb6e;
+  --accent4:#e17055;--text:#1a1c2e;--text2:#3d4060;--muted:#888daa;
+  --glow:rgba(108,92,231,.08);--glow2:rgba(0,184,148,.06);--code-bg:#f0f1f8;
+  --input-bg:#f0f2fa;--hover:rgba(108,92,231,.04);
+}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg2);}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px;}
 
-.bg-grid{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;
-background-image:linear-gradient(rgba(124,106,247,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(124,106,247,.03) 1px,transparent 1px);background-size:60px 60px;}
-.glow-orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:.08;pointer-events:none;z-index:0;animation:orbFloat 20s ease-in-out infinite alternate;}
-.glow-orb.a{width:400px;height:400px;background:var(--accent);top:-100px;left:-100px;}
-.glow-orb.b{width:300px;height:300px;background:var(--accent2);bottom:-50px;right:-50px;animation-delay:-10s;}
-.glow-orb.c{width:250px;height:250px;background:var(--accent3);top:50%;left:50%;animation-delay:-5s;}
-@keyframes orbFloat{0%{transform:translate(0,0)}50%{transform:translate(40px,30px)}100%{transform:translate(-20px,50px)}}
+/* ══════ BACKGROUND EFFECTS ══════ */
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.bg-mesh .orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:.5;animation:orbDrift 25s ease-in-out infinite alternate;}
+[data-theme="light"] .bg-mesh .orb{opacity:.3;}
+.bg-mesh .o1{width:500px;height:500px;background:var(--accent);top:-15%;left:-10%;animation-delay:0s;}
+.bg-mesh .o2{width:400px;height:400px;background:var(--accent2);bottom:-10%;right:-5%;animation-delay:-8s;}
+.bg-mesh .o3{width:300px;height:300px;background:var(--accent3);top:40%;left:50%;animation-delay:-16s;}
+@keyframes orbDrift{0%{transform:translate(0,0) scale(1)}33%{transform:translate(50px,-30px) scale(1.1)}66%{transform:translate(-30px,50px) scale(.9)}100%{transform:translate(20px,20px) scale(1.05)}}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+background-size:80px 80px;opacity:.15;}
+[data-theme="light"] .bg-grid{opacity:.3;}
 
-nav{background:rgba(17,20,37,.85);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);}
-.logo{font-family:var(--mono);font-size:17px;font-weight:700;color:var(--accent);letter-spacing:-1px;}
-.logo span{color:var(--accent2);}
-.nav-links{display:flex;gap:4px;flex-wrap:wrap;}
-.nav-btn{background:transparent;border:1px solid transparent;color:var(--muted);padding:6px 12px;border-radius:8px;cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:700;transition:all .2s;white-space:nowrap;}
-.nav-btn:hover{color:var(--text);background:var(--bg3);}
-.nav-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+/* ══════ NAV ══════ */
+nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:background .3s;}
+.logo{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:6px;}
+.logo .dot{width:8px;height:8px;border-radius:50%;background:var(--accent2);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.nav-center{display:flex;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.nav-center::-webkit-scrollbar{display:none;}
+.nav-btn{background:transparent;border:none;color:var(--muted);padding:8px 14px;border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;transition:all .15s;white-space:nowrap;position:relative;}
+.nav-btn:hover{color:var(--text);background:var(--hover);}
+.nav-btn.active{color:#fff;background:var(--accent);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.theme-toggle{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s;color:var(--accent3);}
+.theme-toggle:hover{border-color:var(--accent);transform:scale(1.05);}
 
-.app{display:flex;height:calc(100vh - 56px);position:relative;z-index:1;}
-.sidebar{width:200px;background:rgba(17,20,37,.6);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;backdrop-filter:blur(8px);}
-.sb-section{padding:14px 14px 8px;font-size:10px;font-weight:800;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
-.sb-item{padding:8px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;border-radius:8px;margin:2px 6px;transition:all .15s;font-size:13px;font-weight:600;color:var(--muted);}
-.sb-item:hover{background:var(--bg3);color:var(--text);}
-.sb-item.active{background:rgba(124,106,247,.12);color:var(--accent);}
-.sb-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.sb-pct{margin-left:auto;font-size:11px;font-family:var(--mono);}
-.content{flex:1;overflow-y:auto;padding:0;}
-
+/* ══════ LAYOUT ══════ */
+.app{display:flex;height:calc(100vh - 54px);position:relative;z-index:1;}
+.sidebar{width:210px;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;transition:background .3s,transform .3s;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;}
+.content{flex:1;overflow-y:auto;overflow-x:hidden;padding:0;}
 .hidden{display:none!important;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-@keyframes spin{to{transform:rotate(360deg)}}
+.menu-btn{display:none;width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:18px;color:var(--text);align-items:center;justify-content:center;}
+
+/* ══════ SIDEBAR ══════ */
+.sb-label{padding:16px 16px 8px;font-size:10px;font-weight:800;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+.sb-item{padding:10px 14px;margin:2px 8px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted);transition:all .12s;}
+.sb-item:hover{background:var(--hover);color:var(--text);}
+.sb-item.active{background:var(--glow);color:var(--accent);}
+.sb-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.sb-pct{margin-left:auto;font-size:10px;font-family:'Space Mono',monospace;color:var(--muted);}
+.sb-diff{display:flex;gap:3px;margin-top:2px;}
+.sb-star{font-size:8px;}
+.sb-star.f1{color:var(--accent2);}
+.sb-star.f2{color:var(--accent3);}
+.sb-star.f3{color:var(--accent4);}
+
+/* ══════ ANIMATIONS ══════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideR{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+@keyframes dotPulse{0%,100%{opacity:.3}50%{opacity:1}}
 .fade-up{animation:fadeUp .4s ease both;}
+.fade-in{animation:fadeIn .3s ease both;}
+.stagger>*:nth-child(1){animation-delay:.05s}.stagger>*:nth-child(2){animation-delay:.1s}.stagger>*:nth-child(3){animation-delay:.15s}.stagger>*:nth-child(4){animation-delay:.2s}.stagger>*:nth-child(5){animation-delay:.25s}.stagger>*:nth-child(6){animation-delay:.3s}.stagger>*:nth-child(7){animation-delay:.35s}.stagger>*:nth-child(8){animation-delay:.4s}
 
-/* DASHBOARD */
-#view-dashboard{padding:24px;}
-.dash-top{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
-.dash-hero{background:linear-gradient(135deg,var(--bg3) 0%,rgba(124,106,247,.08) 100%);border:1px solid var(--border);border-radius:16px;padding:28px;position:relative;overflow:hidden;}
-.dash-hero::after{content:'';position:absolute;top:-30px;right:-30px;width:150px;height:150px;border-radius:50%;background:var(--accent);opacity:.06;}
-.dash-hero h1{font-size:22px;font-weight:900;margin-bottom:4px;}
-.dash-hero h1 span{color:var(--accent2);}
-.dash-hero p{color:var(--muted);font-size:13px;line-height:1.5;}
+/* ══════ DASHBOARD ══════ */
+.dash{padding:20px;max-width:900px;margin:0 auto;}
+.hero-card{background:linear-gradient(135deg,var(--card2),var(--glow));border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:20px;position:relative;overflow:hidden;}
+.hero-card::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:var(--accent);opacity:.06;}
+.hero-card h1{font-size:22px;font-weight:900;line-height:1.3;margin-bottom:8px;}
+.hero-card h1 em{font-style:normal;color:var(--accent2);}
+.hero-card p{color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:20px;}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-start{background:var(--accent);color:#fff;border:none;padding:14px 32px;border-radius:14px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(139,122,255,.3);}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(139,122,255,.4);}
+.btn-start:active{transform:translateY(0);}
+.btn-outline{background:transparent;color:var(--accent);border:2px solid var(--accent);padding:12px 28px;border-radius:14px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-outline:hover{background:var(--accent);color:#fff;transform:translateY(-1px);}
 
-.xp-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.xp-ring{width:110px;height:110px;position:relative;margin-bottom:12px;}
-.xp-ring svg{width:100%;height:100%;transform:rotate(-90deg);}
-.xp-ring circle{fill:none;stroke-width:6;stroke-linecap:round;}
-.xp-ring .bg-ring{stroke:var(--bg3);}
-.xp-ring .fg-ring{stroke:var(--accent);transition:stroke-dashoffset .8s ease;}
-.xp-ring .fg-ring.gold{stroke:var(--accent3);}
-.xp-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
-.xp-lvl{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--accent);}
-.xp-lvl.gold{color:var(--accent3);}
-.xp-label{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:1px;}
-.xp-bar{width:100%;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-bottom:6px;}
-.xp-bar-fill{height:100%;border-radius:3px;transition:width .5s;}
-.xp-text{font-size:11px;color:var(--muted);}
-
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;transition:all .2s;}
-.stat-card:hover{border-color:var(--accent);transform:translateY(-2px);}
-.stat-icon{font-size:20px;margin-bottom:6px;}
-.stat-num{font-family:var(--mono);font-size:24px;font-weight:700;margin-bottom:2px;}
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;transition:all .2s;}
+.stat-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.stat-icon{font-size:20px;}
+.stat-num{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;}
 .stat-label{font-size:11px;color:var(--muted);font-weight:600;}
 
-.dash-cols{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;}
-.dash-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;}
-.dash-section h3{font-size:15px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.dash-section h3 span{color:var(--accent);}
+.xp-row{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:20px;}
+.xp-ring{width:60px;height:60px;flex-shrink:0;position:relative;}
+.xp-ring svg{width:100%;height:100%;transform:rotate(-90deg);}
+.xp-ring circle{fill:none;stroke-width:5;stroke-linecap:round;}
+.xp-ring .bg-r{stroke:var(--bg3);}
+.xp-ring .fg-r{stroke:var(--accent);transition:stroke-dashoffset .6s;}
+.xp-ring .fg-r.gold{stroke:var(--accent3);}
+.xp-lvl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:var(--accent);}
+.xp-lvl.gold{color:var(--accent3);}
+.xp-info{flex:1;}
+.xp-bar{width:100%;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:6px;}
+.xp-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .5s;}
+.xp-bar-fill.gold{background:linear-gradient(90deg,var(--accent3),var(--accent4));}
+.xp-text{font-size:11px;color:var(--muted);}
 
-.daily-challenge{background:linear-gradient(135deg,rgba(124,106,247,.1),rgba(94,231,181,.08));border:1px solid rgba(124,106,247,.2);border-radius:10px;padding:14px;margin-bottom:12px;cursor:pointer;transition:all .2s;}
-.daily-challenge:hover{border-color:var(--accent);transform:translateX(4px);}
-.dc-title{font-size:13px;font-weight:800;margin-bottom:4px;}
-.dc-desc{font-size:11px;color:var(--muted);}
-.dc-reward{font-size:11px;color:var(--accent3);font-weight:700;margin-top:6px;}
-.dc-done{font-size:11px;color:var(--accent2);font-weight:700;margin-top:6px;}
+.section-title{font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-title span{color:var(--accent);}
 
-.activity-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
-.activity-item:last-child{border-bottom:none;}
-.act-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
-.act-text{font-size:12px;color:var(--muted);line-height:1.4;flex:1;}
-.act-text strong{color:var(--text);}
-.act-time{font-size:10px;color:var(--muted);font-family:var(--mono);white-space:nowrap;}
+.topics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:20px;}
+.topic-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.topic-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.2);}
+.topic-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;}
+.topic-card .tc-icon{font-size:24px;margin-bottom:8px;}
+.topic-card h3{font-size:13px;font-weight:800;margin-bottom:2px;}
+.topic-card p{font-size:11px;color:var(--muted);}
+.tc-bar{height:3px;background:var(--bg3);border-radius:2px;margin-top:10px;overflow:hidden;}
+.tc-fill{height:100%;border-radius:2px;transition:width .4s;}
+.tc-diff{display:flex;gap:4px;margin-top:6px;font-size:9px;}
+.tc-diff span{padding:1px 6px;border-radius:4px;font-weight:700;}
 
-.topic-chips{display:flex;flex-wrap:wrap;gap:8px;}
-.topic-chip{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;min-width:140px;}
-.topic-chip:hover{border-color:var(--accent);transform:translateY(-1px);}
-.topic-chip .tc-icon{font-size:18px;}
-.topic-chip .tc-info h4{font-size:12px;font-weight:800;}
-.topic-chip .tc-info p{font-size:10px;color:var(--muted);}
+.daily-card{background:linear-gradient(135deg,rgba(139,122,255,.1),rgba(74,234,188,.06));border:1px solid rgba(139,122,255,.2);border-radius:14px;padding:16px;margin-bottom:20px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;}
+.daily-card:hover{transform:translateX(4px);border-color:var(--accent);}
+.daily-icon{font-size:28px;}
+.daily-text h4{font-size:14px;font-weight:800;margin-bottom:2px;}
+.daily-text p{font-size:12px;color:var(--muted);}
+.daily-reward{font-size:11px;color:var(--accent3);font-weight:700;background:rgba(255,196,107,.1);padding:2px 8px;border-radius:6px;margin-top:4px;display:inline-block;}
 
-/* LEARN VIEW */
-#view-learn{padding:0;}
-.lh{padding:16px 24px;border-bottom:1px solid var(--border);background:rgba(17,20,37,.6);display:flex;align-items:center;gap:12px;flex-wrap:wrap;backdrop-filter:blur(8px);}
-.lh-back{background:transparent;border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-.lh-back:hover{border-color:var(--accent);color:var(--accent);}
-.lh-title{font-size:16px;font-weight:800;}
-.lh-prog{flex:1;min-width:80px;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
-.lh-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .3s;}
-.lh-count{font-size:12px;color:var(--muted);font-family:var(--mono);}
+/* ══════ PROBLEM SOLVING ══════ */
+.ps-tabs{display:flex;gap:8px;padding:20px 20px 0;flex-wrap:wrap;}
+.ps-tab{padding:10px 20px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;font-size:13px;font-weight:700;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.ps-tab:hover{border-color:var(--accent);color:var(--text);}
+.ps-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.ps-tab .ps-count{background:rgba(255,255,255,.15);padding:1px 6px;border-radius:6px;font-size:11px;}
+.ps-tab.active .ps-count{background:rgba(255,255,255,.2);}
+.ps-content{padding:20px;}
+.ps-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;cursor:pointer;transition:all .2s;display:flex;gap:14px;align-items:flex-start;}
+.ps-item:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.15);}
+.ps-num{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;flex-shrink:0;}
+.ps-num.easy{background:rgba(74,234,188,.12);color:var(--accent2);}
+.ps-num.medium{background:rgba(255,196,107,.12);color:var(--accent3);}
+.ps-num.hard{background:rgba(255,107,138,.12);color:var(--accent4);}
+.ps-body{flex:1;}
+.ps-body h4{font-size:14px;font-weight:800;margin-bottom:4px;line-height:1.3;}
+.ps-body p{font-size:12px;color:var(--muted);line-height:1.4;}
+.ps-tags{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap;}
+.ps-tag{font-size:10px;padding:2px 8px;border-radius:6px;font-weight:700;background:var(--bg3);color:var(--muted);}
+.ps-done{font-size:16px;color:var(--accent2);}
 
-.diff-selector{display:flex;gap:6px;padding:12px 24px;background:var(--bg2);border-bottom:1px solid var(--border);}
-.diff-btn{background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:6px 16px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;transition:all .2s;}
+/* ══════ QUIZ ══════ */
+.diff-bar{display:flex;gap:6px;padding:12px 20px;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;}
+.diff-btn{padding:8px 16px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;font-size:12px;font-weight:700;transition:all .15s;white-space:nowrap;}
 .diff-btn:hover{border-color:var(--accent);color:var(--text);}
 .diff-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
-.diff-btn .diff-star{color:var(--accent3);}
+.lh{padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:10px;}
+.lh-back{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;transition:all .15s;flex-shrink:0;}
+.lh-back:hover{border-color:var(--accent);color:var(--accent);}
+.lh-title{font-size:15px;font-weight:800;flex-shrink:0;}
+.lh-prog{flex:1;min-width:60px;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.lh-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .3s;}
+.lh-count{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;flex-shrink:0;}
 
-.q-area{padding:24px;max-width:680px;}
-.q-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);padding:3px 10px;border-radius:16px;font-size:11px;color:var(--muted);margin-bottom:14px;font-weight:700;}
-.q-diff{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:800;margin-left:8px;}
-.q-diff.basic{background:rgba(94,231,181,.15);color:var(--correct);}
-.q-diff.inter{background:rgba(247,199,106,.15);color:var(--accent3);}
-.q-diff.adv{background:rgba(247,106,138,.15);color:var(--wrong);}
-.q-text{font-size:18px;font-weight:800;line-height:1.4;margin-bottom:20px;}
-.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
-.opt{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:12px 16px;cursor:pointer;font-size:14px;font-weight:600;transition:all .2s;text-align:left;color:var(--text);display:flex;align-items:center;gap:10px;}
-.opt:hover:not(:disabled){border-color:var(--accent);background:rgba(124,106,247,.06);}
-.opt.correct{border-color:var(--correct);background:rgba(94,231,181,.08);color:var(--correct);}
-.opt.wrong{border-color:var(--wrong);background:rgba(247,106,138,.08);color:var(--wrong);}
+.q-area{padding:20px;max-width:640px;margin:0 auto;}
+.q-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:8px;font-size:11px;color:var(--muted);margin-bottom:14px;font-weight:700;background:var(--bg3);}
+.q-diff{font-size:9px;padding:2px 7px;border-radius:6px;font-weight:800;margin-left:4px;}
+.q-diff.basic{background:rgba(74,234,188,.12);color:var(--accent2);}
+.q-diff.inter{background:rgba(255,196,107,.12);color:var(--accent3);}
+.q-diff.adv{background:rgba(255,107,138,.12);color:var(--accent4);}
+.q-text{font-size:17px;font-weight:800;line-height:1.4;margin-bottom:18px;}
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
+.opt{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:13px 16px;cursor:pointer;font-size:14px;font-weight:600;transition:all .15s;text-align:left;color:var(--text);display:flex;align-items:center;gap:10px;}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--hover);}
+.opt.correct{border-color:var(--accent2);background:rgba(74,234,188,.08);color:var(--accent2);}
+.opt.wrong{border-color:var(--accent4);background:rgba(255,107,138,.08);color:var(--accent4);}
 .opt:disabled{cursor:default;}
-.opt-l{width:26px;height:26px;border-radius:6px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;flex-shrink:0;}
-.opt.correct .opt-l{background:var(--correct);color:#0d1a12;}
-.opt.wrong .opt-l{background:var(--wrong);color:#1a0d10;}
-.expl{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:1.6;display:none;}
+.opt-l{width:26px;height:26px;border-radius:7px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;flex-shrink:0;transition:all .15s;}
+.opt.correct .opt-l{background:var(--accent2);color:var(--bg);}
+.opt.wrong .opt-l{background:var(--accent4);color:var(--bg);}
+.expl{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:1.5;display:none;}
 .expl.show{display:block;animation:fadeUp .3s ease;}
-.expl-t{font-size:11px;font-weight:700;color:var(--accent2);margin-bottom:4px;letter-spacing:1px;text-transform:uppercase;}
-.expl-code{font-family:var(--mono);background:var(--bg2);padding:6px 10px;border-radius:6px;font-size:11px;margin-top:6px;color:var(--accent3);border-left:3px solid var(--accent);line-height:1.6;}
+.expl-t{font-size:10px;font-weight:800;color:var(--accent2);margin-bottom:4px;letter-spacing:1px;text-transform:uppercase;}
+.expl-code{font-family:'Space Mono',monospace;background:var(--code-bg);padding:8px 12px;border-radius:8px;font-size:11px;margin-top:6px;color:var(--accent3);border-left:3px solid var(--accent);line-height:1.6;white-space:pre-wrap;}
 .q-acts{display:flex;gap:8px;}
-.btn-next{background:var(--accent);border:none;color:#fff;padding:10px 24px;border-radius:8px;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
-.btn-next:hover{background:#6a59e0;transform:translateY(-1px);}
-.btn-skip{background:transparent;border:1px solid var(--border);color:var(--muted);padding:10px 16px;border-radius:8px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-next{background:var(--accent);color:#fff;border:none;padding:12px 28px;border-radius:12px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-next:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(139,122,255,.3);}
+.btn-skip{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:12px 20px;border-radius:12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
 .btn-skip:hover{border-color:var(--muted);}
 
-.result-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;max-width:460px;margin:32px auto;}
-.result-emoji{font-size:48px;margin-bottom:12px;}
-.result-score{font-family:var(--mono);font-size:44px;font-weight:700;color:var(--accent2);margin-bottom:6px;}
-.result-msg{font-size:14px;color:var(--muted);margin-bottom:8px;}
+.result-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;text-align:center;max-width:420px;margin:28px auto;}
+.result-emoji{font-size:48px;margin-bottom:10px;}
+.result-score{font-family:'Space Mono',monospace;font-size:42px;font-weight:700;color:var(--accent2);margin-bottom:6px;}
+.result-msg{font-size:14px;color:var(--muted);margin-bottom:6px;}
 .result-xp{font-size:13px;color:var(--accent3);font-weight:700;margin-bottom:20px;}
 .result-bd{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
 .rb-item{background:var(--bg3);border-radius:10px;padding:12px;}
-.rb-num{font-family:var(--mono);font-size:20px;font-weight:700;margin-bottom:2px;}
+.rb-num{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;}
 .rb-label{font-size:11px;color:var(--muted);}
-.btn-retry{background:var(--accent);border:none;color:#fff;padding:10px 24px;border-radius:8px;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer;margin-right:8px;transition:all .2s;}
-.btn-dash{background:transparent;border:1px solid var(--border);color:var(--text);padding:10px 16px;border-radius:8px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-retry{background:var(--accent);color:#fff;border:none;padding:12px 24px;border-radius:12px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-right:8px;transition:all .2s;}
+.btn-retry:hover{transform:translateY(-1px);}
+.btn-dash{background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
 
-.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 24px;background:rgba(17,20,37,.6);backdrop-filter:blur(8px);}
-.tab{padding:10px 16px;cursor:pointer;font-size:13px;font-weight:700;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;white-space:nowrap;}
-.tab:hover{color:var(--text);}
-.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
-.tab-content{display:none;padding:24px;}.tab-content.active{display:block;}
+/* ══════ ASK ENGINE ══════ */
+.ask-wrap{max-width:660px;padding:20px;margin:0 auto;}
+.ask-hints{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.ask-hint{background:var(--bg3);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s;}
+.ask-hint:hover{border-color:var(--accent);color:var(--accent);}
+.ask-input-wrap{display:flex;gap:8px;margin-bottom:16px;align-items:flex-end;}
+.ask-ta{flex:1;background:var(--input-bg);border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;font-family:'Nunito',sans-serif;font-size:14px;color:var(--text);resize:vertical;min-height:50px;max-height:160px;outline:none;transition:border-color .2s;}
+.ask-ta:focus{border-color:var(--accent);}
+.ask-ta::placeholder{color:var(--muted);}
+.ask-send{width:50px;height:50px;border-radius:14px;border:none;background:var(--accent);color:#fff;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.ask-send:hover{transform:scale(1.05);box-shadow:0 4px 16px rgba(139,122,255,.3);}
+.ask-send:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.chat{display:flex;flex-direction:column;gap:12px;}
+.cmsg{display:flex;gap:10px;animation:fadeUp .3s ease;}
+.cavatar{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.cuser .cavatar{background:var(--accent);color:#fff;}
+.cbot .cavatar{background:var(--accent2);color:var(--bg);}
+.cbubble{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;flex:1;line-height:1.5;font-size:13px;transition:background .3s,border-color .3s;}
+.cuser .cbubble{border-color:var(--accent);background:var(--glow);}
+.cbot .cbubble{border-color:rgba(74,234,188,.15);}
+.cbubble code{font-family:'Space Mono',monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px;font-size:11px;color:var(--accent3);}
+.cbubble pre{background:var(--code-bg);padding:10px 14px;border-radius:8px;margin:6px 0;font-family:'Space Mono',monospace;font-size:11px;overflow-x:auto;border-left:3px solid var(--accent2);color:var(--accent3);line-height:1.5;white-space:pre-wrap;}
+.cbubble .etag{display:inline-block;background:rgba(255,107,138,.1);color:var(--accent4);padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;margin-bottom:6px;}
+.cbubble .ctag{display:inline-block;background:rgba(74,234,188,.1);color:var(--accent2);padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;margin-bottom:6px;}
+.cbubble .itag{display:inline-block;background:rgba(139,122,255,.1);color:var(--accent);padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;margin-bottom:6px;}
+.cbubble .wtag{display:inline-block;background:rgba(255,196,107,.1);color:var(--accent3);padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;margin-bottom:6px;}
+.dots span{animation:dotPulse 1.2s infinite;display:inline-block;}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
 
-/* PRACTICE */
-.code-block{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 18px;font-family:var(--mono);font-size:13px;line-height:1.8;margin-bottom:16px;}
-.code-blank{background:transparent;border:none;border-bottom:2px solid var(--accent);color:var(--accent2);font-family:var(--mono);font-size:13px;width:110px;text-align:center;outline:none;padding:0 4px;}
-.code-blank.correct{border-color:var(--correct);color:var(--correct);}
-.code-blank.wrong{border-color:var(--wrong);color:var(--wrong);}
-.check-btn{background:var(--accent2);border:none;color:#0d1a12;padding:8px 20px;border-radius:8px;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;margin-right:8px;transition:all .2s;}
+/* ══════ LEADERBOARD ══════ */
+.lb-timer{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;display:flex;align-items:center;gap:6px;margin-bottom:14px;}
+.spin-icon{display:inline-block;width:12px;height:12px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.lb-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:6px;transition:all .15s;}
+.lb-item:hover{transform:translateX(3px);}
+.lb-rank{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;width:28px;text-align:center;}
+.lb-name{font-weight:700;flex:1;font-size:13px;}
+.lb-str{font-size:10px;color:var(--muted);}
+.lb-chg{font-size:10px;font-weight:700;padding:2px 5px;border-radius:5px;}
+.lb-up{color:var(--accent2);background:rgba(74,234,188,.1);}
+.lb-dn{color:var(--accent4);background:rgba(255,107,138,.1);}
+.lb-sm{color:var(--muted);background:var(--bg3);}
+.lb-sc{font-family:'Space Mono',monospace;color:var(--accent2);font-weight:700;font-size:13px;}
+.lb-me{border-color:var(--accent)!important;background:var(--glow)!important;}
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;}
+.badge-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 6px;text-align:center;transition:all .15s;}
+.badge-item:hover{transform:translateY(-2px);}
+.badge-icon{font-size:26px;margin-bottom:4px;}
+.badge-name{font-size:10px;font-weight:700;margin-bottom:2px;}
+.badge-desc{font-size:9px;color:var(--muted);}
+.badge-item.locked{opacity:.25;filter:grayscale(1);}
+
+/* ══════ PRACTICE ══════ */
+.code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:12px;padding:14px 18px;font-family:'Space Mono',monospace;font-size:13px;line-height:1.8;margin-bottom:16px;}
+.code-blank{background:transparent;border:none;border-bottom:2px solid var(--accent);color:var(--accent2);font-family:'Space Mono',monospace;font-size:13px;width:100px;text-align:center;outline:none;padding:0 4px;}
+.code-blank.correct{border-color:var(--accent2);color:var(--accent2);}
+.code-blank.wrong{border-color:var(--accent4);color:var(--accent4);}
+.check-btn{background:var(--accent2);border:none;color:var(--bg);padding:10px 22px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
 .check-btn:hover{transform:translateY(-1px);}
 
-/* FLASHCARDS */
-.flash-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:36px;text-align:center;cursor:pointer;min-height:180px;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:all .3s;max-width:560px;margin:16px 0;user-select:none;}
-.flash-card:hover{border-color:var(--accent);}
-.flash-front{font-size:18px;font-weight:800;}
-.flash-back{font-size:14px;color:var(--accent2);line-height:1.7;display:none;}
-.flash-hint{font-size:10px;color:var(--muted);margin-top:12px;}
-.flash-card.flipped .flash-front{display:none;}
-.flash-card.flipped .flash-back{display:block;}
-.flash-card.flipped{background:rgba(94,231,181,.04);border-color:var(--accent2);}
-.flash-nav{display:flex;gap:10px;align-items:center;margin-top:8px;}
-.flash-btn{background:var(--card);border:1px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-.flash-btn:hover{border-color:var(--accent);color:var(--accent);}
+/* ══════ FLASHCARDS ══════ */
+.fc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;cursor:pointer;min-height:170px;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:all .25s;max-width:520px;margin:14px auto;user-select:none;}
+.fc:hover{border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,.15);}
+.fc-f{font-size:17px;font-weight:800;}
+.fc-b{font-size:14px;color:var(--accent2);line-height:1.6;display:none;}
+.fc-h{font-size:10px;color:var(--muted);margin-top:12px;}
+.fc.flip .fc-f{display:none;}
+.fc.flip .fc-b{display:block;}
+.fc.flip{background:var(--glow2);border-color:var(--accent2);}
+.fc-nav{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:8px;}
+.fc-btn{background:var(--card);border:1px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.fc-btn:hover{border-color:var(--accent);color:var(--accent);}
 
-/* ASK */
-.ask-container{max-width:680px;padding:24px;}
-.ask-input-wrap{display:flex;gap:8px;margin-bottom:16px;align-items:flex-end;}
-.ask-textarea{flex:1;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:12px 16px;font-family:var(--sans);font-size:14px;color:var(--text);resize:vertical;min-height:54px;max-height:180px;outline:none;transition:border-color .2s;}
-.ask-textarea:focus{border-color:var(--accent);}
-.ask-textarea::placeholder{color:var(--muted);}
-.ask-submit{background:var(--accent);border:none;color:#fff;padding:12px 20px;border-radius:10px;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;height:54px;white-space:nowrap;}
-.ask-submit:hover{background:#6a59e0;transform:translateY(-1px);}
-.ask-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-.chat-history{display:flex;flex-direction:column;gap:12px;}
-.chat-msg{display:flex;gap:10px;animation:fadeUp .3s ease;}
-.chat-avatar{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.chat-user .chat-avatar{background:var(--accent);color:#fff;}
-.chat-bot .chat-avatar{background:var(--accent2);color:#0d1a12;}
-.chat-bubble{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;flex:1;line-height:1.5;font-size:13px;}
-.chat-user .chat-bubble{border-color:var(--accent);background:rgba(124,106,247,.05);}
-.chat-bot .chat-bubble{border-color:rgba(94,231,181,.15);background:rgba(94,231,181,.03);}
-.chat-bubble code{font-family:var(--mono);background:var(--bg2);padding:1px 5px;border-radius:4px;font-size:12px;color:var(--accent3);}
-.chat-bubble pre{background:var(--bg2);padding:10px 14px;border-radius:8px;margin:6px 0;font-family:var(--mono);font-size:12px;overflow-x:auto;border-left:3px solid var(--accent2);color:var(--accent3);line-height:1.5;}
-.chat-bubble .error-tag{display:inline-block;background:rgba(247,106,138,.12);color:var(--wrong);padding:2px 8px;border-radius:16px;font-size:11px;font-weight:700;margin-bottom:6px;}
-.chat-bubble .correct-tag{display:inline-block;background:rgba(94,231,181,.12);color:var(--correct);padding:2px 8px;border-radius:16px;font-size:11px;font-weight:700;margin-bottom:6px;}
-.ask-hints{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
-.ask-hint{background:var(--bg3);border:1px solid var(--border);padding:5px 12px;border-radius:16px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .2s;}
-.ask-hint:hover{border-color:var(--accent);color:var(--accent);}
-
-.typing-dots span{animation:pulse 1.2s infinite;display:inline-block;}
-.typing-dots span:nth-child(2){animation-delay:.2s;}
-.typing-dots span:nth-child(3){animation-delay:.4s;}
-
-/* LEADERBOARD */
-.lb-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:6px;transition:all .2s;}
-.lb-item:hover{transform:translateX(3px);}
-.lb-rank{font-family:var(--mono);font-size:14px;font-weight:700;width:30px;text-align:center;}
-.lb-name{font-weight:700;flex:1;font-size:14px;}
-.lb-streak{font-size:11px;color:var(--muted);}
-.lb-score{font-family:var(--mono);color:var(--accent2);font-weight:700;font-size:14px;}
-.lb-change{font-size:11px;font-weight:700;padding:2px 6px;border-radius:6px;}
-.lb-up{color:var(--correct);background:rgba(94,231,181,.1);}
-.lb-down{color:var(--wrong);background:rgba(247,106,138,.1);}
-.lb-same{color:var(--muted);background:var(--bg3);}
-.lb-me{border-color:var(--accent)!important;background:rgba(124,106,247,.06)!important;}
-.lb-timer{font-size:11px;color:var(--muted);font-family:var(--mono);display:flex;align-items:center;gap:6px;margin-bottom:16px;}
-.lb-timer .spin{display:inline-block;width:12px;height:12px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;}
-
-.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;}
-.badge-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 8px;text-align:center;transition:all .2s;}
-.badge-item:hover{transform:translateY(-2px);}
-.badge-icon{font-size:28px;margin-bottom:6px;}
-.badge-name{font-size:11px;font-weight:700;margin-bottom:3px;}
-.badge-desc{font-size:10px;color:var(--muted);}
-.badge-item.locked{opacity:.3;filter:grayscale(1);}
-
-.roadmap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;}
-.rm-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;gap:12px;align-items:flex-start;transition:all .2s;}
+/* ══════ ROADMAP ══════ */
+.rm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;}
+.rm-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;gap:10px;align-items:flex-start;transition:all .15s;}
 .rm-item:hover{border-color:var(--accent);transform:translateY(-1px);}
-.rm-icon{font-size:22px;flex-shrink:0;}
-.rm-text h4{font-size:13px;font-weight:800;margin-bottom:3px;}
-.rm-text p{font-size:11px;color:var(--muted);line-height:1.4;}
-.rm-status{font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px;margin-top:4px;display:inline-block;}
-.rm-soon{background:rgba(94,231,181,.12);color:var(--correct);}
-.rm-later{background:rgba(247,199,106,.12);color:var(--accent3);}
-.rm-plan{background:rgba(139,143,173,.12);color:var(--muted);}
+.rm-i{font-size:20px;flex-shrink:0;}
+.rm-t h4{font-size:12px;font-weight:800;margin-bottom:2px;}
+.rm-t p{font-size:11px;color:var(--muted);line-height:1.4;}
+.rm-s{font-size:9px;font-weight:700;padding:2px 6px;border-radius:6px;margin-top:3px;display:inline-block;}
+.rm-soon{background:rgba(74,234,188,.1);color:var(--accent2);}
+.rm-later{background:rgba(255,196,107,.1);color:var(--accent3);}
+.rm-plan{background:var(--bg3);color:var(--muted);}
 
-.toast{position:fixed;bottom:20px;right:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 18px;font-size:13px;font-weight:600;z-index:999;transform:translateY(70px);opacity:0;transition:all .3s;}
+.toast{position:fixed;bottom:16px;right:16px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 18px;font-size:13px;font-weight:600;z-index:999;transform:translateY(70px);opacity:0;transition:all .3s;backdrop-filter:blur(12px);}
 .toast.show{transform:translateY(0);opacity:1;}
-.toast.success{border-color:var(--correct);color:var(--correct);}
-.toast.error{border-color:var(--wrong);color:var(--wrong);}
+.toast.success{border-color:var(--accent2);color:var(--accent2);}
+.toast.error{border-color:var(--accent4);color:var(--accent4);}
 .toast.info{border-color:var(--accent);color:var(--accent);}
 
+/* ══════ MOBILE ══════ */
 @media(max-width:768px){
-  .sidebar{display:none;}
-  .stats-row{grid-template-columns:repeat(2,1fr);}
-  .dash-top,.dash-cols{grid-template-columns:1fr;}
-  .nav-btn{padding:5px 8px;font-size:11px;}
+  .sidebar{position:fixed;left:0;top:54px;bottom:0;z-index:60;transform:translateX(-100%);width:260px;box-shadow:4px 0 24px rgba(0,0,0,.3);}
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-overlay.show{display:block;z-index:55;}
+  .menu-btn{display:flex;}
+  .nav-center{padding:0 8px;}
+  .nav-btn{padding:8px 10px;font-size:11px;}
+  .dash{padding:16px;}
+  .hero-card{padding:20px;}
+  .hero-card h1{font-size:18px;}
+  .hero-btns{flex-direction:column;}
+  .btn-start,.btn-outline{width:100%;text-align:center;}
+  .stats-row{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .topics-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .topic-card{padding:12px;}
+  .q-text{font-size:15px;}
+  .opt{padding:11px 14px;font-size:13px;}
   .ask-input-wrap{flex-direction:column;}
-  .ask-submit{height:40px;width:100%;}
+  .ask-send{width:100%;height:44px;}
+  .ps-tabs{padding:14px 14px 0;}
+  .ps-tab{padding:8px 14px;font-size:12px;}
+}
+
+@media(max-width:400px){
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .topics-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 
+<div class="bg-mesh"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
 <div class="bg-grid"></div>
-<div class="glow-orb a"></div>
-<div class="glow-orb b"></div>
-<div class="glow-orb c"></div>
+<div class="sidebar-overlay" id="sb-overlay" onclick="closeSB()"></div>
 
 <nav>
-  <div class="logo">Py<span>Seekho</span></div>
-  <div class="nav-links">
-    <button class="nav-btn active" onclick="showView('dashboard')">Dashboard</button>
-    <button class="nav-btn" onclick="showView('learn')">Quiz</button>
-    <button class="nav-btn" onclick="showView('practice')">Practice</button>
-    <button class="nav-btn" onclick="showView('flashcards')">Cards</button>
-    <button class="nav-btn" onclick="showView('ask')">Ask</button>
-    <button class="nav-btn" onclick="showView('roadmap')">Roadmap</button>
-    <button class="nav-btn" onclick="showView('leaderboard')">Ranks</button>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="menu-btn" onclick="toggleSB()">☰</button>
+    <div class="logo"><div class="dot"></div>PySeekho</div>
+  </div>
+  <div class="nav-center">
+    <button class="nav-btn active" onclick="go('dash')">Home</button>
+    <button class="nav-btn" onclick="go('problems')">Problems</button>
+    <button class="nav-btn" onclick="go('quiz')">Quiz</button>
+    <button class="nav-btn" onclick="go('practice')">Practice</button>
+    <button class="nav-btn" onclick="go('cards')">Cards</button>
+    <button class="nav-btn" onclick="go('ask')">Ask AI</button>
+    <button class="nav-btn" onclick="go('ranks')">Ranks</button>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">🌙</button>
   </div>
 </nav>
 
 <div class="app">
 <div class="sidebar" id="sidebar"></div>
-<div class="content" id="main-content">
-
-<div id="view-dashboard"></div>
-<div id="view-learn" class="hidden"></div>
-<div id="view-practice" class="hidden"></div>
-<div id="view-flashcards" class="hidden"></div>
-<div id="view-ask" class="hidden"></div>
-<div id="view-roadmap" class="hidden"></div>
-<div id="view-leaderboard" class="hidden"></div>
-
-</div></div>
+<div class="content" id="mc"></div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════
-// TOPICS + QUESTIONS WITH DIFFICULTY
-// ═══════════════════════════════════════
-const TOPICS=[
-  {id:'basics',name:'Basics',icon:'\u26A1',color:'#7c6af7',qs:[]},
-  {id:'strings',name:'Strings',icon:'\uD83D\uDCDD',color:'#f7c76a',qs:[]},
-  {id:'lists',name:'Lists',icon:'\uD83D\uDCCB',color:'#f76a8a',qs:[]},
-  {id:'loops',name:'Loops',icon:'\uD83D\uDD04',color:'#5ee7b5',qs:[]},
-  {id:'functions',name:'Functions',icon:'\u2699\uFE0F',color:'#7eb8f7',qs:[]},
-  {id:'dicts',name:'Dictionaries',icon:'\uD83D\uDCDA',color:'#f7a06a',qs:[]},
-  {id:'oops',name:'OOP',icon:'\uD83C\uDFD7\uFE0F',color:'#c76af7',qs:[]},
-  {id:'exceptions',name:'Exceptions',icon:'\uD83D\uDEE1\uFE0F',color:'#f76a6a',qs:[]},
+// ═══════════════════════════════════
+// DATA
+// ═══════════════════════════════════
+const T=[
+  {id:'basics',name:'Basics',icon:'⚡',color:'#8b7aff',qs:[]},
+  {id:'strings',name:'Strings',icon:'📝',color:'#ffc46b',qs:[]},
+  {id:'lists',name:'Lists',icon:'📋',color:'#ff6b8a',qs:[]},
+  {id:'loops',name:'Loops',icon:'🔄',color:'#4aeabc',qs:[]},
+  {id:'functions',name:'Functions',icon:'⚙️',color:'#7eb8f7',qs:[]},
+  {id:'dicts',name:'Dicts',icon:'📚',color:'#f7a06a',qs:[]},
+  {id:'oops',name:'OOP',icon:'🏗️',color:'#c76af7',qs:[]},
+  {id:'exceptions',name:'Errors',icon:'🛡️',color:'#f76a6a',qs:[]},
 ];
 
 const QS=[
-  // BASICS - Basic
+  // BASICS
   {t:'basics',d:1,q:"What type of language is Python?",o:["Compiled","Interpreted","Machine Level","Assembly"],a:1,e:"Python is interpreted — executed line by line.",c:"python script.py  # runs directly"},
-  {t:'basics',d:1,q:"Which data type stores whole numbers?",o:["str","bool","int","char"],a:2,e:"int stores whole numbers like 10, -5, 0.",c:"age = 25\ntype(age)  # <class 'int'>"},
-  {t:'basics',d:1,q:"How do you write a comment?",o:["// comment","/* comment */","# comment","-- comment"],a:2,e:"# is used for single-line comments.",c:"# This is a comment\nprint('hi')  # inline"},
-  {t:'basics',d:1,q:"What is the output of print('2' + '3')?",o:["5","23","Error","None"],a:1,e:"Both are strings, so + concatenates them.",c:"print('2' + '3')  # '23'"},
-  {t:'basics',d:1,q:"What does type(3.14) return?",o:["int","str","float","number"],a:2,e:"3.14 has a decimal, so it's a float.",c:"type(3.14)  # <class 'float'>"},
-  // BASICS - Intermediate
-  {t:'basics',d:2,q:"What does bool('') return?",o:["True","False","Error","None"],a:1,e:"Empty string is falsy, so bool('') = False.",c:"bool('')   # False\nbool('hi') # True"},
-  {t:'basics',d:2,q:"What is 10 % 3?",o:["3","1","0.33","7"],a:1,e:"% is modulo — returns remainder of division.",c:"10 % 3  # 1 (remainder)"},
+  {t:'basics',d:1,q:"Which data type stores whole numbers?",o:["str","bool","int","char"],a:2,e:"int stores whole numbers.",c:"age = 25\ntype(age)  # <class 'int'>"},
+  {t:'basics',d:1,q:"How do you write a comment?",o:["// comment","/* comment */","# comment","-- comment"],a:2,e:"# starts a single-line comment.",c:"# This is a comment"},
+  {t:'basics',d:1,q:"Output of print('2' + '3')?",o:["5","23","Error","None"],a:1,e:"String concatenation, not addition.",c:"print('2' + '3')  # '23'"},
+  {t:'basics',d:2,q:"What does bool('') return?",o:["True","False","Error","None"],a:1,e:"Empty string is falsy.",c:"bool('')   # False\nbool('hi') # True"},
+  {t:'basics',d:2,q:"Result of 10 % 3?",o:["3","1","0.33","7"],a:1,e:"% is modulo — returns remainder.",c:"10 % 3  # 1"},
   {t:'basics',d:2,q:"What happens with int('abc')?",o:["Returns 0","Returns 'abc'","ValueError","None"],a:2,e:"int() can't convert non-numeric strings.",c:"int('abc')  # ValueError!"},
-  {t:'basics',d:2,q:"Which operator is for assignment?",o:["==","!=",">>=","="],a:3,e:"Single = assigns. == compares.",c:"x = 10   # assign\nx == 10  # compare -> True"},
-  // BASICS - Advanced
-  {t:'basics',d:3,q:"What does 2 ** 10 equal?",o:["20","100","1024","512"],a:2,e:"** is exponentiation. 2^10 = 1024.",c:"2 ** 10  # 1024"},
-  {t:'basics',d:3,q:"What does 'not True' evaluate to?",o:["True","False","None","Error"],a:1,e:"not reverses boolean value.",c:"not True   # False\nnot False  # True"},
-  {t:'basics',d:3,q:"What does input() always return?",o:["int","float","str","bool"],a:2,e:"input() always returns string. Convert explicitly.",c:"x = input()  # str\ny = int(input())  # int"},
-  {t:'basics',d:3,q:"What is the result of (True and False) or True?",o:["True","False","None","Error"],a:0,e:"and has higher precedence: (True and False)=False, then False or True = True.",c:"(True and False) or True  # True"},
-  {t:'basics',d:3,q:"What is the output of: print(0.1 + 0.2 == 0.3)?",o:["True","False","Error","None"],a:1,e:"Floating point precision issue! 0.1+0.2 = 0.30000000000000004",c:"0.1 + 0.2  # 0.30000000000000004\n0.1 + 0.2 == 0.3  # False"},
-
-  // STRINGS - Basic
-  {t:'strings',d:1,q:"What does 'hello'[1] return?",o:["h","e","l","o"],a:1,e:"Index starts at 0. [1] = 'e'.",c:"s = 'hello'\ns[0]  # 'h'\ns[1]  # 'e'"},
+  {t:'basics',d:3,q:"What is 2 ** 10?",o:["20","100","1024","512"],a:2,e:"** is exponentiation. 2^10 = 1024.",c:"2 ** 10  # 1024"},
+  {t:'basics',d:3,q:"Result of (True and False) or True?",o:["True","False","None","Error"],a:0,e:"and has higher precedence: (F) or T = T.",c:"(True and False) or True  # True"},
+  {t:'basics',d:3,q:"Output of print(0.1 + 0.2 == 0.3)?",o:["True","False","Error","None"],a:1,e:"Floating point precision issue!",c:"0.1 + 0.2  # 0.30000000000000004"},
+  // STRINGS
+  {t:'strings',d:1,q:"What does 'hello'[1] return?",o:["h","e","l","o"],a:1,e:"Index starts at 0.",c:"s = 'hello'\ns[1]  # 'e'"},
   {t:'strings',d:1,q:"What does 'Python'[-1] return?",o:["P","y","n","o"],a:2,e:"-1 is last character.",c:"'Python'[-1]  # 'n'"},
-  {t:'strings',d:1,q:"What does len('hello world') return?",o:["10","11","5","12"],a:1,e:"11 characters including space.",c:"len('hello world')  # 11"},
-  {t:'strings',d:1,q:"What does 'Hello'.lower() return?",o:["HELLO","hello","Hello","hELLO"],a:1,e:".lower() converts to lowercase.",c:"'Hello'.lower()  # 'hello'"},
-  // STRINGS - Intermediate
-  {t:'strings',d:2,q:"What does 'a,b,c'.split(',') return?",o:["'a b c'","['a','b','c']","('a','b','c')","Error"],a:1,e:".split() divides string into list.",c:"'a,b,c'.split(',')  # ['a','b','c']"},
-  {t:'strings',d:2,q:"What does '  hello  '.strip() return?",o:["'  hello  '","'hello'","'hello  '","Error"],a:1,e:".strip() removes leading/trailing whitespace.",c:"'  hello  '.strip()  # 'hello'"},
-  {t:'strings',d:2,q:"How to embed variable in f-string?",o:["{var}","$(var)","#var","[var]"],a:0,e:"Use curly braces {} inside f-strings.",c:"name = 'Alice'\nf'Hello {name}!'"},
-  // STRINGS - Advanced
-  {t:'strings',d:3,q:"What does 'hello'[1:4:2] return?",o:["el","helo","el","he"],a:0,e:"[start:stop:step] — from 1 to 3, step 2: e(1), l(3)",c:"'hello'[1:4:2]  # 'el'\n# index: 01234"},
-  {t:'strings',d:3,q:"What does '-'.join(['a','b','c']) return?",o:["a-b-c","['a-b-c']","-a-b-c-","abc"],a:0,e:".join() uses string as separator.",c:"'-'.join(['a','b','c'])  # 'a-b-c'"},
-  {t:'strings',d:3,q:"What does 'hello world'.replace('world','Python') return?",o:["hello Python","hello world","Python hello","Error"],a:0,e:".replace(old, new) replaces all occurrences.",c:"'hello world'.replace('world','Python')"},
-  {t:'strings',d:3,q:"What is the result of 'abc' * 3?",o:["abc3","abcabcabc","Error","'abc' * 3"],a:1,e:"String repetition with * operator.",c:"'abc' * 3  # 'abcabcabc'\n'ha' * 5   # 'hahahahaha'"},
-
-  // LISTS - Basic
-  {t:'lists',d:1,q:"After append('mango'), what is ['apple','banana']?",o:["['apple','banana']","['mango','apple','banana']","['apple','banana','mango']","Error"],a:2,e:".append() adds to the end.",c:"fruits.append('mango')\n# ['apple','banana','mango']"},
-  {t:'lists',d:1,q:"What does [1,2,3,4,5][2:4] return?",o:["[2,3]","[3,4]","[2,3,4]","[3,4,5]"],a:1,e:"Slice [2:4] = index 2 and 3.",c:"[1,2,3,4,5][2:4]  # [3,4]"},
-  {t:'lists',d:1,q:"After pop() on [1,2,3], what remains?",o:["[1,2,3]","[2,3]","[1,2]","[1,3]"],a:2,e:".pop() removes last element.",c:"nums = [1,2,3]\nnums.pop()  # 3\n# [1,2]"},
-  // LISTS - Intermediate
-  {t:'lists',d:2,q:"What does len([1,[2,3],4]) return?",o:["4","3","2","5"],a:1,e:"len() counts top-level items only.",c:"len([1,[2,3],4])  # 3"},
-  {t:'lists',d:2,q:"After sort(), what is [3,1,4,1,5]?",o:["Same","Reversed","[1,1,3,4,5]","Error"],a:2,e:".sort() sorts ascending in place.",c:"nums.sort()  # [1,1,3,4,5]"},
-  {t:'lists',d:2,q:"List vs Tuple main difference?",o:["No difference","Tuple faster","Tuple immutable","Lists only for numbers"],a:2,e:"Tuples can't change after creation.",c:"t = (1,2,3)  # immutable\nl = [1,2,3]  # mutable"},
-  // LISTS - Advanced
-  {t:'lists',d:3,q:"What does [x**2 for x in range(4)] return?",o:["[1,4,9,16]","[0,1,4,9]","[0,1,2,3]","[1,2,3,4]"],a:1,e:"List comprehension: range(4)=0,1,2,3 squared.",c:"[x**2 for x in range(4)]  # [0,1,4,9]"},
-  {t:'lists',d:3,q:"What happens to duplicates in a set?",o:["Kept all","Removed","Error","None"],a:1,e:"Sets only store unique elements.",c:"{1,2,2,3,3}  # {1,2,3}"},
-  {t:'lists',d:3,q:"What does [1,2,3].extend([4,5]) do?",o:["[[1,2,3],[4,5]]","[1,2,3,4,5]","Error","[1,2,3,[4,5]]"],a:1,e:".extend() adds each element individually.",c:"[1,2,3].extend([4,5])  # [1,2,3,4,5]"},
-  {t:'lists',d:3,q:"What is the output of: a = [1,2,3]; b = a; b.append(4); print(a)?",o:["[1,2,3]","[1,2,3,4]","Error","[4]"],a:1,e:"b = a doesn't copy — both reference the same list object.",c:"a = [1,2,3]\nb = a       # same object!\nb.append(4)\nprint(a)    # [1,2,3,4]"},
-
-  // LOOPS - Basic
+  {t:'strings',d:2,q:"What does 'a,b,c'.split(',') return?",o:["'a b c'","['a','b','c']","('a','b','c')","Error"],a:1,e:".split() divides into list.",c:"'a,b,c'.split(',')  # ['a','b','c']"},
+  {t:'strings',d:2,q:"What does '  hello  '.strip() return?",o:["'  hello  '","'hello'","'hello  '","Error"],a:1,e:".strip() removes whitespace.",c:"'  hello  '.strip()  # 'hello'"},
+  {t:'strings',d:3,q:"What does 'hello'[1:4:2] return?",o:["el","helo","he","ell"],a:0,e:"[start:stop:step] — e(1), l(3).",c:"'hello'[1:4:2]  # 'el'"},
+  {t:'strings',d:3,q:"Result of 'abc' * 3?",o:["abc3","abcabcabc","Error","'abc' * 3"],a:1,e:"String repetition with *.",c:"'abc' * 3  # 'abcabcabc'"},
+  // LISTS
+  {t:'lists',d:1,q:"After append('mango'), what is ['apple','banana']?",o:["['apple','banana']","['mango','apple','banana']","['apple','banana','mango']","Error"],a:2,e:".append() adds to end.",c:"fruits.append('mango')"},
+  {t:'lists',d:2,q:"After sort(), what is [3,1,4,1,5]?",o:["Same","Reversed","[1,1,3,4,5]","Error"],a:2,e:".sort() sorts ascending.",c:"nums.sort()  # [1,1,3,4,5]"},
+  {t:'lists',d:2,q:"List vs Tuple difference?",o:["No difference","Tuple faster","Tuple immutable","Lists only for numbers"],a:2,e:"Tuples can't change after creation.",c:"t = (1,2,3)  # immutable\nl = [1,2,3]  # mutable"},
+  {t:'lists',d:3,q:"What does [x**2 for x in range(4)] return?",o:["[1,4,9,16]","[0,1,4,9]","[0,1,2,3]","[1,2,3,4]"],a:1,e:"List comprehension.",c:"[x**2 for x in range(4)]  # [0,1,4,9]"},
+  {t:'lists',d:3,q:"Output: a=[1,2,3]; b=a; b.append(4); print(a)?",o:["[1,2,3]","[1,2,3,4]","Error","[4]"],a:1,e:"b=a is same reference, not a copy!",c:"b = a  # same object!\nb.append(4)\nprint(a)  # [1,2,3,4]"},
+  // LOOPS
   {t:'loops',d:1,q:"What does 'for i in range(3): print(i)' print?",o:["1 2 3","0 1 2","0 1 2 3","1 2"],a:1,e:"range(3) generates 0,1,2.",c:"for i in range(3):\n    print(i)  # 0,1,2"},
-  {t:'loops',d:1,q:"What does 'break' do in a loop?",o:["Skips iteration","Stops loop","Restarts loop","Nothing"],a:1,e:"break exits the loop immediately.",c:"for i in range(5):\n    if i==3: break\n    print(i)  # 0,1,2"},
-  // LOOPS - Intermediate
-  {t:'loops',d:2,q:"What does 'continue' do?",o:["Stops loop","Skips iteration","Restarts loop","Raises error"],a:1,e:"continue skips to next iteration.",c:"for i in range(5):\n    if i==2: continue\n    print(i)  # 0,1,3,4"},
-  {t:'loops',d:2,q:"What does range(2,8,2) generate?",o:["[2,4,6,8]","[2,4,6]","[2,3,4,5,6,7]","[0,2,4,6]"],a:1,e:"range(start,stop,step). Stop is excluded.",c:"list(range(2,8,2))  # [2,4,6]"},
-  {t:'loops',d:2,q:"What does enumerate(['a','b']) return?",o:["['a','b']","[(0,'a'),(1,'b')]","[0,1]","Error"],a:1,e:"enumerate() adds index to each item.",c:"for i,v in enumerate(['a','b']):\n    print(i,v)  # 0 a | 1 b"},
-  // LOOPS - Advanced
-  {t:'loops',d:3,q:"When does 'while True' stop?",o:["Never","After 1 iter","After 10","Automatically"],a:0,e:"while True is infinite — needs break.",c:"while True:\n    x = input()\n    if x=='q': break"},
-  {t:'loops',d:3,q:"What does 'for else' do? When does else run?",o:["Always","Never","When no break","On error"],a:2,e:"else runs if loop completes without break.",c:"for i in [1,2,3]:\n    pass\nelse:\n    print('done')  # runs!"},
-  {t:'loops',d:3,q:"What is the output of: for i in [1,2,3]: i *= 2; print(i)?",o:["2 4 6","1 2 3","Error","None"],a:0,e:"i *= 2 modifies i each iteration before print.",c:"# Each iteration:\n# i=1 -> 2, print 2\n# i=2 -> 4, print 4\n# i=3 -> 6, print 6"},
-
-  // FUNCTIONS - Basic
-  {t:'functions',d:1,q:"What is 'def' used for?",o:["Variables","Functions","Classes","Imports"],a:1,e:"def defines a function.",c:"def greet(name):\n    return 'Hello ' + name"},
-  {t:'functions',d:1,q:"Function without return gives back?",o:["0","''","None","Error"],a:2,e:"Implicitly returns None.",c:"def foo(): pass\nprint(foo())  # None"},
-  // FUNCTIONS - Intermediate
-  {t:'functions',d:2,q:"What is 'lambda x: x*2'?",o:["Normal function","Anonymous function","Class","Loop"],a:1,e:"lambda creates anonymous one-line function.",c:"double = lambda x: x*2\ndouble(5)  # 10"},
-  {t:'functions',d:2,q:"When is default parameter used?",o:["Always","No argument passed","Only int","On error"],a:1,e:"Default kicks in when argument not provided.",c:"def greet(name='World'):\n    print(name)\ngreet()  # World"},
-  // FUNCTIONS - Advanced
-  {t:'functions',d:3,q:"What does *args allow?",o:["One arg","Keyword args","Any positional args","Error"],a:2,e:"*args accepts any number of positional args as tuple.",c:"def sum_all(*nums):\n    return sum(nums)\nsum_all(1,2,3)  # 6"},
-  {t:'functions',d:3,q:"What is a recursive function?",o:["Calls itself","Uses loop","Returns nothing","Very fast"],a:0,e:"Recursion = function calls itself.",c:"def fact(n):\n    return 1 if n==0 else n*fact(n-1)"},
-  {t:'functions',d:3,q:"What does **kwargs do?",o:["Positional args","Keyword args as dict","Unpacks list","Nothing"],a:1,e:"**kwargs collects keyword arguments into a dictionary.",c:"def info(**kw):\n    print(kw)\ninfo(name='Alice', age=25)\n# {'name':'Alice','age':25}"},
-
-  // DICTS - Basic
-  {t:'dicts',d:1,q:"After d['b']=2 on {'a':1}, what is d?",o:["{'a':1}","{'b':2}","{'a':1,'b':2}","Error"],a:2,e:"New key-value pair is added.",c:"d['b'] = 2  # {'a':1,'b':2}"},
-  {t:'dicts',d:1,q:"What does 'name' in {'name':'Ali'} evaluate to?",o:["True","False","Error","'Ali'"],a:0,e:"in checks keys, not values.",c:"'name' in {'name':'Ali'}  # True\n'Ali' in {'name':'Ali'}  # False"},
-  // DICTS - Intermediate
-  {t:'dicts',d:2,q:"What does d.get('y') return if 'y' not in d?",o:["KeyError","0","None","'y'"],a:2,e:".get() returns None instead of KeyError.",c:"d.get('y')    # None\nd.get('y',0)  # 0 (default)"},
-  {t:'dicts',d:2,q:"What does d.keys() return?",o:["Values","Keys","Items","Length"],a:1,e:".keys() returns all keys.",c:"d = {'a':1,'b':2}\nlist(d.keys())  # ['a','b']"},
-  // DICTS - Advanced
-  {t:'dicts',d:3,q:"What does d.items() return?",o:["Keys","Values","(key,value) tuples","Count"],a:2,e:".items() returns key-value pairs.",c:"for k,v in d.items():\n    print(k,v)"},
-  {t:'dicts',d:3,q:"What does {**d1, **d2} do?",o:["Error","Merges two dicts","Compares dicts","Deletes keys"],a:1,e:"** unpacks dicts and combines them (Python 3.5+).",c:"a = {'x':1}\nb = {'y':2}\nc = {**a, **b}  # {'x':1,'y':2}"},
-  {t:'dicts',d:3,q:"What is the output of: d = {'a':1,'b':2}; d.setdefault('c',3); print(d)?",o:["{'a':1,'b':2}","{'a':1,'b':2,'c':3}","Error","{'c':3}"],a:1,e:".setdefault() adds key with default if not present.",c:"d.setdefault('c', 3)  # adds 'c':3\nprint(d)  # {'a':1,'b':2,'c':3}"},
-
-  // OOP - Basic
-  {t:'oops',d:1,q:"Which keyword defines a class?",o:["def","class","object","new"],a:1,e:"class keyword defines a class.",c:"class Dog:\n    pass"},
-  {t:'oops',d:1,q:"When is __init__ called?",o:["Class defined","Object created","Function called","Import"],a:1,e:"__init__ runs on object creation.",c:"d = Dog('Rex')  # __init__ called"},
-  // OOP - Intermediate
-  {t:'oops',d:2,q:"What does 'self' refer to?",o:["Class","Current instance","Parent","Module"],a:1,e:"self = current object instance.",c:"class Dog:\n    def bark(self):\n        print(self.name)"},
-  {t:'oops',d:2,q:"How to inherit from Parent?",o:["class Child(Parent):","class Child extends Parent:","class Child : Parent","inherit Child"],a:0,e:"Parent class goes in parentheses.",c:"class Puppy(Dog):\n    pass  # gets Dog methods"},
-  // OOP - Advanced
-  {t:'oops',d:3,q:"What does super() do?",o:["Creates object","Calls parent methods","Deletes class","Runs loop"],a:1,e:"super() accesses parent class methods.",c:"class Puppy(Dog):\n    def __init__(self, name, age):\n        super().__init__(name)\n        self.age = age"},
-  {t:'oops',d:3,q:"What is method overriding?",o:["Deleting a method","Redefining parent method in child","Calling super()","Creating new method"],a:1,e:"Child class redefines a method from parent.",c:"class Cat(Animal):\n    def speak(self):  # overrides\n        return 'Meow!'"},
-  {t:'oops',d:3,q:"What is a class variable vs instance variable?",o:["Same thing","Class: shared by all. Instance: unique per object","Class: unique. Instance: shared","No difference"],a:1,e:"Class variables are shared. Instance variables are per-object.",c:"class Dog:\n    species = 'Canine'  # class var\n    def __init__(self, name):\n        self.name = name  # instance var"},
-
-  // EXCEPTIONS - Basic
-  {t:'exceptions',d:1,q:"Why use try-except?",o:["Loops","Handle errors","Define functions","Create classes"],a:1,e:"Catches errors so program doesn't crash.",c:"try:\n    x = int('abc')\nexcept ValueError:\n    print('Error!')"},
-  {t:'exceptions',d:1,q:"When does finally block run?",o:["Only error","Only success","Always","Never"],a:2,e:"finally always executes.",c:"try: ...\nexcept: ...\nfinally: print('always!')"},
-  // EXCEPTIONS - Intermediate
-  {t:'exceptions',d:2,q:"What does 'raise' do?",o:["Catches error","Throws exception","Ignores error","Prints output"],a:1,e:"raise manually triggers an exception.",c:"if b == 0:\n    raise ValueError('No divide by zero!')"},
-  {t:'exceptions',d:2,q:"When does FileNotFoundError occur?",o:["No internet","File missing","Memory full","Wrong version"],a:1,e:"When opening a non-existent file.",c:"open('missing.txt')  # FileNotFoundError!"},
-  // EXCEPTIONS - Advanced
-  {t:'exceptions',d:3,q:"What does 'except Exception as e' do?",o:["Catches nothing","Catches all exceptions and stores in e","Only catches ValueError","Syntax error"],a:1,e:"Catches any exception and stores message in e.",c:"try:\n    risky_code()\nexcept Exception as e:\n    print(f'Error: {e}')"},
-  {t:'exceptions',d:3,q:"Can you create custom exceptions?",o:["No","Yes, inherit from Exception","Only Python devs","With try"],a:1,e:"Create custom exceptions by subclassing Exception.",c:"class CustomError(Exception):\n    pass\n\nraise CustomError('My error!')"},
-  {t:'exceptions',d:3,q:"What is the difference between except and finally?",o:["Same thing","except handles error, finally always runs","finally handles error, except runs sometimes","No difference"],a:1,e:"except catches specific errors. finally is guaranteed cleanup.",c:"try:\n    x = 1/0\nexcept ZeroDivisionError:\n    print('caught!')\nfinally:\n    print('cleanup!')  # always"},
+  {t:'loops',d:2,q:"What does 'continue' do?",o:["Stops loop","Skips iteration","Restarts loop","Raises error"],a:1,e:"Skips to next iteration.",c:"for i in range(5):\n    if i==2: continue"},
+  {t:'loops',d:3,q:"When does 'while True' stop?",o:["Never","After 1 iter","After 10","Automatically"],a:0,e:"Infinite loop — needs break.",c:"while True:\n    if condition: break"},
+  {t:'loops',d:3,q:"When does for-else run?",o:["Always","Never","No break occurred","On error"],a:2,e:"else runs if loop completes without break.",c:"for i in [1,2]:\n    pass\nelse:\n    print('done')  # runs!"},
+  // FUNCTIONS
+  {t:'functions',d:1,q:"What is 'def' for?",o:["Variables","Functions","Classes","Imports"],a:1,e:"def defines a function.",c:"def greet(name):\n    return 'Hello ' + name"},
+  {t:'functions',d:2,q:"What is 'lambda x: x*2'?",o:["Normal func","Anonymous func","Class","Loop"],a:1,e:"lambda = anonymous one-line function.",c:"double = lambda x: x*2\ndouble(5)  # 10"},
+  {t:'functions',d:3,q:"What does *args allow?",o:["One arg","Keyword args","Any positional args","Error"],a:2,e:"Accepts any number of positional args.",c:"def sum_all(*nums):\n    return sum(nums)"},
+  {t:'functions',d:3,q:"What does **kwargs do?",o:["Positional args","Keyword args as dict","Unpacks list","Nothing"],a:1,e:"Collects keyword arguments into dict.",c:"def info(**kw):\n    print(kw)\ninfo(name='Alice', age=25)"},
+  // DICTS
+  {t:'dicts',d:1,q:"After d['b']=2 on {'a':1}, what is d?",o:["{'a':1}","{'b':2}","{'a':1,'b':2}","Error"],a:2,e:"New key-value pair added.",c:"d['b'] = 2  # {'a':1,'b':2}"},
+  {t:'dicts',d:2,q:"What does d.get('y') return if 'y' not in d?",o:["KeyError","0","None","'y'"],a:2,e:".get() returns None, not KeyError.",c:"d.get('y')    # None\nd.get('y',0)  # 0"},
+  {t:'dicts',d:3,q:"What does {**d1, **d2} do?",o:["Error","Merges dicts","Compares","Deletes"],a:1,e:"Unpacks and merges two dicts.",c:"a={'x':1}; b={'y':2}\nc={**a,**b}  # {'x':1,'y':2}"},
+  // OOP
+  {t:'oops',d:1,q:"Which keyword defines a class?",o:["def","class","object","new"],a:1,e:"class keyword.",c:"class Dog:\n    pass"},
+  {t:'oops',d:2,q:"What does 'self' refer to?",o:["Class","Current instance","Parent","Module"],a:1,e:"self = current object.",c:"class Dog:\n    def bark(self):\n        print(self.name)"},
+  {t:'oops',d:3,q:"What does super() do?",o:["Creates object","Calls parent methods","Deletes class","Runs loop"],a:1,e:"Accesses parent class methods.",c:"class Puppy(Dog):\n    def __init__(self, name):\n        super().__init__(name)"},
+  // EXCEPTIONS
+  {t:'exceptions',d:1,q:"Why use try-except?",o:["Loops","Handle errors","Define functions","Create classes"],a:1,e:"Catches errors gracefully.",c:"try:\n    x = int('abc')\nexcept ValueError:\n    print('Error!')"},
+  {t:'exceptions',d:2,q:"What does 'raise' do?",o:["Catches error","Throws exception","Ignores error","Prints"],a:1,e:"Manually triggers exception.",c:"raise ValueError('No!')"},
+  {t:'exceptions',d:3,q:"Can you create custom exceptions?",o:["No","Yes, inherit Exception","Only Python devs","With try"],a:1,e:"Subclass Exception.",c:"class MyError(Exception):\n    pass\nraise MyError('oops')"},
 ];
-QS.forEach(q=>{const t=TOPICS.find(t=>t.id===q.t);if(t)t.qs.push(q);});
+QS.forEach(q=>{const t=T.find(t=>t.id===q.t);if(t)t.qs.push(q);});
+
+// PROBLEM SOLVING DATA
+const PROBLEMS=[
+  // EASY
+  {d:'easy',q:"Write a function that returns the sum of two numbers.",tags:['Functions','Basics'],solution:"def add(a, b):\n    return a + b\n\nprint(add(3, 5))  # 8"},
+  {d:'easy',q:"Check if a number is even or odd.",tags:['Conditionals','Basics'],solution:"def check_even(n):\n    if n % 2 == 0:\n        return 'Even'\n    return 'Odd'\n\nprint(check_even(7))  # Odd"},
+  {d:'easy',q:"Reverse a string without using [::-1].",tags:['Strings','Loops'],solution:"def reverse_str(s):\n    result = ''\n    for char in s:\n        result = char + result\n    return result\n\nprint(reverse_str('hello'))  # olleh"},
+  {d:'easy',q:"Find the largest number in a list without using max().",tags:['Lists','Loops'],solution:"def find_max(nums):\n    largest = nums[0]\n    for n in nums:\n        if n > largest:\n            largest = n\n    return largest\n\nprint(find_max([3,7,2,9,1]))  # 9"},
+  {d:'easy',q:"Count vowels in a string.",tags:['Strings','Loops'],solution:"def count_vowels(s):\n    vowels = 'aeiouAEIOU'\n    count = 0\n    for char in s:\n        if char in vowels:\n            count += 1\n    return count\n\nprint(count_vowels('hello world'))  # 3"},
+  {d:'easy',q:"Remove duplicates from a list without using set.",tags:['Lists','Logic'],solution:"def remove_dup(lst):\n    result = []\n    for item in lst:\n        if item not in result:\n            result.append(item)\n    return result\n\nprint(remove_dup([1,2,2,3,3,3]))  # [1,2,3]"},
+  // MEDIUM
+  {d:'medium',q:"Check if a string is a palindrome.",tags:['Strings','Logic'],solution:"def is_palindrome(s):\n    s = s.lower().replace(' ', '')\n    return s == s[::-1]\n\nprint(is_palindrome('racecar'))  # True\nprint(is_palindrome('hello'))    # False"},
+  {d:'medium',q:"Find the factorial of a number using recursion.",tags:['Functions','Recursion'],solution:"def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n\nprint(factorial(5))  # 120"},
+  {d:'medium',q:"Count frequency of each character in a string using a dictionary.",tags:['Dicts','Strings'],solution:"def char_freq(s):\n    freq = {}\n    for char in s:\n        freq[char] = freq.get(char, 0) + 1\n    return freq\n\nprint(char_freq('hello'))\n# {'h':1,'e':1,'l':2,'o':1}"},
+  {d:'medium',q:"Implement bubble sort on a list.",tags:['Lists','Algorithms'],solution:"def bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        for j in range(0, n-i-1):\n            if arr[j] > arr[j+1]:\n                arr[j], arr[j+1] = arr[j+1], arr[j]\n    return arr\n\nprint(bubble_sort([64,34,25,12,22]))\n# [12,22,25,34,64]"},
+  {d:'medium',q:"Flatten a nested list (one level deep).",tags:['Lists','Comprehension'],solution:"def flatten(lst):\n    result = []\n    for item in lst:\n        if isinstance(item, list):\n            result.extend(item)\n        else:\n            result.append(item)\n    return result\n\nprint(flatten([1,[2,3],[4,5],6]))\n# [1,2,3,4,5,6]"},
+  {d:'medium',q:"Find the second largest number in a list.",tags:['Lists','Logic'],solution:"def second_largest(nums):\n    unique = list(set(nums))\n    unique.sort()\n    return unique[-2]\n\nprint(second_largest([10,20,4,45,99,99]))  # 45"},
+  // HARD / INTERVIEW
+  {d:'hard',q:"Implement a stack with push, pop, peek, and is_empty using a class.",tags:['OOP','Data Structures'],solution:"class Stack:\n    def __init__(self):\n        self.items = []\n    def push(self, item):\n        self.items.append(item)\n    def pop(self):\n        return self.items.pop() if self.items else None\n    def peek(self):\n        return self.items[-1] if self.items else None\n    def is_empty(self):\n        return len(self.items) == 0\n\ns = Stack()\ns.push(10)\ns.push(20)\nprint(s.peek())   # 20\nprint(s.pop())     # 20\nprint(s.is_empty()) # False"},
+  {d:'hard',q:"Write a function that checks if two strings are anagrams.",tags:['Strings','Dicts','Logic'],solution:"def is_anagram(s1, s2):\n    s1 = s1.lower().replace(' ', '')\n    s2 = s2.lower().replace(' ', '')\n    return sorted(s1) == sorted(s2)\n\n# Or with dict:\ndef is_anagram2(s1, s2):\n    s1, s2 = s1.lower(), s2.lower()\n    if len(s1) != len(s2):\n        return False\n    count = {}\n    for c in s1: count[c] = count.get(c,0)+1\n    for c in s2: count[c] = count.get(c,0)-1\n    return all(v==0 for v in count.values())\n\nprint(is_anagram('listen','silent'))  # True"},
+  {d:'hard',q:"Implement a basic linked list with insert, delete, and display.",tags:['OOP','Data Structures','Pointers'],solution:"class Node:\n    def __init__(self, data):\n        self.data = data\n        self.next = None\n\nclass LinkedList:\n    def __init__(self):\n        self.head = None\n    def insert(self, data):\n        new_node = Node(data)\n        new_node.next = self.head\n        self.head = new_node\n    def delete(self, key):\n        curr = self.head\n        prev = None\n        while curr:\n            if curr.data == key:\n                if prev: prev.next = curr.next\n                else: self.head = curr.next\n                return\n            prev = curr\n            curr = curr.next\n    def display(self):\n        result = []\n        curr = self.head\n        while curr:\n            result.append(str(curr.data))\n            curr = curr.next\n        print(' -> '.join(result))\n\nll = LinkedList()\nll.insert(10)\nll.insert(20)\nll.insert(30)\nll.display()  # 30 -> 20 -> 10\nll.delete(20)\nll.display()  # 30 -> 10"},
+  {d:'hard',q:"Write a decorator that measures execution time of any function.",tags:['Decorators','Advanced'],solution:"import time\n\ndef timer(func):\n    def wrapper(*args, **kwargs):\n        start = time.time()\n        result = func(*args, **kwargs)\n        end = time.time()\n        print(f'{func.__name__} took {end-start:.4f}s')\n        return result\n    return wrapper\n\n@timer\ndef slow_function():\n    time.sleep(1)\n    return 'done'\n\nslow_function()  # slow_function took 1.00xxs"},
+  {d:'hard',q:"Implement a generator that yields Fibonacci numbers up to n.",tags:['Generators','Advanced'],solution:"def fibonacci(n):\n    a, b = 0, 1\n    while a <= n:\n        yield a\n        a, b = b, a + b\n\nfor num in fibonacci(50):\n    print(num, end=' ')\n# 0 1 1 2 3 5 8 13 21 34"},
+  {d:'hard',q:"Write a function to find all prime numbers up to n using Sieve of Eratosthenes.",tags:['Algorithms','Lists','Math'],solution:"def sieve(n):\n    is_prime = [True] * (n + 1)\n    is_prime[0] = is_prime[1] = False\n    for i in range(2, int(n**0.5) + 1):\n        if is_prime[i]:\n            for j in range(i*i, n+1, i):\n                is_prime[j] = False\n    return [i for i in range(2, n+1) if is_prime[i]]\n\nprint(sieve(30))\n# [2,3,5,7,11,13,17,19,23,29]"},
+];
 
 const PRACTICE_Qs=[
   {q:"Store 10 in variable x",pre:"",blank:"x",post:"\nprint(x)",hint:"x = 10",ans:["x = 10","x=10"]},
   {q:"Print 'Hello World'",pre:"",blank:"print",post:"('Hello World')",hint:"print()",ans:["print"]},
-  {q:"Add 'mango' to list",pre:"fruits = ['apple','banana']\nfruits.",blank:"append",post:"('mango')",hint:".append()",ans:["append"]},
-  {q:"Convert to uppercase",pre:"s = 'hello'\nresult = s.",blank:"upper",post:"()",hint:".upper()",ans:["upper"]},
-  {q:"Get list length",pre:"nums = [1,2,3,4,5]\nn = ",blank:"len",post:"(nums)",hint:"len()",ans:["len"]},
+  {q:"Add 'mango' to list",pre:"fruits=['apple','banana']\nfruits.",blank:"append",post:"('mango')",hint:".append()",ans:["append"]},
+  {q:"Convert to uppercase",pre:"s='hello'\nresult=s.",blank:"upper",post:"()",hint:".upper()",ans:["upper"]},
+  {q:"Get list length",pre:"nums=[1,2,3,4,5]\nn=",blank:"len",post:"(nums)",hint:"len()",ans:["len"]},
   {q:"Write for loop 0 to 4",pre:"",blank:"for i in range",post:"(5):\n    print(i)",hint:"for i in range",ans:["for i in range","for i in range "]},
   {q:"Define function 'greet'",pre:"",blank:"def",post:" greet():\n    print('Hello!')",hint:"def",ans:["def"]},
-  {q:"Get 'age' from dict",pre:"person = {'name':'Ali','age':25}\nage = person",blank:"['age']",post:"",hint:"['age']",ans:["['age']","[\"age\"]"]},
-  {q:"Create a set from list",pre:"s = ",blank:"set",post:"([1,2,2,3])",hint:"set()",ans:["set"]},
-  {q:"Check if key exists in dict",pre:"d = {'a':1}\nresult = ",blank:"'a' in d",post:"",hint:"'a' in d",ans:["'a' in d","\"a\" in d"]},
+  {q:"Get 'age' from dict",pre:"p={'name':'Ali','age':25}\nage=p",blank:"['age']",post:"",hint:"['age']",ans:["['age']","[\"age\"]"]},
+  {q:"Create a set from list",pre:"s=",blank:"set",post:"([1,2,2,3])",hint:"set()",ans:["set"]},
+  {q:"Sort list descending",pre:"nums=[3,1,4,1,5]\nnums.",blank:"sort",post:"(reverse=True)",hint:".sort()",ans:["sort"]},
 ];
 
-// ═════════════════════════════════════
-// ASK ENGINE
-// ═════════════════════════════════════
+// ═══════════════════════════════════
+// ASK ENGINE (UPGRADED)
+// ═══════════════════════════════════
 const KB=[
-  {keys:['len','length','size'],resp:"<span class='correct-tag'>CONCEPT</span><br><code>len()</code> returns number of items.<pre>len('hello')       # 5\nlen([1,2,3])      # 3\nlen({'a':1,'b':2}) # 2</pre>"},
-  {keys:['for loop','iteration','iterate'],resp:"<span class='correct-tag'>CONCEPT</span><br><code>for</code> iterates over sequences.<pre>for i in range(5):\n    print(i)  # 0,1,2,3,4\n\nfor fruit in ['apple','banana']:\n    print(fruit)</pre>"},
-  {keys:['type','data type'],resp:"<span class='correct-tag'>CONCEPT</span><br><code>type()</code> returns data type.<pre>type(10)      # <class 'int'>\ntype(3.14)    # <class 'float'>\ntype('hi')    # <class 'str'>\ntype(True)    # <class 'bool'>\ntype([1,2])   # <class 'list'></pre>"},
-  {keys:['read file','file','open'],resp:"<span class='correct-tag'>CONCEPT</span><br>Use <code>open()</code> with <code>with</code>.<pre>with open('data.txt', 'r') as f:\n    content = f.read()\n    print(content)\n\n# Line by line\nwith open('data.txt') as f:\n    for line in f:\n        print(line.strip())</pre>"},
-  {keys:['list vs tuple','difference list tuple'],resp:"<span class='correct-tag'>CONCEPT</span><br>Key difference: <strong>mutability</strong>.<pre># LIST - mutable\nmy_list = [1,2,3]\nmy_list[0] = 99  # OK\n\n# TUPLE - immutable\nmy_tuple = (1,2,3)\nmy_tuple[0] = 99  # ERROR!</pre>"},
-  {keys:['append','add to list'],resp:"<span class='correct-tag'>CONCEPT</span><br><code>.append()</code> adds one item to end.<pre>fruits = ['apple','banana']\nfruits.append('mango')\n# ['apple','banana','mango']\n\n# Multiple items? Use extend()\nfruits.extend(['grape','kiwi'])</pre>"},
-  {keys:['while loop','while'],resp:"<span class='correct-tag'>CONCEPT</span><br><code>while</code> runs while condition is True.<pre>count = 0\nwhile count < 5:\n    print(count)\n    count += 1\n\n# Infinite? Use break\nwhile True:\n    x = input()\n    if x == 'q': break</pre>"},
-  {keys:['dictionary','dict','key value'],resp:"<span class='correct-tag'>CONCEPT</span><br>Dicts store key-value pairs.<pre>person = {'name':'Alice','age':25}\nperson['name']         # 'Alice'\nperson.get('phone','N/A')  # 'N/A'\nperson['email'] = 'a@b.com'\nperson.keys()   # all keys\nperson.values() # all values\nperson.items()  # (key,value) pairs</pre>"},
-  {keys:['class','oop','object','instance'],resp:"<span class='correct-tag'>CONCEPT</span><br>Class = blueprint, Object = instance.<pre>class Dog:\n    def __init__(self, name):\n        self.name = name\n    def bark(self):\n        return f'{self.name} says Woof!'\n\ndog1 = Dog('Rex')\nprint(dog1.bark())  # Rex says Woof!</pre>"},
-  {keys:['inheritance','super','parent','child'],resp:"<span class='correct-tag'>CONCEPT</span><br>Child class reuses parent code.<pre>class Animal:\n    def __init__(self, name):\n        self.name = name\n\nclass Cat(Animal):\n    def speak(self):\n        return f'{self.name} says Meow!'\n\nc = Cat('Whiskers')\nprint(c.speak())</pre>"},
-  {keys:['try except','exception','error'],resp:"<span class='correct-tag'>CONCEPT</span><br><code>try-except</code> catches errors.<pre>try:\n    x = int('hello')\nexcept ValueError:\n    print('Invalid!')\nfinally:\n    print('Always runs')</pre>"},
-  {keys:['lambda','anonymous'],resp:"<span class='correct-tag'>CONCEPT</span><br><code>lambda</code> = anonymous one-line function.<pre>double = lambda x: x * 2\ndouble(5)  # 10\n\n# Sorting with lambda\nstudents = [('Alice',85),('Bob',92)]\nstudents.sort(key=lambda s: s[1])</pre>"},
-  {keys:['f-string','format string'],resp:"<span class='correct-tag'>CONCEPT</span><br>f-strings format strings cleanly.<pre>name = 'Alice'\nage = 25\nprint(f'{name} is {age}')\nprint(f'Pi: {3.14159:.2f}')  # Pi: 3.14\nprint(f'{1000000:,}')  # 1,000,000</pre>"},
-  {keys:['list comprehension','comprehension'],resp:"<span class='correct-tag'>CONCEPT</span><br>List comprehension creates lists in one line.<pre>[x**2 for x in range(6)]\n# [0,1,4,9,16,25]\n\n[x for x in range(20) if x%2==0]\n# [0,2,4,6,8,10,12,14,16,18]\n\n# Dict comprehension\n{x: x**2 for x in range(5)}\n# {0:0, 1:1, 2:4, 3:9, 4:16}</pre>"},
-  {keys:['slice','slicing','substring'],resp:"<span class='correct-tag'>CONCEPT</span><br>Slicing: <code>[start:stop:step]</code><pre>s = 'Python'\ns[0:3]   # 'Pyt' (stop excluded)\ns[:3]    # 'Pyt'\ns[3:]    # 'hon'\ns[::-1]  # 'nohtyP' (reversed!)\ns[::2]   # 'Pto' (every 2nd)</pre>"},
-  {keys:['print','output'],resp:"<span class='correct-tag'>CONCEPT</span><br><code>print()</code> outputs to console.<pre>print('Hello')\nprint('A','B','C', sep='-')  # A-B-C\nprint('Load', end='...')\nprint('Done')  # Load...Done\nprint(f'Value: {42}')\n# print() returns None</pre>"},
-  {keys:['input','user input'],resp:"<span class='correct-tag'>CONCEPT</span><br><code>input()</code> reads as <strong>string</strong>.<pre>name = input('Name: ')\nage = int(input('Age: '))  # convert!\n\n# Safe conversion\ntry:\n    age = int(input())\nexcept ValueError:\n    print('Not a number!')</pre>"},
-  {keys:['variable','assign','assignment'],resp:"<span class='correct-tag'>CONCEPT</span><br>No declaration keyword needed.<pre>x = 10\nname = 'Alice'\na, b, c = 1, 2, 3  # multiple\nx = y = z = 0  # all same\na, b = b, a  # swap!\n# Dynamic typing:\nx = 10      # int\nx = 'hello' # now str</pre>"},
-  {keys:['if else','conditional','elif'],resp:"<span class='correct-tag'>CONCEPT</span><br><code>if-elif-else</code> controls flow.<pre>score = 85\nif score >= 90: grade = 'A'\nelif score >= 80: grade = 'B'\nelif score >= 70: grade = 'C'\nelse: grade = 'F'\n\n# Ternary\nstatus = 'Adult' if age>=18 else 'Minor'</pre>"},
-  {keys:['split','join','string split'],resp:"<span class='correct-tag'>CONCEPT</span><br><pre># split: string -> list\n'a,b,c'.split(',')  # ['a','b','c']\n'hello world'.split() # ['hello','world']\n\n# join: list -> string\n'-'.join(['a','b','c'])  # 'a-b-c'\n'\\n'.join(['L1','L2'])  # multi-line</pre>"},
-  {keys:['range','number sequence'],resp:"<span class='correct-tag'>CONCEPT</span><br><code>range()</code> generates numbers (lazy).<pre>list(range(5))        # [0,1,2,3,4]\nlist(range(2,8))       # [2,3,4,5,6,7]\nlist(range(0,20,3))    # [0,3,6,9,12,15,18]\nlist(range(10,0,-1))   # [10,9,8..1]\n# Memory efficient!\nrange(1000000)  # ~no memory</pre>"},
-  {keys:['sort','sorted','order'],resp:"<span class='correct-tag'>CONCEPT</span><br><pre># .sort() - in place\nnums = [3,1,4,1,5]\nnums.sort()  # [1,1,3,4,5]\nnums.sort(reverse=True)  # [9,5,4..]\n\n# sorted() - new list\nnew = sorted(nums)\n\n# By key\nstudents.sort(key=lambda s: s[1])</pre>"},
-  {keys:['set','union','intersection','unique'],resp:"<span class='correct-tag'>CONCEPT</span><br>Sets = unique elements + math ops.<pre>a = {1,2,3,4}\nb = {3,4,5,6}\na | b   # union: {1,2,3,4,5,6}\na & b   # intersection: {3,4}\na - b   # difference: {1,2}\na ^ b   # sym diff: {1,2,5,6}</pre>"},
-  {keys:['global','nonlocal','scope'],resp:"<span class='correct-tag'>CONCEPT</span><br><pre>x = 10  # global\ndef foo():\n    global x\n    x = 20  # modifies global\n\ndef outer():\n    x = 10\n    def inner():\n        nonlocal x\n        x = 20  # modifies outer's x</pre>"},
-  {keys:['decorator','decorators','@'],resp:"<span class='correct-tag'>CONCEPT</span><br>Decorators modify function behavior.<pre>def timer(func):\n    def wrapper(*args):\n        import time\n        start = time.time()\n        result = func(*args)\n        print(f'Time: {time.time()-start:.4f}s')\n        return result\n    return wrapper\n\n@timer\ndef slow_func():\n    import time; time.sleep(1)\nslow_func()  # Time: 1.00xxs</pre>"},
-  {keys:['generator','yield','iterate'],resp:"<span class='correct-tag'>CONCEPT</span><br>Generators produce values lazily with <code>yield</code>.<pre>def countdown(n):\n    while n > 0:\n        yield n\n        n -= 1\n\nfor i in countdown(3):\n    print(i)  # 3, 2, 1\n\ngen = countdown(5)\nnext(gen)  # 5\nnext(gen)  # 4</pre>"},
+  {keys:['len','length','size','count'],resp:"<span class='ctag'>LEN()</span><br><code>len()</code> returns number of items.<pre>len('hello')       # 5\nlen([1,2,3])      # 3\nlen({'a':1,'b':2}) # 2\nlen(range(10))    # 10 (lazy but countable)</pre>Works with any collection or sequence."},
+  {keys:['for loop','iteration','iterate','for'],resp:"<span class='ctag'>FOR LOOP</span><br>Iterates over any iterable.<pre># Over list\nfor fruit in ['apple','banana']:\n    print(fruit)\n\n# With range\nfor i in range(5):\n    print(i)  # 0,1,2,3,4\n\n# With enumerate\nfor i, v in enumerate(['a','b']):\n    print(f'{i}: {v}')  # 0:a  1:b\n\n# With zip\nnames = ['Alice','Bob']\nages = [25,30]\nfor n, a in zip(names, ages):\n    print(f'{n}: {a}')</pre>"},
+  {keys:['type','data type','check type','typeof'],resp:"<span class='ctag'>TYPE()</span><br>Returns the data type of any object.<pre>type(10)      # <class 'int'>\ntype(3.14)    # <class 'float'>\ntype('hi')    # <class 'str'>\ntype(True)    # <class 'bool'>\ntype([1,2])   # <class 'list'>\ntype((1,2))   # <class 'tuple'>\ntype({'a':1}) # <class 'dict'>\ntype({1,2})   # <class 'set'>\ntype(None)    # <class 'NoneType'>\n\n# Check type:\nisinstance(42, int)  # True</pre>"},
+  {keys:['read file','file','open','file handling','write file'],resp:"<span class='ctag'>FILE I/O</span><br><pre># Read entire file\nwith open('data.txt', 'r') as f:\n    content = f.read()\n\n# Read line by line\nwith open('data.txt') as f:\n    for line in f:\n        print(line.strip())\n\n# Write to file\nwith open('out.txt', 'w') as f:\n    f.write('Hello!')\n\n# Append to file\nwith open('out.txt', 'a') as f:\n    f.write('More text')\n\n# Read into list\nwith open('data.txt') as f:\n    lines = f.readlines()</pre><code>with</code> auto-closes the file even on error."},
+  {keys:['list vs tuple','difference list tuple','tuple vs list'],resp:"<span class='ctag'>LIST vs TUPLE</span><br>Key difference: <strong>mutability</strong>.<pre># LIST - mutable (can change)\nmy_list = [1, 2, 3]\nmy_list[0] = 99     # OK\nmy_list.append(4)   # OK\n\n# TUPLE - immutable (cannot change)\nmy_tuple = (1, 2, 3)\nmy_tuple[0] = 99    # TypeError!\nmy_tuple.append(4)  # AttributeError!\n\n# Performance: tuples are slightly faster\n# Use case: coordinates, config, dict keys = tuple\n# Use case: dynamic data, shopping cart = list</pre>"},
+  {keys:['append','add to list','extend','insert'],resp:"<span class='ctag'>LIST METHODS</span><br><pre>fruits = ['apple', 'banana']\n\n# append: add ONE item at end\nfruits.append('mango')\n# ['apple','banana','mango']\n\n# extend: add multiple items\nfruits.extend(['grape','kiwi'])\n# ['apple','banana','mango','grape','kiwi']\n\n# insert: at specific position\nfruits.insert(1, 'orange')\n# ['apple','orange','banana',...]\n\n# remove: by value\nfruits.remove('banana')\n\n# pop: by index (default last)\nfruits.pop()      # removes last\nfruits.pop(0)     # removes first</pre>"},
+  {keys:['while loop','while'],resp:"<span class='ctag'>WHILE LOOP</span><br><pre># Basic\ncount = 0\nwhile count < 5:\n    print(count)\n    count += 1\n\n# Infinite (needs break)\nwhile True:\n    x = input('q to quit: ')\n    if x == 'q': break\n\n# while-else\nx = 5\nwhile x > 0:\n    x -= 1\nelse:\n    print('completed!')  # runs if no break</pre>Always ensure condition eventually becomes False."},
+  {keys:['dictionary','dict','key value','hash map'],resp:"<span class='ctag'>DICTIONARY</span><br>Key-value pairs. Keys must be unique & immutable.<pre>person = {'name':'Alice','age':25}\n\n# Access\nperson['name']         # 'Alice'\nperson.get('phone','N/A')  # 'N/A'\n\n# Modify/Add\nperson['age'] = 26\nperson['email'] = 'a@b.com'\n\n# Delete\ndel person['age']\n\n# Methods\nperson.keys()    # all keys\nperson.values()  # all values\nperson.items()   # (key,value) pairs\n\n# Merge dicts\nmerged = {**d1, **d2}\n\n# Comprehension\nsq = {x:x**2 for x in range(5)}\n# {0:0, 1:1, 2:4, 3:9, 4:16}</pre>"},
+  {keys:['class','oop','object','instance','self'],resp:"<span class='ctag'>OOP BASICS</span><br><pre>class Dog:\n    # Class variable (shared)\n    species = 'Canine'\n    \n    # Constructor\n    def __init__(self, name, breed):\n        self.name = name      # instance var\n        self.breed = breed\n    \n    # Method\n    def bark(self):\n        return f'{self.name} says Woof!'\n\n# Create objects\ndog1 = Dog('Rex', 'Shepherd')\ndog2 = Dog('Bella', 'Labrador')\n\nprint(dog1.bark())  # Rex says Woof!\nprint(dog2.name)   # Bella\nprint(Dog.species)  # Canine (shared)</pre><code>self</code> = current instance. Each object has own data."},
+  {keys:['inheritance','super','parent','child','extends'],resp:"<span class='ctag'>INHERITANCE</span><br>Child class reuses parent code.<pre>class Animal:\n    def __init__(self, name):\n        self.name = name\n    def speak(self):\n        return 'Some sound'\n\nclass Cat(Animal):\n    # Override method\n    def speak(self):\n        return f'{self.name} says Meow!'\n\nclass Dog(Animal):\n    def __init__(self, name, breed):\n        super().__init__(name)  # call parent\n        self.breed = breed\n\nc = Cat('Whiskers')\nprint(c.name)    # Whiskers (from Animal)\nprint(c.speak()) # Whiskers says Meow!</pre><code>super()</code> calls parent methods. MRO = Method Resolution Order."},
+  {keys:['try except','exception','error handling','catch','finally'],resp:"<span class='ctag'>ERROR HANDLING</span><br><pre># Basic\ntry:\n    x = int('hello')\nexcept ValueError:\n    print('Not a number!')\n\n# Multiple except\ntry:\n    result = 10 / 0\nexcept ZeroDivisionError as e:\n    print(f'Division error: {e}')\nexcept Exception as e:\n    print(f'Other: {e}')\nfinally:\n    print('Always runs!')\n\n# Custom exception\nclass MyError(Exception):\n    pass\nraise MyError('Custom error!')\n\n# else (no error)\ntry:\n    x = 10\nexcept:\n    pass\nelse:\n    print('No error!')</pre>"},
+  {keys:['lambda','anonymous function','map','filter'],resp:"<span class='ctag'>LAMBDA</span><br>Anonymous one-line function.<pre># Basic\ndouble = lambda x: x * 2\nprint(double(5))  # 10\n\n# Multiple args\nadd = lambda a, b: a + b\n\n# With map\nnums = [1,2,3,4,5]\nsquares = list(map(lambda x: x**2, nums))\n# [1,4,9,16,25]\n\n# With filter\nevens = list(filter(lambda x: x%2==0, nums))\n# [2,4]\n\n# With sorted\nstudents = [('Alice',85),('Bob',92)]\nstudents.sort(key=lambda s: s[1])\n\n# In sorted()\nsorted(['banana','apple','cherry'], key=lambda s: len(s))</pre>"},
+  {keys:['f-string','format string','string format','.format'],resp:"<span class='ctag'>F-STRINGS</span><br>Python 3.6+ formatting.<pre>name = 'Alice'\nage = 25\n\n# Basic\nprint(f'{name} is {age}')\n\n# Expressions\nprint(f'2+2 = {2+2}')\nprint(f'Next year: {age+1}')\n\n# Formatting\npi = 3.14159\nprint(f'Pi: {pi:.2f}')    # 3.14\nprint(f'{1000000:,}')      # 1,000,000\nprint(f'{42:05d}')        # 00042\nprint(f'{0.75:.0%}')      # 75%\n\n# Multi-line\nmsg = f\"\"\"\nName: {name}\nAge: {age}\n\"\"\"\n\n# Old methods still work\n'Hello {}'.format(name)\n'Hello %s' % name</pre>"},
+  {keys:['list comprehension','comprehension','list comp'],resp:"<span class='ctag'>COMPREHENSION</span><br>Create lists in one line.<pre># Basic\n[x**2 for x in range(6)]\n# [0,1,4,9,16,25]\n\n# With condition\n[x for x in range(20) if x%2==0]\n# [0,2,4,6,8,10,12,14,16,18]\n\n# if-else\n['even' if x%2==0 else 'odd' for x in range(5)]\n# ['even','odd','even','odd','even']\n\n# Nested\n[[j for j in range(3)] for i in range(3)]\n# [[0,1,2],[0,1,2],[0,1,2]]\n\n# Flatten\n[x for row in matrix for x in row]\n\n# Dict comprehension\n{x: x**2 for x in range(5)}\n# {0:0, 1:1, 2:4, 3:9, 4:16}\n\n# Set comprehension\n{x**2 for x in range(-3,4)}\n# {0,1,4,9}</pre>"},
+  {keys:['slice','slicing','substring','indexing'],resp:"<span class='ctag'>SLICING</span><br><code>[start:stop:step]</code> — stop is excluded.<pre>s = 'Python'\ns[0:3]   # 'Pyt'\ns[2:5]   # 'tho'\ns[:3]    # 'Pyt'  (from start)\ns[3:]    # 'hon'  (to end)\ns[:]     # 'Python' (copy)\ns[-3:]   # 'hon'  (from end)\ns[:-2]   # 'Pyth'\ns[::2]   # 'Pto'  (every 2nd)\ns[::-1]  # 'nohtyP' (reversed!)\n\n# Works for lists too\nnums = [0,1,2,3,4,5]\nnums[1:4]  # [1,2,3]\nnums[::-1] # [5,4,3,2,1,0]</pre>"},
+  {keys:['set','union','intersection','difference','unique'],resp:"<span class='ctag'>SETS</span><br>Unique elements + math operations.<pre># Create\ns = {1,2,3,2,1}  # {1,2,3}\ns = set([1,2,3])   # {1,2,3}\n\n# Operations\na = {1,2,3,4}\nb = {3,4,5,6}\na | b    # union: {1,2,3,4,5,6}\na & b    # intersection: {3,4}\na - b    # difference: {1,2}\na ^ b    # symmetric diff: {1,2,5,6}\n\n# Methods\ns.add(5)\ns.remove(3)  # KeyError if missing\ns.discard(3) # no error if missing\n\n# Membership (O(1) fast!)\n3 in {1,2,3}  # True\n\n# Frozen set (immutable)\nfs = frozenset([1,2,3])</pre>"},
+  {keys:['global','nonlocal','scope','variable scope'],resp:"<span class='itag'>SCOPE</span><br><pre># Global scope\nx = 10\ndef foo():\n    global x\n    x = 20  # modifies global x\n\n# Nonlocal (nested functions)\ndef outer():\n    x = 10\n    def inner():\n        nonlocal x\n        x = 20  # modifies outer's x\n    inner()\n    print(x)  # 20\n\n# LEGB Rule:\n# L = Local\n# E = Enclosing\n# G = Global\n# B = Built-in\n\nx = 'global'\ndef outer():\n    x = 'enclosing'\n    def inner():\n        x = 'local'  # L > E > G > B</pre>"},
+  {keys:['decorator','decorators','@','wrapper'],resp:"<span class='itag'>DECORATORS</span><br>Functions that modify other functions.<pre>def timer(func):\n    def wrapper(*args, **kwargs):\n        import time\n        start = time.time()\n        result = func(*args, **kwargs)\n        print(f'{func.__name__}: {time.time()-start:.4f}s')\n        return result\n    return wrapper\n\n@timer\ndef slow():\n    import time; time.sleep(1)\nslow()  # slow: 1.00xxs\n\n# Stacked decorators\n@decorator1\n@decorator2\ndef func(): pass\n\n# Decorator with args\ndef repeat(n):\n    def decorator(func):\n        def wrapper(*args):\n            for _ in range(n):\n                result = func(*args)\n            return result\n        return wrapper\n    return decorator\n\n@repeat(3)\ndef say_hi(): print('hi')</pre>"},
+  {keys:['generator','yield','lazy','iterate'],resp:"<span class='itag'>GENERATORS</span><br>Produce values lazily with <code>yield</code>.<pre>def countdown(n):\n    while n > 0:\n        yield n\n        n -= 1\n\nfor i in countdown(3):\n    print(i)  # 3, 2, 1\n\ngen = countdown(5)\nnext(gen)  # 5\nnext(gen)  # 4\n\n# Generator expression\nsquares = (x**2 for x in range(5))\nnext(squares)  # 0\n\n# Infinite generator\ndef fibonacci():\n    a, b = 0, 1\n    while True:\n        yield a\n        a, b = b, a + b\n\n# Benefits: memory efficient!\n# range(1000000) uses ~no memory\n# [x for x in range(1000000)] uses lots</pre>"},
+  {keys:['print','output','display','console'],resp:"<span class='ctag'>PRINT()</span><br><pre>print('Hello')\n\n# Multiple args (space-separated)\nprint('Name:', 'Alice', 'Age:', 25)\n\n# Separator\nprint('A','B','C', sep='-')  # A-B-C\n\n# Custom ending\nprint('Load', end='...')\nprint('Done')  # Load...Done\n\n# f-strings\nprint(f'Value: {42}')\n\n# repr vs str\nprint(str('hello'))  # hello\nprint(repr('hello')) # 'hello'\n\n# print returns None\nresult = print('hi')\nprint(result)  # None\n\n# To string\nprint('hello', end='')\nprint('world')  # helloworld</pre>"},
+  {keys:['input','user input','read input','stdin'],resp:"<span class='ctag'>INPUT()</span><br>Reads user input as <strong>string</strong>.<pre># Basic\nname = input('Name: ')\nprint(f'Hello {name}!')\n\n# ALWAYS returns string!\nage = input('Age: ')  # '25' not 25\n\n# Convert\nage = int(input('Age: '))\nheight = float(input('Height: '))\n\n# Safe conversion\ntry:\n    age = int(input('Age: '))\nexcept ValueError:\n    print('Enter a number!')\n\n# Multiple values\ndata = input('3 nums: ').split()\n# '1 2 3' -> ['1','2','3']\nnums = [int(x) for x in data]\n\n# Password input\nimport getpass\npw = getpass.getpass('Password: ')</pre>"},
+  {keys:['variable','assign','assignment','declare'],resp:"<span class='ctag'>VARIABLES</span><br>No declaration keyword needed.<pre># Basic\nx = 10\nname = 'Alice'\npi = 3.14\nactive = True\n\n# Multiple\na, b, c = 1, 2, 3\nx = y = z = 0\n\n# Swap (Python way!)\na, b = b, a\n\n# Dynamic typing\nx = 10      # int\nx = 'hello' # now str\nx = [1,2]   # now list\n\n# Naming rules\nmy_var = 1     # snake_case (PEP 8)\n_private = 2   # convention: private\n__magic__ = 3  # dunder: special\nCONSTANT = 4   # UPPER = constant\n# 2var = 5      # ERROR: can't start with number\n# my-var = 6     # ERROR: no hyphens</pre>"},
+  {keys:['if else','elif','conditional','ternary'],resp:"<span class='ctag'>CONDITIONALS</span><br><pre># if\nif age >= 18:\n    print('Adult')\n\n# if-else\nif age >= 18:\n    print('Adult')\nelse:\n    print('Minor')\n\n# if-elif-else\nif score >= 90: grade = 'A'\nelif score >= 80: grade = 'B'\nelif score >= 70: grade = 'C'\nelse: grade = 'F'\n\n# Ternary (one-liner)\nstatus = 'Adult' if age>=18 else 'Minor'\n\n# Walrus operator (3.8+)\nif (n := len(items)) > 10:\n    print(f'Too many: {n}')\n\n# Match-case (3.10+)\nmatch command:\n    case 'start': run()\n    case 'stop': halt()\n    case _: print('unknown')</pre>"},
+  {keys:['split','join','string split','string join'],resp:"<span class='ctag'>SPLIT & JOIN</span><br><pre># split: string -> list\n'hello world'.split()      # ['hello','world']\n'a,b,c'.split(',')         # ['a','b','c']\n'a-b-c-d'.split('-', 2)    # ['a','b','c-d']\n'text\\nmore'.splitlines()  # ['text','more']\n\n# join: list -> string\n'-'.join(['a','b','c'])  # 'a-b-c'\n'\\n'.join(['L1','L2'])  # multi-line\n''.join(['a','b','c'])  # 'abc'\n\n# IMPORTANT: elements must be strings!\n# ','.join([1,2,3])  # ERROR!\n','.join(str(x) for x in [1,2,3])  # '1,2,3'\n\n# Common pattern\nname, age, city = 'Alice,25,NYC'.split(',')\n# name='Alice', age='25', city='NYC'</pre>"},
+  {keys:['range','number sequence','sequence'],resp:"<span class='ctag'>RANGE()</span><br>Generates numbers (lazy, memory efficient).<pre>range(stop)       # 0 to stop-1\nlist(range(5))   # [0,1,2,3,4]\n\nrange(start, stop)\nlist(range(2,8))  # [2,3,4,5,6,7]\n\nrange(start, stop, step)\nlist(range(0,20,3))   # [0,3,6,9,12,15,18]\nlist(range(10,0,-1))  # [10,9,8,7,6,5,4,3,2,1]\nlist(range(0,10,-1))  # [] (empty!)\n\n# In loops\nfor i in range(5):\n    print(i)\n\n# Memory: almost none!\nrange(1000000)  # ~0 bytes\nlist(range(1000000))  # ~8MB\n\n# len of range\nlen(range(100))  # 100</pre>"},
+  {keys:['sort','sorted','reverse','order','ascending','descending'],resp:"<span class='ctag'>SORTING</span><br><pre># .sort() - in place (lists only)\nnums = [3,1,4,1,5,9]\nnums.sort()              # [1,1,3,4,5,9]\nnums.sort(reverse=True)  # [9,5,4,3,1,1]\n\n# sorted() - returns new (any iterable)\nnew = sorted(nums)\nsorted('banana')  # ['a','a','a','b','n','n']\n\n# By key function\nstudents = [('Alice',85),('Bob',92),('Eve',78)]\nstudents.sort(key=lambda s: s[1])\n# [('Eve',78),('Alice',85),('Bob',92)]\n\n# Reverse sort\nstudents.sort(key=lambda s: s[1], reverse=True)\n\n# By multiple keys\nitems.sort(key=lambda x: (x[1], x[0]))\n\n# Strings: case-insensitive\nwords.sort(key=str.lower)</pre>"},
+  {keys:['none','null','none type','nonevalue'],resp:"<span class='wtag'>COMMON MISTAKE</span><br>None is NOT 0, False, or ''!<pre>type(None)   # <class 'NoneType'>\ntype(0)      # <class 'int'>\ntype(False)  # <class 'bool'>\ntype('')     # <class 'str'>\n\n# All are falsy but NOT equal:\nNone == 0    # False\nNone == False # False\nNone == ''   # False\nNone is None  # True (use 'is'!)\n\n# When do you get None?\ndef foo(): pass\nprint(foo())  # None\n\nx = None\nif x is None:  # correct check\n    print('no value')\n\n# Common mistake:\nresult = []\nfor x in items:\n    result = result.append(x)  # WRONG! append returns None\n# Fix:\nresult = []\nfor x in items:\n    result.append(x)  # correct</pre>"},
+  {keys:['is vs ==','identity','equality','same object'],resp:"<span class='wtag'>COMMON MISTAKE</span><br><code>==</code> compares values. <code>is</code> compares identity.<pre>a = [1,2,3]\nb = [1,2,3]\n\na == b    # True (same values)\na is b    # False (different objects!)\n\na = [1,2,3]\nb = a\na is b    # True (same object)\n\n# For None, always use 'is'\nx = None\nx == None  # True but not recommended\nx is None  # True (correct!)\n\n# Cache behavior (small ints)\na = 256\nb = 256\na is b  # True (cached)\n\na = 257\nb = 257\na is b  # False (not cached!)\n\n# Strings\na = 'hello'\nb = 'hello'\na is b  # True (interned)</pre>"},
+  {keys:['mutable','immutable','change','modify','cannot change'],resp:"<span class='itag'>MUTABILITY</span><br><pre># MUTABLE (can change after creation)\nlist  = [1,2,3]\ndict  = {'a':1}\nset   = {1,2,3}\nbytearray = b'abc'\n\n# IMMUTABLE (cannot change)\nint     = 42\nfloat   = 3.14\nstr     = 'hello'\ntuple   = (1,2,3)\nfrozenset = frozenset([1,2])\nbytes   = b'abc'\n\n# Why it matters:\ndef add_item(lst, item):\n    lst.append(item)  # modifies original!\n\ndef bad_func(x):\n    x = x + '!'  # creates NEW string\n    # original unchanged!\n\n# Tuple as dict key (immutable)\nd = {(1,2): 'value'}  # OK\n# d = {[1,2]: 'value'}  # TypeError!</pre>"},
+  {keys:['deep copy','shallow copy','copy','deepcopy','reference'],resp:"<span class='wtag'>COMMON MISTAKE</span><br><pre>import copy\n\n# Assignment = same reference\na = [1,2,[3,4]]\nb = a             # b points to SAME list\nb[0] = 99\nprint(a)  # [99,2,[3,4]] — a changed too!\n\n# Shallow copy\nb = a.copy()       # or list(a)\nb[0] = 99\nprint(a)  # [1,2,[3,4]] — a safe\nb[2][0] = 99\nprint(a)  # [1,2,[99,4]] — nested CHANGED!\n\n# Deep copy (safe!)\nb = copy.deepcopy(a)\nb[2][0] = 99\nprint(a)  # [1,2,[3,4]] — fully safe!\n\n# For dicts\nd2 = d.copy()           # shallow\nd2 = copy.deepcopy(d)    # deep\n\n# For tuples (immutable, but...)\nt = ([1,2], [3,4])\nt2 = copy.deepcopy(t)  # needed if nested</pre>"},
 ];
 
 const WRONG_PAT=[
-  {p:/list\s*(is|are)\s*(immutable|unchangeable|can'?t change)/i,w:"Lists are <strong>mutable</strong> — you CAN change them. Tuples are immutable.",f:"my_list = [1,2,3]\nmy_list[0] = 99  # Works!"},
+  {p:/list\s*(is|are)\s*(immutable|unchangeable|can'?t change)/i,w:"Lists are <strong>mutable</strong> — you CAN change them. You're thinking of tuples.",f:"my_list = [1,2,3]\nmy_list[0] = 99  # Works!\n\nmy_tuple = (1,2,3)\nmy_tuple[0] = 99  # TypeError!"},
   {p:/tuple\s*(is|are)\s*(mutable|changeable|can change)/i,w:"Tuples are <strong>immutable</strong> — cannot change after creation.",f:"t = (1,2,3)\nt[0] = 99  # TypeError!"},
-  {p:/input\s*\(\s*\)\s*(returns|gives)\s*(an?\s*)?(int|integer|number)/i,w:"input() <strong>always returns string</strong>. Convert with int() or float().",f:"x = input()      # str\nx = int(input())  # int"},
-  {p:/(python|it)\s*(is|are)\s*(a\s*)?compiled/i,w:"Python is <strong>interpreted</strong>. It compiles to bytecode internally but is fundamentally interpreted.",f:"python script.py  # runs directly"},
-  {p:/none\s*(is|means|equals)\s*(0|zero|empty|false|'')/i,w:"None is NOT 0, False, or ''. It's a unique <code>NoneType</code>.",f:"type(None)  # <class 'NoneType'>\nNone == 0   # False"},
+  {p:/input\s*\(\s*\)\s*(returns|gives)\s*(an?\s*)?(int|integer|number)/i,w:"input() <strong>always returns string</strong>. Convert with int() or float().",f:"x = input()      # '25' (string!)\nx = int(input())  # 25 (int)"},
+  {p:/(python|it)\s*(is|are)\s*(a\s*)?compiled/i,w:"Python is <strong>interpreted</strong>. It compiles to bytecode internally but is fundamentally interpreted.",f:"python script.py  # runs directly\n# C is compiled:\ngcc program.c -o program"},
+  {p:/none\s*(is|means|equals)\s*(0|zero|empty|false|'')/i,w:"None is NOT 0, False, or ''. It's <code>NoneType</code>.",f:"type(None)  # <class 'NoneType'>\nNone == 0   # False\nNone == ''   # False\nNone is None  # True"},
   {p:/#\s*(is|does not|doesn'?t)\s*(not\s*)?(work|comment)/i,w:"# <strong>IS</strong> how you write comments in Python.",f:"# This is a comment\nprint('hi')  # inline comment"},
-  {p:/(=|==)\s*(is|are)\s*(the same|same thing|identical)/i,w:"<code>=</code> is assignment. <code>==</code> is comparison. Different operators.",f:"x = 10   # assign\nx == 10  # compare -> True"},
+  {p:/(=|==)\s*(is|are)\s*(the same|same thing|identical)/i,w:"<code>=</code> assigns. <code>==</code> compares. Completely different.",f:"x = 10   # assign\nx == 10  # compare -> True"},
+  {p:/append\s*(returns|gives|gives back)/i,w:".append() returns <strong>None</strong>! It modifies the list in place.",f:"# WRONG:\nresult = my_list.append(4)\nprint(result)  # None!\n\n# RIGHT:\nmy_list.append(4)\nprint(my_list)  # [..., 4]"},
+  {p:/is\s+vs\s+==|==\s+vs\s+is/i,w:"<code>==</code> checks value equality. <code>is</code> checks object identity (same object in memory).",f:"a = [1,2]\nb = [1,2]\na == b  # True (same values)\na is b  # False (different objects)\n\na = None\na is None  # True (correct for None)"},
 ];
 
 function processQuestion(input){
   const q=input.trim().toLowerCase();
-  for(const wp of WRONG_PAT){if(wp.p.test(q))return `<span class="error-tag">INCORRECT</span><br><br>${wp.w}<pre>${wp.f}</pre>`;}
-  const cr=evaluateCode(input.trim());
-  if(cr!==null)return cr;
-  let best=null,bestS=0;
-  for(const e of KB){let s=0;for(const k of e.keys){if(q.includes(k.toLowerCase()))s+=k.length;}if(s>bestS){bestS=s;best=e;}}
-  if(best&&bestS>=2)return best.resp;
-  return `<span class="correct-tag">GOOD QUESTION</span><br><br>I don't have a specific entry for that. Try asking about specific Python concepts like:<br><br><pre># Examples:\n# "What does len() do?"\n# "How does for loop work?"\n# "What is a decorator?"\n# "Explain generators"\n# Paste code like: print(2+3)</pre>`;
+  // Wrong patterns
+  for(const wp of WRONG_PAT){if(wp.p.test(q))return `<span class='etag'>INCORRECT STATEMENT</span><br><br>${wp.w}<pre>${wp.f}</pre>`;}
+  // Code evaluation
+  const cr=evalCode(input.trim());
+  if(cr)return cr;
+  // Knowledge base
+  let best=null,bs=0;
+  for(const e of KB){let s=0;for(const k of e.keys)if(q.includes(k.toLowerCase()))s+=k.length;if(s>bs){bs=s;best=e;}}
+  if(best&&bs>=2)return best.resp;
+  // Fallback
+  const suggestions=KB.slice(0,6).map(e=>`"${e.keys[0]}"`).join(', ');
+  return `<span class='itag'>NO EXACT MATCH</span><br><br>I don't have a specific entry for that. Try asking about:<br><br><pre>${suggestions}\n\n# Or paste code like:\n# print(2 + 3)\n# x = [1,2,3]\n# type(3.14)</pre>`;
 }
 
-function evaluateCode(input){
-  const lines=input.trim().split('\n');
-  const results=[];
+function evalCode(input){
+  const lines=input.trim().split('\n');const results=[];
   for(const line of lines){
-    const lt=line.trim();
-    if(!lt||lt.startsWith('#'))continue;
+    const lt=line.trim();if(!lt||lt.startsWith('#'))continue;
     const pm=lt.match(/^print\s*\(\s*(.+?)\s*\)$/);
     if(pm){
       const expr=pm[1].trim();let r=null;
       if(/^['"][^'"]+['"]\s*\+\s*['"][^'"]+['"]$/.test(expr)){const p=expr.match(/['"]([^'"]+)['"]/g);if(p)r=p.map(x=>x.slice(1,-1)).join('');}
       else if(/^len\s*\(\s*['"]([^'"]+)['"]\s*\)$/.test(expr)){const s=expr.match(/['"]([^'"]+)['"]/);if(s)r=s[1].length;}
-      else if(/^type\s*\(\s*(.+?)\s*\)$/.test(expr)){const inner=expr.match(/type\s*\(\s*(.+?)\s*\)/)[1].trim();if(/^['"]/.test(inner))r="<class 'str'>";else if(/^\d+$/.test(inner))r="<class 'int'>";else if(/^\d+\.\d+$/.test(inner))r="<class 'float'>";else if(inner==='True'||inner==='False')r="<class 'bool'>";}
+      else if(/^type\s*\(\s*(.+?)\s*\)$/.test(expr)){const inner=expr.match(/type\s*\(\s*(.+?)\s*\)/)[1].trim();if(/^['"]/.test(inner))r="<class 'str'>";else if(/^\d+$/.test(inner))r="<class 'int'>";else if(/^\d+\.\d+$/.test(inner))r="<class 'float'>";else if(inner==='True'||inner==='False')r="<class 'bool'>";else if(inner==='None')r="<class 'NoneType'>";}
       else if(/^[\d\s\+\-\*\/\%\(\)\.]+$/.test(expr)){try{r=eval(expr);}catch(e){}}
       else if(expr==='True')r='True';else if(expr==='False')r='False';else if(expr==='None')r='None';
-      else if(/^list\s*\(\s*range\s*\(.+\)\s*\)$/.test(expr)){const args=expr.match(/range\s*\((.+)\)/)[1].split(',').map(s=>parseInt(s.trim()));let start=0,stop=args[0],step=1;if(args.length===2){start=args[0];stop=args[1];}if(args.length===3){start=args[0];stop=args[1];step=args[2];}const arr=[];if(step>0){for(let i=start;i<stop;i+=step)arr.push(i);}else if(step<0){for(let i=start;i>stop;i+=step)arr.push(i);}r='['+arr.join(', ')+']';}
-      if(r!==null)results.push(`print(${escapeHtml(expr)})  # ${r}`);
+      else if(/^list\s*\(\s*range\s*\(.+\)\s*\)$/.test(expr)){const args=expr.match(/range\s*\((.+)\)/)[1].split(',').map(s=>parseInt(s.trim()));let st=0,sp=args[0],step=1;if(args.length===2){st=args[0];sp=args[1];}if(args.length===3){st=args[0];sp=args[1];step=args[2];}const arr=[];if(step>0){for(let i=st;i<sp;i+=step)arr.push(i);}else if(step<0){for(let i=st;i>sp;i+=step)arr.push(i);}r='['+arr.join(', ')+']';}
+      if(r!==null)results.push(`print(${esc(expr)})  # ${r}`);
     }
     const am=lt.match(/^(\w+)\s*=\s*(.+)$/);
-    if(am&&!lt.includes('def ')&&!lt.includes('class ')){const v=am[2].trim();let vt='unknown';if(/^['"]/.test(v))vt='str';else if(/^\d+$/.test(v))vt='int';else if(/^\d+\.\d+$/.test(v))vt='float';else if(v==='True'||v==='False')vt='bool';else if(v==='None')vt='NoneType';else if(v.startsWith('['))vt='list';else if(v.startsWith('('))vt='tuple';else if(v.startsWith('{')&&v.includes(':'))vt='dict';else if(v.startsWith('{'))vt='set';if(vt!=='unknown')results.push(`${am[1]} = ${escapeHtml(v)}  # type: <class '${vt}'>`);}
+    if(am&&!lt.includes('def ')&&!lt.includes('class ')){const v=am[2].trim();let vt='unknown';if(/^['"]/.test(v))vt='str';else if(/^\d+$/.test(v))vt='int';else if(/^\d+\.\d+$/.test(v))vt='float';else if(v==='True'||v==='False')vt='bool';else if(v==='None')vt='NoneType';else if(v.startsWith('['))vt='list';else if(v.startsWith('('))vt='tuple';else if(v.startsWith('{')&&v.includes(':'))vt='dict';else if(v.startsWith('{'))vt='set';if(vt!=='unknown')results.push(`${am[1]} = ${esc(v)}  # <class '${vt}'>`);}
   }
-  if(results.length>0)return `<span class='correct-tag'>CODE ANALYSIS</span><br><pre>${results.join('\n')}</pre><br>This is what Python would do with your code.`;
+  if(results.length)return `<span class='ctag'>CODE ANALYSIS</span><br><pre>${results.join('\n')}</pre>`;
   return null;
 }
-function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-// ═════════════════════════════════════
+// ═══════════════════════════════════
 // STATE
-// ═════════════════════════════════════
-let state=JSON.parse(localStorage.getItem('pyseekho3')||'{}');
-if(!state.solved)state={solved:0,correct:0,streak:0,lastDate:'',topicScores:{},badges:[],askCount:0,xp:0,dailyDone:null,activity:[]};
-function saveState(){localStorage.setItem('pyseekho3',JSON.stringify(state));}
-function addXP(n){state.xp+=n;checkLevelUp();saveState();}
-function getLevel(){return Math.floor(state.xp/100)+1;}
-function getXPInLevel(){return state.xp%100;}
-function checkLevelUp(){const old=Math.floor((state.xp-10)/100)+1;const now=getLevel();if(now>old)showToast(`Level Up! Now Level ${now}`,'info');}
+// ═══════════════════════════════════
+let S=JSON.parse(localStorage.getItem('pys4')||'{}');
+if(!S.solved)S={solved:0,correct:0,streak:0,lastDate:'',ts:{},badges:[],askCount:0,xp:0,dailyDone:null,act:[],solvedProblems:[]};
+function save(){localStorage.setItem('pys4',JSON.stringify(S));}
+function addXP(n){S.xp+=n;if(getLevel()>(S.xp-n)/100|0)showToast(`Level ${getLevel()}!`,'info');save();}
+function getLevel(){return Math.floor(S.xp/100)+1;}
 
-let currentView='dashboard';
-let quizState={questions:[],idx:0,score:0,answered:false,topic:null,diff:0};
-let tfState={questions:[],idx:0,score:0};
-let flashState={questions:[],idx:0,flipped:false};
-let practiceState={idx:0};
-
-// ═════════════════════════════════════
+// ═══════════════════════════════════
 // LEADERBOARD ENGINE
-// ═════════════════════════════════════
-const LB_BASE=[
-  {name:'Ravi Kumar',base:1400,streak:12},
-  {name:'Priya Sharma',base:1360,streak:9},
-  {name:'Rahul Singh',base:1230,streak:7},
-  {name:'Anjali Verma',base:1080,streak:5},
-  {name:'Aditya Patel',base:950,streak:8},
-  {name:'Sneha Gupta',base:870,streak:4},
-  {name:'Vikram Reddy',base:760,streak:6},
-  {name:'Meera Joshi',base:650,streak:3},
-];
-let lbPlayers=JSON.parse(localStorage.getItem('pyseekho_lb')||'null');
-let lbLastUpdate=parseInt(localStorage.getItem('pyseekho_lb_time')||'0');
-function updateLeaderboard(){
-  const now=Date.now();
-  const TWO_HOURS=2*60*60*1000;
-  if(!lbPlayers||now-lbLastUpdate>TWO_HOURS){
-    lbPlayers=LB_BASE.map(p=>{
-      const variation=Math.floor(Math.random()*200)-100;
-      const streakChange=Math.random()>0.7?(Math.random()>0.5?1:-1):0;
-      return{...p,score:p.base+variation,streak:Math.max(0,p.streak+streakChange),change:Math.floor(Math.random()*60)-30};
-    });
-    if(Math.random()>0.6){
-      const newNames=['Arjun Nair','Kavya Iyer','Rohan Das','Isha Malhotra','Dev Chauhan'];
-      const idx=Math.floor(Math.random()*newNames.length);
-      lbPlayers.push({name:newNames[idx],score:500+Math.floor(Math.random()*500),streak:Math.floor(Math.random()*10)+1,change:0});
-    }
-    lbLastUpdate=now;
-    localStorage.setItem('pyseekho_lb',JSON.stringify(lbPlayers));
-    localStorage.setItem('pyseekho_lb_time',String(now));
-  }
-}
-function getNextLBUpdate(){const elapsed=Date.now()-lbLastUpdate;const remaining=2*60*60*1000-elapsed;const m=Math.floor(remaining/60000);const s=Math.floor((remaining%60000)/1000);return `${m}m ${s}s`;}
+// ═════════════════════════════════
+const LB_BASE=[{n:'Ravi Kumar',b:1400,s:12},{n:'Priya Sharma',b:1360,s:9},{n:'Rahul Singh',b:1230,s:7},{n:'Anjali Verma',b:1080,s:5},{n:'Aditya Patel',b:950,s:8},{n:'Sneha Gupta',b:870,s:4},{n:'Vikram Reddy',b:760,s:6},{n:'Meera Joshi',b:650,s:3}];
+let lbP=JSON.parse(localStorage.getItem('pys4lb')||'null');
+let lbT=parseInt(localStorage.getItem('pys4lbt')||'0');
+function updLB(){const now=Date.now();if(!lbP||now-lbT>2*36e5){lbP=LB_BASE.map(p=>({...p,sc:p.b+Math.floor(Math.random()*200)-100,s:Math.max(0,p.s+(Math.random()>.7?(Math.random()>.5?1:-1):0)),ch:Math.floor(Math.random()*60)-30}));if(Math.random()>.6){const nn=['Arjun Nair','Kavya Iyer','Rohan Das','Isha Malhotra','Dev Chauhan'];lbP.push({n:nn[Math.floor(Math.random()*nn.length)],sc:500+Math.floor(Math.random()*500),s:Math.floor(Math.random()*10)+1,ch:0});}lbT=now;localStorage.setItem('pys4lb',JSON.stringify(lbP));localStorage.setItem('pys4lbt',String(now));}}
 
-// ═════════════════════════════════════
-// VIEWS
-// ═════════════════════════════════════
-function showView(v){
-  document.querySelectorAll('#main-content > div').forEach(d=>d.classList.add('hidden'));
-  document.getElementById('view-'+v).classList.remove('hidden');
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  const map=['dashboard','learn','practice','flashcards','ask','roadmap','leaderboard'];
-  const i=map.indexOf(v);if(i>=0)document.querySelectorAll('.nav-btn')[i].classList.add('active');
-  currentView=v;
-  if(v==='dashboard')renderDashboard();
-  if(v==='learn')initQuiz(null,0);
-  if(v==='practice'){practiceState.idx=0;renderPractice();}
-  if(v==='flashcards')initFlash(null);
-  if(v==='leaderboard'){updateLeaderboard();renderLeaderboard();}
+// ═══════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════
+let cv='dash';
+function go(v){
+  cv=v;closeSB();
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>{b.classList.toggle('active',['dash','problems','quiz','practice','cards','ask','ranks'][i]===v);});
+  if(v==='dash')renderDash();
+  else if(v==='problems')renderProblems();
+  else if(v==='quiz')initQuiz(null,0);
+  else if(v==='practice'){pIdx=0;renderPractice();}
+  else if(v==='cards')initFlash(null);
+  else if(v==='ask')renderAsk();
+  else if(v==='ranks'){updLB();renderRanks();}
 }
+function toggleSB(){document.getElementById('sidebar').classList.add('open');document.getElementById('sb-overlay').classList.add('show');}
+function closeSB(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sb-overlay').classList.remove('show');}
 
-// ═════════════════════════════════════
+// ═══════════════════════════════════
+// THEME
+// ═══════════════════════════════════
+let theme=localStorage.getItem('pys4theme')||'dark';
+function applyTheme(){document.documentElement.setAttribute('data-theme',theme);document.getElementById('theme-btn').textContent=theme==='dark'?'☀️':'🌙';}
+function toggleTheme(){theme=theme==='dark'?'light':'dark';localStorage.setItem('pys4theme',theme);applyTheme();}
+applyTheme();
+
+// ═══════════════════════════════════
 // DASHBOARD
-// ═════════════════════════════════════
-function renderDashboard(){
-  updateStreak();
-  const acc=state.solved>0?Math.round(state.correct/state.solved*100):0;
-  const lvl=getLevel();
-  const xpIn=getXPInLevel();
-  const isGold=lvl>=5;
-  const circumference=2*Math.PI*46;
-  const offset=circumference-(xpIn/100)*circumference;
-  const today=new Date().toDateString();
-  const dailyDone=state.dailyDone===today;
-
-  const diffNames=['Basic','Intermediate','Advanced'];
-  const diffColors=['var(--correct)','var(--accent3)','var(--wrong)'];
-
-  document.getElementById('view-dashboard').innerHTML=`
-  <div class="dash-top fade-up">
-    <div class="dash-hero">
-      <h1>Master Python <span>Interactively</span></h1>
-      <p>Quiz, practice, ask questions, and track your journey from beginner to expert.</p>
-    </div>
-    <div class="xp-card">
-      <div class="xp-ring">
-        <svg viewBox="0 0 100 100"><circle class="bg-ring" cx="50" cy="50" r="46"/><circle class="fg-ring ${isGold?'gold':''}" cx="50" cy="50" r="46" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"/></svg>
-        <div class="xp-center"><div class="xp-lvl ${isGold?'gold':''}">${lvl}</div><div class="xp-label">LEVEL</div></div>
-      </div>
-      <div class="xp-bar" style="width:100%"><div class="xp-bar-fill" style="width:${xpIn}%;background:${isGold?'var(--accent3)':'var(--accent)'}"></div></div>
-      <div class="xp-text">${xpIn}/100 XP to Level ${lvl+1} | Total: ${state.xp} XP</div>
-    </div>
-  </div>
-  <div class="stats-row fade-up" style="animation-delay:.1s">
-    <div class="stat-card"><div class="stat-icon">\u2714\uFE0F</div><div class="stat-num" style="color:var(--accent)">${state.solved}</div><div class="stat-label">Solved</div></div>
-    <div class="stat-card"><div class="stat-icon">\u2B50</div><div class="stat-num" style="color:var(--accent2)">${state.correct}</div><div class="stat-label">Correct</div></div>
-    <div class="stat-card"><div class="stat-icon">\uD83D\uDD25</div><div class="stat-num" style="color:var(--accent3)">${state.streak}</div><div class="stat-label">Day Streak</div></div>
-    <div class="stat-card"><div class="stat-icon">\uD83C\uDFAF</div><div class="stat-num" style="color:var(--accent4)">${acc}%</div><div class="stat-label">Accuracy</div></div>
-  </div>
-  <div class="dash-cols fade-up" style="animation-delay:.15s">
-    <div class="dash-section">
-      <h3>\u{1F4CB} Topics & Difficulty <span>${TOPICS.length} topics</span></h3>
-      <div class="topic-chips">
-        ${TOPICS.map(t=>{
-          const done=(state.topicScores[t.id]||{}).done||0;
-          const total=t.qs.length;
-          const basic=t.qs.filter(q=>q.d===1).length;
-          const inter=t.qs.filter(q=>q.d===2).length;
-          const adv=t.qs.filter(q=>q.d===3).length;
-          return `<div class="topic-chip" onclick="startTopicQuiz('${t.id}')"><div class="tc-icon">${t.icon}</div><div class="tc-info"><h4>${t.name}</h4><p>${done}/${total} solved</p><p style="color:${diffColors[0]};font-size:9px">${basic}\u2605</p><p style="color:${diffColors[1]};font-size:9px">${inter}\u2605\u2605</p><p style="color:${diffColors[2]};font-size:9px">${adv}\u2605\u2605\u2605</p></div></div>`;
-        }).join('')}
-      </div>
-    </div>
-    <div>
-      <div class="dash-section" style="margin-bottom:16px">
-        <h3>\u{1F525} Daily Challenge</h3>
-        <div class="daily-challenge" onclick="${dailyDone?'':'startTopicQuiz(null)' }">
-          <div class="dc-title">${dailyDone?'\u2705 Completed!':'\u{1F3AF} Mixed Difficulty Quiz'}</div>
-          <div class="dc-desc">${dailyDone?'Come back tomorrow for a new challenge!':'Answer 10 questions across all difficulty levels.'}</div>
-          ${dailyDone?'<div class="dc-done">+50 XP earned</div>':'<div class="dc-reward">Reward: +50 XP</div>'}
-        </div>
-      </div>
-      <div class="dash-section">
-        <h3>\u{1F4AC} Recent Activity</h3>
-        <div id="activity-feed">
-          ${state.activity.length===0?'<p style="font-size:12px;color:var(--muted)">No activity yet. Start a quiz!</p>':
-          state.activity.slice(-5).reverse().map(a=>`<div class="activity-item"><div class="act-icon" style="background:${a.color}20;color:${a.color}">${a.icon}</div><div class="act-text"><strong>${a.text}</strong></div><div class="act-time">${a.time}</div></div>`).join('')}
-        </div>
-      </div>
-    </div>
-  </div>`;
-
-  // Sidebar
-  document.getElementById('sidebar').innerHTML=`
-  <div class="sb-section">Difficulty</div>
-  <div class="sb-item" onclick="startDiffQuiz(1)"><div class="sb-dot" style="background:var(--correct)"></div>Basic \u2605</div>
-  <div class="sb-item" onclick="startDiffQuiz(2)"><div class="sb-dot" style="background:var(--accent3)"></div>Intermediate \u2605\u2605</div>
-  <div class="sb-item" onclick="startDiffQuiz(3)"><div class="sb-dot" style="background:var(--wrong)"></div>Advanced \u2605\u2605\u2605</div>
-  <div class="sb-section">Topics</div>
-  ${TOPICS.map(t=>{const done=(state.topicScores[t.id]||{}).done||0;const total=t.qs.length;const pct=total>0?Math.round(done/total*100):0;return `<div class="sb-item" onclick="startTopicQuiz('${t.id}')"><div class="sb-dot" style="background:${t.color}"></div>${t.icon} ${t.name}<span class="sb-pct">${pct}%</span></div>`;}).join('')}`;
-}
-
-function addActivity(icon,text,color){
-  const now=new Date();
-  const time=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-  state.activity.push({icon,text,color,time});
-  if(state.activity.length>20)state.activity=state.activity.slice(-20);
-}
-
-// ═════════════════════════════════════
-// QUIZ
-// ═════════════════════════════════════
-function startTopicQuiz(tid){showView('learn');initQuiz(tid,0);}
-function startDiffQuiz(d){showView('learn');initQuiz(null,d);}
-
-function initQuiz(topicId,diff){
-  let qs=topicId?TOPICS.find(t=>t.id===topicId).qs:[...QS];
-  if(diff>0)qs=qs.filter(q=>q.d===diff);
-  qs=shuffle([...qs]).slice(0,Math.min(qs.length,15));
-  if(qs.length===0){qs=shuffle([...QS]).slice(0,10);}
-  quizState={questions:qs,idx:0,score:0,answered:false,topic:topicId,diff:diff};
-  renderLearnView();
-}
-
-function renderLearnView(){
-  const v=document.getElementById('view-learn');
-  const tName=quizState.topic?TOPICS.find(t=>t.id===quizState.topic)?.name+' Quiz':'Mixed Quiz';
-  const diffNames=['All Levels','Basic','Intermediate','Advanced'];
-  v.innerHTML=`
-  <div class="tabs">
-    <div class="tab active" onclick="switchTab('mcq',this)">MCQ Quiz</div>
-    <div class="tab" onclick="switchTab('tf',this)">True / False</div>
-  </div>
-  <div id="tab-mcq" class="tab-content active">
-    <div class="diff-selector">
-      <button class="diff-btn ${quizState.diff===0?'active':''}" onclick="initQuiz(${quizState.topic?`'${quizState.topic}'`:'null'},0)">All Levels</button>
-      <button class="diff-btn ${quizState.diff===1?'active':''}" onclick="initQuiz(${quizState.topic?`'${quizState.topic}'`:'null'},1)"><span class="diff-star">\u2605</span> Basic</button>
-      <button class="diff-btn ${quizState.diff===2?'active':''}" onclick="initQuiz(${quizState.topic?`'${quizState.topic}'`:'null'},2)"><span class="diff-star">\u2605\u2605</span> Intermediate</button>
-      <button class="diff-btn ${quizState.diff===3?'active':''}" onclick="initQuiz(${quizState.topic?`'${quizState.topic}'`:'null'},3)"><span class="diff-star">\u2605\u2605\u2605</span> Advanced</button>
-    </div>
-    <div class="lh">
-      <button class="lh-back" onclick="showView('dashboard')">\u2190</button>
-      <div class="lh-title">${tName}</div>
-      <div class="lh-prog"><div class="lh-prog-fill" id="qprog" style="width:0%"></div></div>
-      <div class="lh-count" id="qcount">0/0</div>
-    </div>
-    <div class="q-area" id="mcq-area"></div>
-  </div>
-  <div id="tab-tf" class="tab-content">
-    <div class="lh"><button class="lh-back" onclick="showView('dashboard')">\u2190</button><div class="lh-title">True or False</div></div>
-    <div class="q-area" id="tf-area"></div>
-  </div>`;
-  renderMCQ();
-}
-
-function renderMCQ(){
-  const area=document.getElementById('mcq-area');
-  if(!area)return;
-  const{questions,idx}=quizState;
-  if(idx>=questions.length){showResult();return;}
-  const q=questions[idx];
-  const diffLabels=['','Basic','Intermediate','Advanced'];
+// ═══════════════════════════════════
+function renderDash(){
+  const acc=S.solved>0?Math.round(S.correct/S.solved*100):0;
+  const lvl=getLevel();const xpi=S.xp%100;const gold=lvl>=5;
+  const circ=2*Math.PI*22;const off=circ-(xpi/100)*circ;
+  const today=new Date().toDateString();const dd=S.dailyDone===today;
+  const diffNames=['','Basic','Intermediate','Advanced'];
   const diffCls=['','basic','inter','adv'];
-  document.getElementById('qprog').style.width=(idx/questions.length*100)+'%';
-  document.getElementById('qcount').textContent=`${idx+1}/${questions.length}`;
-  area.innerHTML=`<div class="q-badge">${TOPICS.find(t=>t.id===q.t)?.icon||'?'} ${TOPICS.find(t=>t.id===q.t)?.name||q.t}<span class="q-diff ${diffCls[q.d]}">${diffLabels[q.d]}</span></div><div class="q-text">${q.q}</div><div class="opts" id="opts">${q.o.map((o,i)=>`<button class="opt" onclick="selectOpt(${i})"><span class="opt-l">${'ABCD'[i]}</span>${o}</button>`).join('')}</div><div class="expl" id="expl"><div class="expl-t">Explanation</div><div>${q.e}</div>${q.c?`<div class="expl-code">${q.c.replace(/\n/g,'<br>')}</div>`:''}</div><div class="q-acts"><button class="btn-next hidden" id="btn-next" onclick="nextQ()">Next \u2192</button><button class="btn-skip" onclick="skipQ()">Skip</button></div>`;
-  quizState.answered=false;
+  const diffBg=['','rgba(74,234,188,.12)','rgba(255,196,107,.12)','rgba(255,107,138,.12)'];
+  const diffCol=['','var(--accent2)','var(--accent3)','var(--accent4)'];
+
+  document.getElementById('mc').innerHTML=`<div class="dash">
+  <div class="hero-card fade-up">
+    <h1>Master Python <em>Interactively</em></h1>
+    <p>Quiz yourself, solve real problems, ask AI anything, and track your journey from beginner to expert.</p>
+    <div class="hero-btns">
+      <button class="btn-start" onclick="go('quiz')">▶ Start Learning</button>
+      <button class="btn-outline" onclick="go('problems')">🎯 Problem Solving</button>
+      <button class="btn-outline" onclick="go('ask')">🤖 Ask AI</button>
+    </div>
+  </div>
+  <div class="xp-row fade-up" style="animation-delay:.05s">
+    <div class="xp-ring"><svg viewBox="0 0 50 50"><circle class="bg-r" cx="25" cy="25" r="22"/><circle class="fg-r ${gold?'gold':''}" cx="25" cy="25" r="22" stroke-dasharray="${circ}" stroke-dashoffset="${off}"/></svg><div class="xp-lvl ${gold?'gold':''}">${lvl}</div></div>
+    <div class="xp-info"><div class="xp-bar"><div class="xp-bar-fill ${gold?'gold':''}" style="width:${xpi}%"></div></div><div class="xp-text">${xpi}/100 XP to Level ${lvl+1} · Total: ${S.xp} XP</div></div>
+  </div>
+  <div class="stats-row stagger">
+    <div class="stat-card"><div class="stat-top"><span class="stat-icon">✔️</span></div><div class="stat-num" style="color:var(--accent)">${S.solved}</div><div class="stat-label">Solved</div></div>
+    <div class="stat-card"><div class="stat-top"><span class="stat-icon">⭐</span></div><div class="stat-num" style="color:var(--accent2)">${S.correct}</div><div class="stat-label">Correct</div></div>
+    <div class="stat-card"><div class="stat-top"><span class="stat-icon">🔥</span></div><div class="stat-num" style="color:var(--accent3)">${S.streak}</div><div class="stat-label">Streak</div></div>
+    <div class="stat-card"><div class="stat-top"><span class="stat-icon">🎯</span></div><div class="stat-num" style="color:var(--accent4)">${acc}%</div><div class="stat-label">Accuracy</div></div>
+  </div>
+  ${!dd?`<div class="daily-card fade-up" onclick="go('quiz')" style="animation-delay:.2s"><div class="daily-icon">🎯</div><div class="daily-text"><h4>Daily Challenge Available!</h4><p>Complete a mixed quiz to earn bonus XP</p><div class="daily-reward">+50 XP</div></div></div>`:`<div class="daily-card fade-up" style="animation-delay:.2s;border-color:var(--accent2)"><div class="daily-icon">✅</div><div class="daily-text"><h4>Daily Challenge Done!</h4><p>Come back tomorrow</p></div></div>`}
+  <div class="section-title fade-up" style="animation-delay:.25s"><span>📚</span> Topics & Difficulty</div>
+  <div class="topics-grid stagger">
+    ${T.map(t=>{const done=(S.ts[t.id]||{}).d||0;const total=t.qs.length;const pct=total?Math.round(done/total*100):0;const b1=t.qs.filter(q=>q.d===1).length;const b2=t.qs.filter(q=>q.d===2).length;const b3=t.qs.filter(q=>q.d===3).length;return`<div class="topic-card" style="--tc:${t.color}" onclick="go('quiz');initQuiz('${t.id}',0)"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:${t.color};border-radius:3px 3px 0 0;"></div><div class="tc-icon">${t.icon}</div><h3>${t.name}</h3><p>${done}/${total} solved</p><div class="tc-bar"><div class="tc-fill" style="width:${pct}%;background:${t.color}"></div></div><div class="tc-diff"><span style="background:${diffBg[1]};color:${diffCol[1]}">${b1}★</span><span style="background:${diffBg[2]};color:${diffCol[2]}">${b2}★★</span><span style="background:${diffBg[3]};color:${diffCol[3]}">${b3}★★★</span></div></div>`;}).join('')}
+  </div>
+</div>`;
+  // Sidebar
+  document.getElementById('sidebar').innerHTML=`<div class="sb-label">Difficulty</div>
+  <div class="sb-item" onclick="go('quiz');initQuiz(null,1)"><div class="sb-dot" style="background:var(--accent2)"></div>Basic<span class="sb-diff"><span class="sb-star f1">★</span></span></div>
+  <div class="sb-item" onclick="go('quiz');initQuiz(null,2)"><div class="sb-dot" style="background:var(--accent3)"></div>Intermediate<span class="sb-diff"><span class="sb-star f2">★★</span></span></div>
+  <div class="sb-item" onclick="go('quiz');initQuiz(null,3)"><div class="sb-dot" style="background:var(--accent4)"></div>Advanced<span class="sb-diff"><span class="sb-star f3">★★★</span></span></div>
+  <div class="sb-label">Topics</div>
+  ${T.map(t=>{const done=(S.ts[t.id]||{}).d||0;const total=t.qs.length;return`<div class="sb-item" onclick="go('quiz');initQuiz('${t.id}',0)"><div class="sb-dot" style="background:${t.color}"></div>${t.icon} ${t.name}<span class="sb-pct">${total?Math.round(done/total*100):0}%</span></div>`;}).join('')}`;
 }
 
-function selectOpt(i){
-  if(quizState.answered)return;
-  quizState.answered=true;
-  const q=quizState.questions[quizState.idx];
+// ═══════════════════════════════════
+// PROBLEM SOLVING
+// ═══════════════════════════════════
+let psView='easy';
+function renderProblems(){
+  const easy=PROBLEMS.filter(p=>p.d==='easy');
+  const med=PROBLEMS.filter(p=>p.d==='medium');
+  const hard=PROBLEMS.filter(p=>p.d==='hard');
+  const lists={easy,medium:med,hard};
+  const items=lists[psView];
+  const numCls={easy:'easy',medium:'medium',hard:'hard'};
+  const numBg={easy:'rgba(74,234,188,.12)',medium:'rgba(255,196,107,.12)',hard:'rgba(255,107,138,.12)'};
+  const numCol={easy:'var(--accent2)',medium:'var(--accent3)',hard:'var(--accent4)'};
+
+  document.getElementById('mc').innerHTML=`<div class="ps-tabs">
+    <div class="ps-tab ${psView==='easy'?'active':''}" onclick="psView='easy';renderProblems()">🟢 Easy<span class="ps-count">${easy.length}</span></div>
+    <div class="ps-tab ${psView==='medium'?'active':''}" onclick="psView='medium';renderProblems()">🟡 Medium<span class="ps-count">${med.length}</span></div>
+    <div class="ps-tab ${psView==='hard'?'active':''}" onclick="psView='hard';renderProblems()">🔴 Interview<span class="ps-count">${hard.length}</span></div>
+  </div>
+  <div class="ps-content stagger">
+    ${items.map((p,i)=>{const done=S.solvedProblems.includes(psView+i);return`<div class="ps-item" onclick="showProblem('${psView}',${i})">
+      <div class="ps-num ${numCls[p.d]}" style="background:${numBg[p.d]};color:${numCol[p.d]}">${i+1}</div>
+      <div class="ps-body"><h4>${p.q}</h4><div class="ps-tags">${p.tags.map(t=>`<span class="ps-tag">${t}</span>`).join('')}</div></div>
+      ${done?'<div class="ps-done">✅</div>':''}
+    </div>`;}).join('')}
+  </div>`;
+}
+
+function showProblem(d,i){
+  const p=PROBLEMS.filter(x=>x.d===d)[i];
+  const done=S.solvedProblems.includes(d+i);
+  document.getElementById('mc').innerHTML=`<div class="lh"><button class="lh-back" onclick="renderProblems()">←</button><div class="lh-title">Problem #${i+1}</div></div>
+  <div class="q-area">
+    <div class="q-badge" style="background:${d==='easy'?'rgba(74,234,188,.12)':d==='medium'?'rgba(255,196,107,.12)':'rgba(255,107,138,.12)'};color:${d==='easy'?'var(--accent2)':d==='medium'?'var(--accent3)':'var(--accent4)'}">${d.toUpperCase()}</div>
+    <div class="q-text">${p.q}</div>
+    <div class="ps-tags" style="margin-bottom:16px">${p.tags.map(t=>`<span class="ps-tag">${t}</span>`).join('')}</div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:12px;font-weight:800;color:var(--accent2)">💡 SOLUTION</span>
+        ${!done?`<button class="btn-next" style="padding:8px 16px;font-size:12px" onclick="markSolved('${d}',${i})">✅ Mark Solved (+15 XP)</button>`:'<span style="font-size:12px;color:var(--accent2);font-weight:700">✅ Solved</span>'}
+      </div>
+      <div class="expl-code">${esc(p.solution)}</div>
+    </div>
+    <button class="btn-skip" onclick="renderProblems()">← Back to Problems</button>
+  </div>`;
+}
+
+function markSolved(d,i){
+  const key=d+i;
+  if(!S.solvedProblems.includes(key)){S.solvedProblems.push(key);addXP(15);showToast('+15 XP!','success');save();}
+  showProblem(d,i);
+}
+
+// ═══════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════
+let qS={qs:[],i:0,sc:0,ans:false,topic:null,diff:0};
+function initQuiz(tid,diff){
+  let qs=tid?T.find(t=>t.id===tid).qs:[...QS];
+  if(diff>0)qs=qs.filter(q=>q.d===diff);
+  qs=shuffle([...qs]).slice(0,Math.min(qs.length,12));
+  if(!qs.length)qs=shuffle([...QS]).slice(0,10);
+  qS={qs,i:0,sc:0,ans:false,topic:tid,diff};
+  renderQuiz();
+}
+function renderQuiz(){
+  const tName=qS.topic?T.find(t=>t.id===qS.topic)?.name+' Quiz':'Mixed Quiz';
+  const diffNames=['All','Basic ★','Intermediate ★★','Advanced ★★★'];
+  const diffCls=['','basic','inter','adv'];
+  document.getElementById('mc').innerHTML=`<div class="diff-bar">
+    <button class="diff-btn ${qS.diff===0?'active':''}" onclick="initQuiz(${qS.topic?`'${qS.topic}'`:'null'},0)">All</button>
+    <button class="diff-btn ${qS.diff===1?'active':''}" onclick="initQuiz(${qS.topic?`'${qS.topic}'`:'null'},1)">★ Basic</button>
+    <button class="diff-btn ${qS.diff===2?'active':''}" onclick="initQuiz(${qS.topic?`'${qS.topic}'`:'null'},2)">★★ Intermediate</button>
+    <button class="diff-btn ${qS.diff===3?'active':''}" onclick="initQuiz(${qS.topic?`'${qS.topic}'`:'null'},3)">★★★ Advanced</button>
+  </div>
+  <div class="lh"><button class="lh-back" onclick="go('dash')">←</button><div class="lh-title">${tName}</div><div class="lh-prog"><div class="lh-prog-fill" id="qp" style="width:0%"></div></div><div class="lh-count" id="qc">0/0</div></div>
+  <div class="q-area" id="qa"></div>`;
+  renderQ();
+}
+function renderQ(){
+  const a=document.getElementById('qa');if(!a)return;
+  if(qS.i>=qS.qs.length){showRes();return;}
+  const q=qS.qs[qS.i];const dl=['','Basic','Intermediate','Advanced'];
+  document.getElementById('qp').style.width=(qS.i/qS.qs.length*100)+'%';
+  document.getElementById('qc').textContent=`${qS.i+1}/${qS.qs.length}`;
+  a.innerHTML=`<div class="q-badge">${T.find(t=>t.id===q.t)?.icon||'?'} ${T.find(t=>t.id===q.t)?.name||q.t}<span class="q-diff ${dl[q.d].toLowerCase()}">${dl[q.d]}</span></div><div class="q-text">${q.q}</div><div class="opts">${q.o.map((o,i)=>`<button class="opt" onclick="selOpt(${i})"><span class="opt-l">${'ABCD'[i]}</span>${o}</button>`).join('')}</div><div class="expl" id="ex"><div class="expl-t">Explanation</div><div>${q.e}</div>${q.c?`<div class="expl-code">${q.c.replace(/\n/g,'<br>')}</div>`:''}</div><div class="q-acts"><button class="btn-next hidden" id="bn" onclick="qS.i++;renderQ()">Next →</button><button class="btn-skip" onclick="qS.i++;renderQ()">Skip</button></div>`;
+  qS.ans=false;
+}
+function selOpt(i){
+  if(qS.ans)return;qS.ans=true;const q=qS.qs[qS.i];
   document.querySelectorAll('.opt').forEach((o,idx)=>{o.disabled=true;if(idx===q.a)o.classList.add('correct');else if(idx===i)o.classList.add('wrong');});
-  document.getElementById('expl').classList.add('show');
-  document.getElementById('btn-next').classList.remove('hidden');
-  const ok=i===q.a;
-  const xpGain=q.d*5+(ok?q.d*5:0);
-  if(ok){quizState.score++;state.correct++;showToast(`+${xpGain} XP`,'success');addActivity('\u2714\uFE0F',`Correct: ${q.q.substring(0,40)}...`,'var(--correct)');}
-  else{showToast('Wrong!','error');addActivity('\u2718',`Wrong: ${q.q.substring(0,40)}...`,'var(--wrong)');}
-  state.solved++;addXP(xpGain);
-  if(!state.topicScores[q.t])state.topicScores[q.t]={done:0,correct:0};
-  state.topicScores[q.t].done++;if(ok)state.topicScores[q.t].correct++;
-  const today=new Date().toDateString();
-  if(quizState.score>=8&&state.dailyDone!==today){state.dailyDone=today;addXP(50);addActivity('\u{1F525}','Daily challenge completed!','var(--accent3)');}
-  updateStreak();checkBadges();saveState();
+  document.getElementById('ex').classList.add('show');document.getElementById('bn').classList.remove('hidden');
+  const ok=i===q.a;const xp=q.d*5+(ok?q.d*5:0);
+  if(ok){qS.sc++;S.correct++;showToast(`+${xp} XP`,'success');}else showToast('Wrong!','error');
+  S.solved++;addXP(xp);if(!S.ts[q.t])S.ts[q.t]={d:0,c:0};S.ts[q.t].d++;if(ok)S.ts[q.t].c++;
+  if(qS.sc>=8&&S.dailyDone!==new Date().toDateString()){S.dailyDone=new Date().toDateString();addXP(50);}
+  updateStreak();checkBadges();save();
 }
-function nextQ(){quizState.idx++;renderMCQ();}
-function skipQ(){quizState.idx++;renderMCQ();}
-
-function showResult(){
-  const area=document.getElementById('mcq-area');if(!area)return;
-  const{questions,score}=quizState;
-  const pct=Math.round(score/questions.length*100);
-  const xpEarned=questions.reduce((sum,q)=>sum+q.d*5,0)+score*questions.reduce((sum,q)=>sum+q.d,0);
-  const emoji=pct>=80?'\u{1F389}':pct>=50?'\u{1F44D}':'\u{1F605}';
-  area.innerHTML=`<div class="result-card fade-up"><div class="result-emoji">${emoji}</div><div class="result-score">${pct}%</div><div class="result-msg">${pct>=80?'Excellent work!':pct>=50?'Good effort!':'Keep practicing!'}</div><div class="result-xp">+${xpEarned} XP earned</div><div class="result-bd"><div class="rb-item"><div class="rb-num" style="color:var(--accent2)">${score}</div><div class="rb-label">Correct</div></div><div class="rb-item"><div class="rb-num" style="color:var(--accent4)">${questions.length-score}</div><div class="rb-label">Wrong</div></div></div><button class="btn-retry" onclick="initQuiz(quizState.topic,quizState.diff)">Retry</button><button class="btn-dash" onclick="showView('dashboard')">Dashboard</button></div>`;
+function showRes(){
+  const a=document.getElementById('qa');if(!a)return;
+  const pct=Math.round(qS.sc/qS.qs.length*100);const xp=qS.qs.reduce((s,q)=>s+q.d*5,0)+qS.sc*qS.qs.reduce((s,q)=>s+q.d,0);
+  a.innerHTML=`<div class="result-card fade-up"><div class="result-emoji">${pct>=80?'🎉':pct>=50?'👍':'😅'}</div><div class="result-score">${pct}%</div><div class="result-msg">${pct>=80?'Excellent!':pct>=50?'Good effort!':'Keep trying!'}</div><div class="result-xp">+${xp} XP earned</div><div class="result-bd"><div class="rb-item"><div class="rb-num" style="color:var(--accent2)">${qS.sc}</div><div class="rb-label">Correct</div></div><div class="rb-item"><div class="rb-num" style="color:var(--accent4)">${qS.qs.length-qS.sc}</div><div class="rb-label">Wrong</div></div></div><button class="btn-retry" onclick="initQuiz(qS.topic,qS.diff)">Retry</button><button class="btn-dash" onclick="go('dash')">Home</button></div>`;
 }
 
-// TRUE/FALSE
-function initTF(){
-  const qs=shuffle(QS.map(q=>{const isTrue=Math.random()>0.5;return{text:isTrue?q.q:q.o[(q.a+1)%q.o.length]+' \u2014 correct?',answer:isTrue,exp:q.e,d:q.d};})).slice(0,10);
-  tfState={questions:qs,idx:0,score:0};renderTF();
-}
-function renderTF(){
-  const area=document.getElementById('tf-area');if(!area)return;
-  const{questions,idx}=tfState;
-  if(idx>=questions.length){area.innerHTML=`<div class="result-card fade-up"><div class="result-emoji">\u{1F3AF}</div><div class="result-score">${Math.round(tfState.score/questions.length*100)}%</div><div class="result-msg">True/False Complete!</div><button class="btn-retry" onclick="initTF()">Again</button></div>`;return;}
-  area.innerHTML=`<div class="q-badge">Q${idx+1}/${questions.length}</div><div class="q-text">"${questions[idx].text}"<br><br><span style="color:var(--muted);font-size:14px">True or False?</span></div><div style="display:flex;gap:12px;margin-bottom:16px"><button class="opt" style="flex:1;justify-content:center;font-size:16px" onclick="answerTF(true)">True</button><button class="opt" style="flex:1;justify-content:center;font-size:16px" onclick="answerTF(false)">False</button></div><div class="expl hidden" id="tf-expl"><div class="expl-t">Answer</div><div id="tf-et"></div></div><button class="btn-next hidden" id="tf-next">Next</button>`;
-}
-function answerTF(val){
-  const q=tfState.questions[tfState.idx];const ok=val===q.answer;
-  if(ok)tfState.score++;
-  document.querySelectorAll('.opt').forEach(o=>o.disabled=true);
-  document.getElementById('tf-expl').classList.remove('hidden');
-  document.getElementById('tf-et').textContent=(ok?'Correct!':'Wrong!')+' '+q.exp;
-  showToast(ok?'Correct!':'Wrong!',ok?'success':'error');
-  document.getElementById('tf-next').classList.remove('hidden');
-  document.getElementById('tf-next').onclick=()=>{tfState.idx++;renderTF();};
-  state.solved++;if(ok)state.correct++;addXP(ok?q.d*5:q.d*2);updateStreak();checkBadges();saveState();
-}
-function switchTab(tab,el){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+tab).classList.add('active');
-  if(el)el.classList.add('active');
-  if(tab==='tf')initTF();
-  else renderMCQ();
-}
-
-// ═════════════════════════════════════
+// ═══════════════════════════════════
 // PRACTICE
-// ═════════════════════════════════════
+// ═══════════════════════════════════
+let pIdx=0;
 function renderPractice(){
-  const area=document.getElementById('view-practice');
-  if(practiceState.idx>=PRACTICE_Qs.length){area.innerHTML=`<div class="lh"><button class="lh-back" onclick="showView('dashboard')">\u2190</button><div class="lh-title">Practice</div></div><div class="q-area"><div class="result-card"><div class="result-emoji">\u{1F389}</div><div class="result-score">Done!</div><div class="result-msg">All practice complete!</div><button class="btn-retry" onclick="practiceState.idx=0;renderPractice()">Restart</button></div></div>`;return;}
-  const q=PRACTICE_Qs[practiceState.idx];
-  area.innerHTML=`<div class="lh"><button class="lh-back" onclick="showView('dashboard')">\u2190</button><div class="lh-title">Fill the Blanks</div><div class="lh-prog"><div class="lh-prog-fill" style="width:${practiceState.idx/PRACTICE_Qs.length*100}%"></div></div><div class="lh-count">${practiceState.idx+1}/${PRACTICE_Qs.length}</div></div><div class="q-area"><div class="q-badge">Practice ${practiceState.idx+1}</div><div class="q-text" style="font-size:16px">${q.q}</div><div class="code-block"><code>${q.pre?q.pre.replace(/\n/g,'<br>')+'<br>':''}<input class="code-blank" id="blank-input" placeholder="${q.hint}" autocomplete="off">${q.post.replace(/\n/g,'<br>')}</code></div><div class="expl hidden" id="p-expl"><div class="expl-t">Answer</div><div id="p-et"></div></div><div style="display:flex;gap:8px"><button class="check-btn" onclick="checkPractice()">Check</button><button class="btn-skip" onclick="practiceState.idx++;renderPractice()">Skip</button></div></div>`;
-  setTimeout(()=>{const inp=document.getElementById('blank-input');if(inp){inp.focus();inp.onkeydown=e=>{if(e.key==='Enter')checkPractice();};}},50);
+  const a=document.getElementById('mc');
+  if(pIdx>=PRACTICE_Qs.length){a.innerHTML=`<div class="lh"><button class="lh-back" onclick="go('dash')">←</button><div class="lh-title">Practice</div></div><div class="q-area"><div class="result-card"><div class="result-emoji">🎉</div><div class="result-score">Done!</div><div class="result-msg">All practice complete!</div><button class="btn-retry" onclick="pIdx=0;renderPractice()">Restart</button></div></div>`;return;}
+  const q=PRACTICE_Qs[pIdx];
+  a.innerHTML=`<div class="lh"><button class="lh-back" onclick="go('dash')">←</button><div class="lh-title">Fill the Blanks</div><div class="lh-prog"><div class="lh-prog-fill" style="width:${pIdx/PRACTICE_Qs.length*100}%"></div></div><div class="lh-count">${pIdx+1}/${PRACTICE_Qs.length}</div></div>
+  <div class="q-area"><div class="q-badge">Practice ${pIdx+1}</div><div class="q-text" style="font-size:15px">${q.q}</div><div class="code-block"><code>${q.pre?q.pre.replace(/\n/g,'<br>')+'<br>':''}<input class="code-blank" id="bi" placeholder="${q.hint}" autocomplete="off">${q.post.replace(/\n/g,'<br>')}</code></div><div class="expl hidden" id="pe"><div class="expl-t">Answer</div><div id="pet"></div></div><div style="display:flex;gap:8px"><button class="check-btn" onclick="chkP()">Check</button><button class="btn-skip" onclick="pIdx++;renderPractice()">Skip</button></div></div>`;
+  setTimeout(()=>{const inp=document.getElementById('bi');if(inp){inp.focus();inp.onkeydown=e=>{if(e.key==='Enter')chkP();};}},50);
 }
-function checkPractice(){
-  const q=PRACTICE_Qs[practiceState.idx];const val=document.getElementById('blank-input').value.trim();
-  const ok=q.ans.some(a=>val.toLowerCase()===a.toLowerCase());
-  const inp=document.getElementById('blank-input');inp.classList.add(ok?'correct':'wrong');inp.disabled=true;
-  document.getElementById('p-expl').classList.remove('hidden');
-  document.getElementById('p-et').innerHTML=ok?`Correct! <code style="color:var(--accent2)">${q.ans[0]}</code>`:`Wrong. Answer: <code style="color:var(--accent2)">${q.ans[0]}</code>`;
-  showToast(ok?'Correct!':'Wrong!',ok?'success':'error');
-  state.solved++;if(ok)state.correct++;addXP(ok?8:2);updateStreak();checkBadges();saveState();
-  setTimeout(()=>{practiceState.idx++;renderPractice();},1600);
+function chkP(){
+  const q=PRACTICE_Qs[pIdx];const v=document.getElementById('bi').value.trim();
+  const ok=q.ans.some(a=>v.toLowerCase()===a.toLowerCase());
+  const inp=document.getElementById('bi');inp.classList.add(ok?'correct':'wrong');inp.disabled=true;
+  document.getElementById('pe').classList.remove('hidden');
+  document.getElementById('pet').innerHTML=ok?`Correct! <code style="color:var(--accent2)">${q.ans[0]}</code>`:`Wrong. Answer: <code style="color:var(--accent2)">${q.ans[0]}</code>`;
+  showToast(ok?'Correct!':'Wrong!',ok?'success':'error');S.solved++;if(ok)S.correct++;addXP(ok?8:2);updateStreak();checkBadges();save();
+  setTimeout(()=>{pIdx++;renderPractice();},1400);
 }
 
-// ═════════════════════════════════════
+// ═══════════════════════════════════
 // FLASHCARDS
-// ═════════════════════════════════════
-function initFlash(tid){
-  let qs=tid?TOPICS.find(t=>t.id===tid).qs:[...QS];
-  flashState={questions:shuffle(qs),idx:0,flipped:false};renderFlash();
-}
+// ═══════════════════════════════════
+let fS={qs:[],i:0};
+function initFlash(tid){fS={qs:shuffle(tid?T.find(t=>t.id===tid).qs:[...QS]),i:0};renderFlash();}
 function renderFlash(){
-  const area=document.getElementById('view-flashcards');
-  const{questions,idx}=flashState;
-  const q=questions[idx];
-  area.innerHTML=`<div class="lh"><button class="lh-back" onclick="showView('dashboard')">\u2190</button><div class="lh-title">Flashcards</div><div class="lh-count">${idx+1}/${questions.length}</div></div><div class="q-area"><div class="flash-card" id="fc" onclick="document.getElementById('fc').classList.toggle('flipped')"><div class="flash-front">${q.q}</div><div class="flash-back">${q.e}${q.c?`<div class="expl-code">${q.c.replace(/\n/g,'<br>')}</div>`:''}</div><div class="flash-hint">Click to reveal</div></div><div class="flash-nav"><button class="flash-btn" onclick="if(flashState.idx>0){flashState.idx--;renderFlash();}">\u2190</button><span style="color:var(--muted);font-size:12px">${idx+1}/${questions.length}</span><button class="flash-btn" onclick="if(flashState.idx<flashState.questions.length-1){flashState.idx++;renderFlash();}">\u2192</button><button class="flash-btn" onclick="initFlash(null)" style="margin-left:8px;font-size:11px;width:auto;padding:0 10px">Shuffle</button></div></div>`;
+  const q=fS.qs[fS.i];
+  document.getElementById('mc').innerHTML=`<div class="lh"><button class="lh-back" onclick="go('dash')">←</button><div class="lh-title">Flashcards</div><div class="lh-count">${fS.i+1}/${fS.qs.length}</div></div>
+  <div class="q-area"><div class="fc" id="fc" onclick="document.getElementById('fc').classList.toggle('flip')"><div class="fc-f">${q.q}</div><div class="fc-b">${q.e}${q.c?`<div class="expl-code">${q.c.replace(/\n/g,'<br>')}</div>`:''}</div><div class="fc-h">Tap to reveal</div></div><div class="fc-nav"><button class="fc-btn" onclick="if(fS.i>0){fS.i--;renderFlash();}">←</button><span style="color:var(--muted);font-size:12px">${fS.i+1}/${fS.qs.length}</span><button class="fc-btn" onclick="if(fS.i<fS.qs.length-1){fS.i++;renderFlash();}">→</button><button class="fc-btn" onclick="initFlash(null)" style="margin-left:6px;font-size:10px;width:auto;padding:0 10px">Shuffle</button></div></div>`;
 }
 
-// ═════════════════════════════════════
-// ASK
-// ═════════════════════════════════════
-function renderAskView(){
-  document.getElementById('view-ask').innerHTML=`
-  <div class="lh"><button class="lh-back" onclick="showView('dashboard')">\u2190</button><div class="lh-title">Ask Anything</div></div>
-  <div class="ask-container">
-    <p style="color:var(--muted);font-size:13px;margin-bottom:14px">Ask questions, paste code, or explore concepts. Wrong statements will be corrected!</p>
+// ═══════════════════════════════════
+// ASK AI
+// ═══════════════════════════════════
+function renderAsk(){
+  document.getElementById('mc').innerHTML=`<div class="lh"><button class="lh-back" onclick="go('dash')">←</button><div class="lh-title">Ask AI Anything</div></div>
+  <div class="ask-wrap">
+    <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Ask questions, paste code, or explore concepts. Wrong statements get corrected!</p>
     <div class="ask-hints">
       <span class="ask-hint" onclick="document.getElementById('ai').value='What does len() do?'">len()</span>
       <span class="ask-hint" onclick="document.getElementById('ai').value='Explain decorators'">decorators</span>
-      <span class="ask-hint" onclick="document.getElementById('ai').value='print(type(10.5))'">type(10.5)</span>
       <span class="ask-hint" onclick="document.getElementById('ai').value='What is a generator?'">generators</span>
-      <span class="ask-hint" onclick="document.getElementById('ai').value='x = [1,2,3]\\nx.append(4)\\nprint(x)'">multi-line code</span>
       <span class="ask-hint" onclick="document.getElementById('ai').value='Lists are immutable'">wrong statement</span>
+      <span class="ask-hint" onclick="document.getElementById('ai').value='append returns the new list'">common mistake</span>
+      <span class="ask-hint" onclick="document.getElementById('ai').value='is vs == difference'">is vs ==</span>
+      <span class="ask-hint" onclick="document.getElementById('ai').value='deep copy vs shallow copy'">deep copy</span>
     </div>
-    <div class="ask-input-wrap"><textarea class="ask-textarea" id="ai" placeholder="Ask a question or paste code..." rows="2"></textarea><button class="ask-submit" id="ab" onclick="submitQ()">Ask</button></div>
-    <div class="chat-history" id="ch"></div>
+    <div class="ask-input-wrap"><textarea class="ask-ta" id="ai" placeholder="Ask anything or paste code..." rows="2"></textarea><button class="ask-send" id="ab" onclick="sendQ()">➤</button></div>
+    <div class="chat" id="ch"></div>
   </div>`;
-  document.getElementById('ai').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();submitQ();}});
+  document.getElementById('ai').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendQ();}});
 }
-
-function submitQ(){
-  const inp=document.getElementById('ai');if(!inp)return;
-  const q=inp.value.trim();if(!q)return;
+function sendQ(){
+  const inp=document.getElementById('ai');if(!inp)return;const q=inp.value.trim();if(!q)return;
   const ch=document.getElementById('ch');
-  const ud=document.createElement('div');ud.className='chat-msg chat-user';
-  ud.innerHTML=`<div class="chat-avatar">?</div><div class="chat-bubble">${escapeHtml(q)}</div>`;
-  ch.appendChild(ud);inp.value='';
-  const btn=document.getElementById('ab');btn.disabled=true;btn.textContent='...';
-  const td=document.createElement('div');td.className='chat-msg chat-bot';
-  td.innerHTML=`<div class="chat-avatar">\u{1F916}</div><div class="chat-bubble typing-dots"><span>.</span><span>.</span><span>.</span></div>`;
-  ch.appendChild(td);ch.scrollTop=ch.scrollHeight;
+  ch.innerHTML+=`<div class="cmsg cuser fade-up"><div class="cavatar">?</div><div class="cbubble">${esc(q)}</div></div>`;
+  inp.value='';const btn=document.getElementById('ab');btn.disabled=true;
+  ch.innerHTML+=`<div class="cmsg cbot fade-up"><div class="cavatar">🤖</div><div class="cbubble dots"><span>.</span><span>.</span><span>.</span></div></div>`;
+  ch.scrollTop=ch.scrollHeight;
   setTimeout(()=>{
-    td.querySelector('.chat-bubble').className='chat-bubble';
-    td.querySelector('.chat-bubble').innerHTML=processQuestion(q);
-    ch.scrollTop=ch.scrollHeight;btn.disabled=false;btn.textContent='Ask';
-    state.askCount++;addXP(3);checkBadges();saveState();
-    addActivity('\u2753','Asked: '+q.substring(0,35)+'...','var(--accent)');
-  },600+Math.random()*500);
+    const last=ch.lastElementChild;last.querySelector('.cbubble').className='cbubble';
+    last.querySelector('.cbubble').innerHTML=processQuestion(q);ch.scrollTop=ch.scrollHeight;
+    btn.disabled=false;S.askCount++;addXP(3);checkBadges();save();
+  },500+Math.random()*500);
 }
 
-// ═════════════════════════════════════
-// ROADMAP
-// ═════════════════════════════════════
-const ROADMAP=[
-  {i:'\uD83D\uDC0D',t:'Advanced OOP',d:'Decorators, metaclasses, descriptors',s:'soon'},
-  {i:'\uD83D\uDCC1',t:'File I/O Deep Dive',d:'CSV, JSON, SQLite operations',s:'soon'},
-  {i:'\uD83C\uDF10',t:'Web Scraping',d:'BeautifulSoup, Selenium, APIs',s:'soon'},
-  {i:'\uD83E\uDDEA',t:'Unit Testing',d:'pytest, unittest, mocking',s:'soon'},
-  {i:'\uD83D\uDCE6',t:'Package Management',d:'pip, venv, PyPI publishing',s:'soon'},
-  {i:'\uD83D\uDD25',t:'Flask Bootcamp',d:'Build 3 real web apps',s:'soon'},
-  {i:'\uD83D\uDCCA',t:'Data Analysis',d:'Pandas, NumPy, Matplotlib',s:'soon'},
-  {i:'\uD83E\uDD16',t:'Automation Scripts',d:'Email, files, web automation',s:'soon'},
-  {i:'\uD83C\uDFAE',t:'Game Development',d:'3 games with Pygame',s:'later'},
-  {i:'\uD83E\uDDEE',t:'Algorithm Challenges',d:'Sorting, DP, graphs',s:'later'},
-  {i:'\u26A1',t:'Async Python',d:'asyncio, aiohttp',s:'later'},
-  {i:'\uD83D\uDC33',t:'Docker for Python',d:'Containerize apps',s:'later'},
-  {i:'\uD83D\uDD00',t:'Git Workflow',d:'Branching, PRs, CI/CD',s:'later'},
-  {i:'\uD83D\uDD27',t:'Debugging Masterclass',d:'pdb, profiling, logging',s:'later'},
-  {i:'\uD83D\uDDE3\uFE0F',t:'Voice Assistant',d:'Speech recognition project',s:'later'},
-  {i:'\uD83D\uDCF1',t:'Mobile with Kivy',d:'Cross-platform mobile apps',s:'later'},
-  {i:'\uD83D\uDD10',t:'Security Basics',d:'Encryption, hashing',s:'later'},
-  {i:'\uD83D\uDCC8',t:'Machine Learning',d:'Scikit-learn intro',s:'later'},
-  {i:'\uD83E\uDDE9',t:'Design Patterns',d:'Singleton, Factory, Observer',s:'planned'},
-  {i:'\uD83C\uDF10',t:'Django Course',d:'Full web framework',s:'planned'},
-  {i:'\uD83C\uDFAF',t:'Competitive Programming',d:'Fast I/O, tricks',s:'planned'},
-  {i:'\uD83D\uDCBB',t:'CLI Tools',d:'Click, argparse',s:'planned'},
-  {i:'\uD83E\uDDE0',t:'AI Chatbot',d:'Rule-based + NLP bot',s:'planned'},
-  {i:'\uD83D\uDDBC\uFE0F',t:'Image Processing',d:'Pillow, OpenCV basics',s:'planned'},
-  {i:'\uD83C\uDF0D',t:'Multi-language',d:'Hindi, Spanish support',s:'planned'},
-];
-function renderRoadmap(){
-  document.getElementById('view-roadmap').innerHTML=`<div style="padding:24px"><h2 style="margin-bottom:6px;font-size:20px">Future Roadmap</h2><p style="color:var(--muted);font-size:13px;margin-bottom:20px">${ROADMAP.length} features planned</p><div class="roadmap-grid">${ROADMAP.map(r=>`<div class="rm-item"><div class="rm-icon">${r.i}</div><div class="rm-text"><h4>${r.t}</h4><p>${r.d}</p><span class="rm-status rm-${r.s}">${r.s==='soon'?'Coming Soon':r.s==='later'?'Pipeline':'Planned'}</span></div></div>`).join('')}</div></div>`;
-}
+// ═══════════════════════════════════
+// LEADERBOARD
+// ═════════════════════════════════
+const BADGES=[{id:'f',i:'🌱',n:'First Step',d:'First question',c:s=>s.solved>=1},{id:'t',i:'🔟',n:'Warming Up',d:'10 questions',c:s=>s.solved>=10},{id:'h',i:'🏅',n:'Half Century',d:'50 questions',c:s=>s.solved>=50},{id:'s',i:'🔥',n:'On Fire',d:'3 day streak',c:s=>s.streak>=3},{id:'a',i:'🎯',n:'Sharpshooter',d:'80%+ accuracy',c:s=>s.solved>10&&s.correct/s.solved>=.8},{id:'e',i:'🗺️',n:'Explorer',d:'All 8 topics',c:s=>Object.keys(s.ts).length>=8},{id:'q',i:'❓',n:'Curious',d:'Ask 5',c:s=>s.askCount>=5},{id:'l',i:'👑',n:'Rising Star',d:'Level 5',c:s=>getLevel()>=5},{id:'p',i:'🧩',n:'Problem Solver',d:'Solve 5 problems',c:s=>s.solvedProblems.length>=5},{id:'m',i:'💎',n:'Master',d:'Level 10',c:s=>getLevel()>=10}];
+function checkBadges(){BADGES.forEach(b=>{if(!S.badges.includes(b.id)&&b.c(S)){S.badges.push(b.id);showToast('Badge: '+b.i+' '+b.n,'success');}});}
+function updateStreak(){const t=new Date().toDateString();if(S.lastDate!==t){S.streak=S.lastDate===new Date(Date.now()-864e5).toDateString()?S.streak+1:1;S.lastDate=t;}}
 
-// ═════════════════════════════════════
-// LEADERBOARD + BADGES
-// ═════════════════════════════════════
-const BADGES_DEF=[
-  {id:'first',i:'\uD83C\uDF31',n:'First Step',d:'First question',c:s=>s.solved>=1},
-  {id:'ten',i:'\uD83D\uDD1F',n:'Warming Up',d:'10 questions',c:s=>s.solved>=10},
-  {id:'fifty',i:'\uD83C\uDFC5',n:'Half Century',d:'50 questions',c:s=>s.solved>=50},
-  {id:'hundred',i:'\uD83D\uDCAF',n:'Century',d:'100 questions',c:s=>s.solved>=100},
-  {id:'streak3',i:'\uD83D\uDD25',n:'On Fire',d:'3 day streak',c:s=>s.streak>=3},
-  {id:'streak7',i:'\u26A1',n:'Unstoppable',d:'7 day streak',c:s=>s.streak>=7},
-  {id:'acc',i:'\uD83C\uDFAF',n:'Sharpshooter',d:'80%+ accuracy',c:s=>s.solved>10&&(s.correct/s.solved)>=.8},
-  {id:'explorer',i:'\uD83D\uDDFA\uFE0F',n:'Explorer',d:'All 8 topics',c:s=>Object.keys(s.topicScores||{}).length>=8},
-  {id:'asker',i:'\u2753',n:'Curious',d:'Ask 5 questions',c:s=>s.askCount>=5},
-  {id:'asker20',i:'\uD83D\uDCA1',n:'Scholar',d:'Ask 20 questions',c:s=>s.askCount>=20},
-  {id:'lvl5',i:'\uD83D\uDC51',n:'Rising Star',d:'Reach Level 5',c:s=>getLevel()>=5},
-  {id:'lvl10',i:'\uD83D\uDC51',n:'Expert',d:'Reach Level 10',c:s=>getLevel()>=10},
-];
-function checkBadges(){BADGES_DEF.forEach(b=>{if(!state.badges.includes(b.id)&&b.c(state)){state.badges.push(b.id);showToast('Badge: '+b.i+' '+b.n,'success');addActivity('\uD83C\uDFC6','Earned: '+b.n,'var(--accent3)');}});}
-function updateStreak(){const today=new Date().toDateString();if(state.lastDate!==today){const yest=new Date(Date.now()-86400000).toDateString();state.streak=(state.lastDate===yest)?state.streak+1:1;state.lastDate=today;}}
-
-function renderLeaderboard(){
-  const myScore=state.xp;
-  const all=[...lbPlayers.map(p=>({...p,isMe:false})),{name:'You',score:myScore,streak:state.streak,isMe:true,change:0}].sort((a,b)=>b.score-a.score);
-  const myIdx=all.findIndex(p=>p.isMe);
-  const timer=getNextLBUpdate();
-  document.getElementById('view-leaderboard').innerHTML=`
-  <div style="padding:24px">
-    <div class="lb-timer"><span class="spin"></span> Next shuffle in: ${timer}</div>
-    <h2 style="margin-bottom:16px;font-size:20px">Leaderboard</h2>
-    <div>${all.map((p,i)=>{
-      const changeCls=p.change>5?'lb-up':p.change<-5?'lb-down':'lb-same';
-      const changeText=p.change>5?'\u2191'+p.change:p.change<-5?'\u2191'+Math.abs(p.change):'\u2014';
-      return `<div class="lb-item ${p.isMe?'lb-me':''}">
-        <div class="lb-rank" style="color:${i===0?'#f7c76a':i===1?'#aaa':i===2?'#cd7f32':'var(--muted)'}">${i===0?'\uD83E\uDD47':i===1?'\uD83E\uDD48':i===2?'\uD83E\uDD49':i+1}</div>
-        <div class="lb-name">${p.name}${p.isMe?' \u{1F449}':''}</div>
-        <div class="lb-streak">${p.streak}\uD83D\uDD25</div>
-        <div class="lb-change ${changeCls}">${p.isMe?'':changeText}</div>
-        <div class="lb-score">${p.score}</div>
-      </div>`;
-    }).join('')}</div>
-    <h2 style="margin:24px 0 12px;font-size:20px">Badges (${state.badges.length}/${BADGES_DEF.length})</h2>
-    <div class="badge-grid">${BADGES_DEF.map(b=>`<div class="badge-item ${state.badges.includes(b.id)?'':'locked'}"><div class="badge-icon">${b.i}</div><div class="badge-name">${b.n}</div><div class="badge-desc">${b.d}</div></div>`).join('')}</div>
+function renderRanks(){
+  const my=S.xp;const all=[...lbP.map(p=>({...p})),{n:'You',sc:my,s:S.streak,isMe:true,ch:0}].sort((a,b)=>b.sc-a.sc);
+  const el=Date.now()-lbT;const m=Math.floor(el/6e4);const s=Math.floor((el%6e4)/1e3);
+  document.getElementById('mc').innerHTML=`<div style="padding:20px;max-width:600px;margin:0 auto;">
+    <div class="lb-timer"><span class="spin-icon"></span>Shuffles in ${m}m ${s}s</div>
+    <h2 style="margin-bottom:14px;font-size:18px">🏆 Leaderboard</h2>
+    ${all.map((p,i)=>{const cc=p.ch>5?'lb-up':p.ch<-5?'lb-dn':'lb-sm';return`<div class="lb-item ${p.isMe?'lb-me':''}"><div class="lb-rank" style="color:${i===0?'var(--accent3)':i===1?'var(--muted)':i===2?'var(--accent4)':'var(--muted)'}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div><div class="lb-name">${p.n}${p.isMe?' ←':''}</div><div class="lb-str">${p.s}🔥</div>${!p.isMe?`<div class="lb-chg ${cc}">${p.ch>5?'↑'+p.ch:p.ch<-5?'↓'+Math.abs(p.ch):'—'}</div>`:''}<div class="lb-sc">${p.sc}</div></div>`;}).join('')}
+    <h2 style="margin:20px 0 10px;font-size:18px">🎖️ Badges (${S.badges.length}/${BADGES.length})</h2>
+    <div class="badge-grid">${BADGES.map(b=>`<div class="badge-item ${S.badges.includes(b.id)?'':'locked'}"><div class="badge-icon">${b.i}</div><div class="badge-name">${b.n}</div><div class="badge-desc">${b.d}</div></div>`).join('')}</div>
   </div>`;
-  setTimeout(()=>{if(currentView==='leaderboard'){updateLeaderboard();}},1000);
+  setTimeout(()=>{if(cv==='ranks'){updLB();renderRanks();}},1000);
 }
 
-// ═════════════════════════════════════
+// ═══════════════════════════════════
 // UTILS
-// ═════════════════════════════════════
+// ═══════════════════════════════════
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+type;clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2000);}
 
-// Override showView for special views
-const _origShowView=showView;
-showView=function(v){
-  _origShowView(v);
-  if(v==='ask')renderAskView();
-  if(v==='roadmap')renderRoadmap();
-  if(v==='practice'){practiceState.idx=0;renderPractice();}
-  if(v==='flashcards')initFlash(null);
-};
-
-// ═════════════════════════════════════
 // INIT
-// ═════════════════════════════════════
-updateLeaderboard();
-renderDashboard();
+updLB();renderDash();
 </script>
 </body>
 </html>
