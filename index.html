@@ -3,851 +3,724 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PySeekho — Master Python</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>Sikhle — Learn Coding & Skills for Free</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-/* ══════ THEME SYSTEM ══════ */
 [data-theme="dark"]{
-  --bg:#080a14;--bg2:#0e1120;--bg3:#161a30;--card:#141830;--card2:#1a1f3a;
-  --border:#252a48;--border2:#2d3360;--accent:#8b7aff;--accent2:#4aeabc;--accent3:#ffc46b;
-  --accent4:#ff6b8a;--text:#eef0ff;--text2:#c8cce8;--muted:#6a70a0;
-  --glow:rgba(139,122,255,.12);--glow2:rgba(74,234,188,.08);--code-bg:#0c0f1c;
-  --input-bg:#121628;--hover:rgba(139,122,255,.06);
+  --bg:#06060f;--bg2:#0b0b1a;--bg3:#111128;--card:#12122a;--card2:#181838;
+  --border:#1e1e45;--border2:#2a2a5a;--accent:#7c5cfc;--accent2:#00e89d;--accent3:#ffb347;
+  --accent4:#ff5f7e;--accent5:#38bdf8;--text:#eeeef8;--text2:#b0b0d0;--muted:#6a6a95;
+  --glow:rgba(124,92,252,.12);--glow2:rgba(0,232,157,.08);--code-bg:#0a0a1e;
+  --input-bg:#0e0e22;--hover:rgba(124,92,252,.06);--shadow:0 8px 32px rgba(0,0,0,.4);
+  --grad1:linear-gradient(135deg,#06060f 0%,#0d0b2e 50%,#0a0620 100%);
+  --grad2:linear-gradient(135deg,rgba(124,92,252,.15),rgba(0,232,157,.08));
+  --nav-bg:rgba(6,6,15,.85);
 }
 [data-theme="light"]{
-  --bg:#f4f5fb;--bg2:#ffffff;--bg3:#eef0f8;--card:#ffffff;--card2:#f8f9fd;
-  --border:#dde0f0;--border2:#cdd1e8;--accent:#6c5ce7;--accent2:#00b894;--accent3:#fdcb6e;
-  --accent4:#e17055;--text:#1a1c2e;--text2:#3d4060;--muted:#888daa;
-  --glow:rgba(108,92,231,.08);--glow2:rgba(0,184,148,.06);--code-bg:#f0f1f8;
-  --input-bg:#f0f2fa;--hover:rgba(108,92,231,.04);
+  --bg:#f5f6fc;--bg2:#ffffff;--bg3:#eeeef8;--card:#ffffff;--card2:#f8f8ff;
+  --border:#dde0f0;--border2:#c8cce0;--accent:#6c4ce6;--accent2:#00b87a;--accent3:#f0982a;
+  --accent4:#e0556e;--accent5:#2b9de6;--text:#12122e;--text2:#3a3a60;--muted:#8888aa;
+  --glow:rgba(108,76,230,.06);--glow2:rgba(0,184,122,.04);--code-bg:#f0f0fa;
+  --input-bg:#eeeff8;--hover:rgba(108,76,230,.04);--shadow:0 8px 32px rgba(0,0,0,.08);
+  --grad1:linear-gradient(135deg,#f5f6fc 0%,#eeeaff 50%,#f0f0ff 100%);
+  --grad2:linear-gradient(135deg,rgba(108,76,230,.06),rgba(0,184,122,.04));
+  --nav-bg:rgba(255,255,255,.88);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
-::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg2);}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s;}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--bg2);}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px;}
+::selection{background:var(--accent);color:#fff;}
 
-/* ══════ BACKGROUND EFFECTS ══════ */
-.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-.bg-mesh .orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:.5;animation:orbDrift 25s ease-in-out infinite alternate;}
-[data-theme="light"] .bg-mesh .orb{opacity:.3;}
-.bg-mesh .o1{width:500px;height:500px;background:var(--accent);top:-15%;left:-10%;animation-delay:0s;}
-.bg-mesh .o2{width:400px;height:400px;background:var(--accent2);bottom:-10%;right:-5%;animation-delay:-8s;}
-.bg-mesh .o3{width:300px;height:300px;background:var(--accent3);top:40%;left:50%;animation-delay:-16s;}
-@keyframes orbDrift{0%{transform:translate(0,0) scale(1)}33%{transform:translate(50px,-30px) scale(1.1)}66%{transform:translate(-30px,50px) scale(.9)}100%{transform:translate(20px,20px) scale(1.05)}}
-.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
-background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
-background-size:80px 80px;opacity:.15;}
-[data-theme="light"] .bg-grid{opacity:.3;}
+/* ANIMATED BG */
+.bg-effects{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4;animation:orbMove 30s ease-in-out infinite alternate;}
+[data-theme="light"] .bg-orb{opacity:.2;}
+.bg-orb.o1{width:600px;height:600px;background:var(--accent);top:-20%;left:-15%;animation-delay:0s;}
+.bg-orb.o2{width:500px;height:500px;background:var(--accent2);bottom:-15%;right:-10%;animation-delay:-10s;}
+.bg-orb.o3{width:400px;height:400px;background:var(--accent4);top:50%;left:40%;animation-delay:-20s;}
+@keyframes orbMove{0%{transform:translate(0,0) scale(1)}33%{transform:translate(60px,-40px) scale(1.1)}66%{transform:translate(-40px,60px) scale(.9)}100%{transform:translate(30px,30px) scale(1.05)}}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:100px 100px;opacity:.08;}
+[data-theme="light"] .bg-grid{opacity:.15;}
 
-/* ══════ NAV ══════ */
-nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:background .3s;}
-.logo{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:6px;}
-.logo .dot{width:8px;height:8px;border-radius:50%;background:var(--accent2);animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.nav-center{display:flex;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
-.nav-center::-webkit-scrollbar{display:none;}
-.nav-btn{background:transparent;border:none;color:var(--muted);padding:8px 14px;border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;transition:all .15s;white-space:nowrap;position:relative;}
-.nav-btn:hover{color:var(--text);background:var(--hover);}
-.nav-btn.active{color:#fff;background:var(--accent);}
-.nav-right{display:flex;align-items:center;gap:8px;}
-.theme-toggle{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s;color:var(--accent3);}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;gap:20px;transition:background .4s;}
+.logo{font-size:22px;font-weight:900;letter-spacing:-1px;color:var(--text);display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.logo i{color:var(--accent);font-size:24px;}
+.logo span{color:var(--accent);}
+.nav-search{flex:1;max-width:420px;position:relative;}
+.nav-search input{width:100%;padding:10px 16px 10px 40px;border-radius:12px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:all .2s;}
+.nav-search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow);}
+.nav-search input::placeholder{color:var(--muted);}
+.nav-search i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;}
+.nav-links{display:flex;gap:4px;align-items:center;}
+.nav-link{padding:8px 16px;border-radius:10px;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;border:none;background:none;font-family:'Inter',sans-serif;}
+.nav-link:hover{color:var(--text);background:var(--hover);}
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.theme-toggle{width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--accent3);transition:all .2s;}
 .theme-toggle:hover{border-color:var(--accent);transform:scale(1.05);}
+.menu-btn{display:none;width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:18px;color:var(--text);align-items:center;justify-content:center;}
+.mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--bg2);z-index:999;padding:20px;flex-direction:column;gap:8px;border-top:1px solid var(--border);}
+.mobile-menu.show{display:flex;}
 
-/* ══════ LAYOUT ══════ */
-.app{display:flex;height:calc(100vh - 54px);position:relative;z-index:1;}
-.sidebar{width:210px;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;transition:background .3s,transform .3s;}
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;}
-.content{flex:1;overflow-y:auto;overflow-x:hidden;padding:0;}
-.hidden{display:none!important;}
-.menu-btn{display:none;width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:18px;color:var(--text);align-items:center;justify-content:center;}
+/* LAYOUT */
+.main{position:relative;z-index:1;padding-top:64px;}
 
-/* ══════ SIDEBAR ══════ */
-.sb-label{padding:16px 16px 8px;font-size:10px;font-weight:800;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
-.sb-item{padding:10px 14px;margin:2px 8px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted);transition:all .12s;}
-.sb-item:hover{background:var(--hover);color:var(--text);}
-.sb-item.active{background:var(--glow);color:var(--accent);}
-.sb-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.sb-pct{margin-left:auto;font-size:10px;font-family:'Space Mono',monospace;color:var(--muted);}
-.sb-diff{display:flex;gap:3px;margin-top:2px;}
-.sb-star{font-size:8px;}
-.sb-star.f1{color:var(--accent2);}
-.sb-star.f2{color:var(--accent3);}
-.sb-star.f3{color:var(--accent4);}
-
-/* ══════ ANIMATIONS ══════ */
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes slideR{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
-@keyframes dotPulse{0%,100%{opacity:.3}50%{opacity:1}}
-.fade-up{animation:fadeUp .4s ease both;}
-.fade-in{animation:fadeIn .3s ease both;}
-.stagger>*:nth-child(1){animation-delay:.05s}.stagger>*:nth-child(2){animation-delay:.1s}.stagger>*:nth-child(3){animation-delay:.15s}.stagger>*:nth-child(4){animation-delay:.2s}.stagger>*:nth-child(5){animation-delay:.25s}.stagger>*:nth-child(6){animation-delay:.3s}.stagger>*:nth-child(7){animation-delay:.35s}.stagger>*:nth-child(8){animation-delay:.4s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(124,92,252,.3)}50%{box-shadow:0 0 40px rgba(124,92,252,.5)}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
 
-/* ══════ DASHBOARD ══════ */
-.dash{padding:20px;max-width:900px;margin:0 auto;}
-.hero-card{background:linear-gradient(135deg,var(--card2),var(--glow));border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:20px;position:relative;overflow:hidden;}
-.hero-card::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:var(--accent);opacity:.06;}
-.hero-card h1{font-size:22px;font-weight:900;line-height:1.3;margin-bottom:8px;}
-.hero-card h1 em{font-style:normal;color:var(--accent2);}
-.hero-card p{color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:20px;}
-.hero-btns{display:flex;gap:10px;flex-wrap:wrap;}
-.btn-start{background:var(--accent);color:#fff;border:none;padding:14px 32px;border-radius:14px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(139,122,255,.3);}
-.btn-start:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(139,122,255,.4);}
-.btn-start:active{transform:translateY(0);}
-.btn-outline{background:transparent;color:var(--accent);border:2px solid var(--accent);padding:12px 28px;border-radius:14px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
-.btn-outline:hover{background:var(--accent);color:#fff;transform:translateY(-1px);}
+/* HERO */
+.hero{min-height:90vh;display:flex;align-items:center;justify-content:center;padding:60px 24px;position:relative;overflow:hidden;}
+.hero-content{text-align:center;max-width:800px;position:relative;z-index:2;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--glow);border:1px solid var(--border);padding:8px 20px;border-radius:50px;font-size:13px;font-weight:600;color:var(--accent);margin-bottom:28px;animation:fadeUp .8s ease forwards;}
+.hero-badge i{font-size:10px;animation:float 2s ease-in-out infinite;}
+.hero h1{font-size:clamp(32px,6vw,56px);font-weight:900;line-height:1.1;margin-bottom:20px;animation:fadeUp .8s ease .1s forwards;opacity:0;}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{font-size:clamp(16px,2.5vw,20px);color:var(--text2);line-height:1.6;margin-bottom:36px;max-width:600px;margin-left:auto;margin-right:auto;animation:fadeUp .8s ease .2s forwards;opacity:0;}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s ease .3s forwards;opacity:0;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#9b7aff);color:#fff;border:none;padding:16px 36px;border-radius:14px;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:10px;box-shadow:0 4px 24px rgba(124,92,252,.35);}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 36px rgba(124,92,252,.5);}
+.btn-secondary{background:transparent;color:var(--text);border:2px solid var(--border2);padding:14px 32px;border-radius:14px;font-family:'Inter',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:10px;}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
+.hero-code{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',monospace;font-size:clamp(12px,2vw,16px);color:var(--muted);opacity:.06;white-space:pre;line-height:1.8;pointer-events:none;z-index:0;text-align:left;}
+.hero-stats{display:flex;gap:40px;justify-content:center;margin-top:48px;animation:fadeUp .8s ease .4s forwards;opacity:0;}
+.hero-stat{text-align:center;}
+.hero-stat .num{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--accent);}
+.hero-stat .label{font-size:12px;color:var(--muted);font-weight:600;margin-top:2px;}
 
-.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;transition:all .2s;}
-.stat-card:hover{border-color:var(--border2);transform:translateY(-2px);}
-.stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.stat-icon{font-size:20px;}
-.stat-num{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;}
-.stat-label{font-size:11px;color:var(--muted);font-weight:600;}
+/* SECTIONS */
+.section{padding:80px 24px;max-width:1200px;margin:0 auto;}
+.section-header{text-align:center;margin-bottom:48px;}
+.section-badge{display:inline-flex;align-items:center;gap:6px;background:var(--glow);border:1px solid var(--border);padding:6px 16px;border-radius:50px;font-size:12px;font-weight:600;color:var(--accent);margin-bottom:14px;letter-spacing:.5px;text-transform:uppercase;}
+.section-title{font-size:clamp(24px,4vw,36px);font-weight:900;margin-bottom:12px;line-height:1.2;}
+.section-sub{font-size:16px;color:var(--text2);max-width:550px;margin:0 auto;line-height:1.6;}
 
-.xp-row{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:20px;}
-.xp-ring{width:60px;height:60px;flex-shrink:0;position:relative;}
-.xp-ring svg{width:100%;height:100%;transform:rotate(-90deg);}
-.xp-ring circle{fill:none;stroke-width:5;stroke-linecap:round;}
-.xp-ring .bg-r{stroke:var(--bg3);}
-.xp-ring .fg-r{stroke:var(--accent);transition:stroke-dashoffset .6s;}
-.xp-ring .fg-r.gold{stroke:var(--accent3);}
-.xp-lvl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:var(--accent);}
-.xp-lvl.gold{color:var(--accent3);}
-.xp-info{flex:1;}
-.xp-bar{width:100%;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:6px;}
-.xp-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .5s;}
-.xp-bar-fill.gold{background:linear-gradient(90deg,var(--accent3),var(--accent4));}
-.xp-text{font-size:11px;color:var(--muted);}
+/* LEARNING PATHS */
+.paths-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;}
+.path-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;transition:all .3s;position:relative;overflow:hidden;cursor:pointer;}
+.path-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;}
+.path-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:var(--border2);}
+.path-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;}
+.path-card h3{font-size:20px;font-weight:800;margin-bottom:8px;}
+.path-card p{font-size:14px;color:var(--text2);line-height:1.5;margin-bottom:20px;}
+.path-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.path-step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);}
+.path-step i{font-size:8px;color:var(--accent2);}
+.path-step .arrow{color:var(--muted);font-size:10px;}
+.btn-path{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 24px;border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;width:100%;justify-content:center;}
+.btn-path:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
 
-.section-title{font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.section-title span{color:var(--accent);}
+/* PRACTICE */
+.practice-tabs{display:flex;gap:8px;justify-content:center;margin-bottom:32px;flex-wrap:wrap;}
+.ptab{padding:10px 24px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;font-size:14px;font-weight:700;transition:all .2s;font-family:'Inter',sans-serif;}
+.ptab:hover{border-color:var(--accent);color:var(--text);}
+.ptab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.ptab .count{background:rgba(255,255,255,.15);padding:1px 8px;border-radius:8px;font-size:12px;margin-left:4px;}
+.questions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;max-height:600px;overflow-y:auto;padding:4px;}
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;transition:all .2s;cursor:pointer;display:flex;gap:14px;align-items:flex-start;}
+.q-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.q-num{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;flex-shrink:0;}
+.q-num.easy{background:rgba(0,232,157,.12);color:var(--accent2);}
+.q-num.medium{background:rgba(255,179,71,.12);color:var(--accent3);}
+.q-num.hard{background:rgba(255,95,126,.12);color:var(--accent4);}
+.q-body{flex:1;min-width:0;}
+.q-body h4{font-size:14px;font-weight:700;margin-bottom:4px;line-height:1.3;}
+.q-body p{font-size:12px;color:var(--muted);}
+.q-tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:6px;font-weight:700;background:var(--bg3);color:var(--muted);margin-right:4px;}
+.q-actions{display:flex;gap:6px;margin-top:10px;}
+.btn-solve{padding:6px 14px;border-radius:8px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
+.btn-solve.go{background:var(--accent);color:#fff;}
+.btn-solve.go:hover{opacity:.85;}
+.btn-solve.solved{background:rgba(0,232,157,.12);color:var(--accent2);cursor:default;}
+.btn-solve.soon{background:var(--bg3);color:var(--muted);cursor:default;opacity:.6;}
+.coming-soon-badge{display:inline-flex;align-items:center;gap:4px;background:var(--glow);border:1px solid var(--border);padding:4px 12px;border-radius:8px;font-size:11px;font-weight:600;color:var(--accent);margin-top:20px;}
 
-.topics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:20px;}
-.topic-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
-.topic-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.2);}
-.topic-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;}
-.topic-card .tc-icon{font-size:24px;margin-bottom:8px;}
-.topic-card h3{font-size:13px;font-weight:800;margin-bottom:2px;}
-.topic-card p{font-size:11px;color:var(--muted);}
-.tc-bar{height:3px;background:var(--bg3);border-radius:2px;margin-top:10px;overflow:hidden;}
-.tc-fill{height:100%;border-radius:2px;transition:width .4s;}
-.tc-diff{display:flex;gap:4px;margin-top:6px;font-size:9px;}
-.tc-diff span{padding:1px 6px;border-radius:4px;font-weight:700;}
+/* PROJECTS */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;}
+.proj-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:all .3s;cursor:pointer;}
+.proj-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);}
+.proj-img{height:180px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;}
+.proj-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,var(--card),transparent);}
+.proj-body{padding:20px;}
+.proj-level{font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;display:inline-block;margin-bottom:10px;}
+.proj-level.beginner{background:rgba(0,232,157,.12);color:var(--accent2);}
+.proj-level.intermediate{background:rgba(255,179,71,.12);color:var(--accent3);}
+.proj-level.advanced{background:rgba(255,95,126,.12);color:var(--accent4);}
+.proj-body h3{font-size:18px;font-weight:800;margin-bottom:6px;}
+.proj-body p{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:14px;}
+.proj-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.proj-tag{font-size:11px;padding:3px 10px;border-radius:6px;font-weight:600;background:var(--bg3);color:var(--muted);}
+.btn-proj{width:100%;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-proj:hover{border-color:var(--accent);color:var(--accent);}
 
-.daily-card{background:linear-gradient(135deg,rgba(139,122,255,.1),rgba(74,234,188,.06));border:1px solid rgba(139,122,255,.2);border-radius:14px;padding:16px;margin-bottom:20px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;}
-.daily-card:hover{transform:translateX(4px);border-color:var(--accent);}
-.daily-icon{font-size:28px;}
-.daily-text h4{font-size:14px;font-weight:800;margin-bottom:2px;}
-.daily-text p{font-size:12px;color:var(--muted);}
-.daily-reward{font-size:11px;color:var(--accent3);font-weight:700;background:rgba(255,196,107,.1);padding:2px 8px;border-radius:6px;margin-top:4px;display:inline-block;}
+/* DAILY CHALLENGE */
+.daily{background:linear-gradient(135deg,rgba(124,92,252,.08),rgba(255,179,71,.06));border:1.5px solid rgba(124,92,252,.2);border-radius:20px;padding:32px;display:flex;align-items:center;gap:28px;transition:all .3s;}
+.daily:hover{border-color:var(--accent);transform:translateY(-2px);}
+.daily-icon{font-size:48px;animation:float 3s ease-in-out infinite;flex-shrink:0;}
+.daily-text h3{font-size:22px;font-weight:800;margin-bottom:6px;}
+.daily-text p{font-size:14px;color:var(--text2);margin-bottom:12px;}
+.daily-reward{font-size:13px;color:var(--accent3);font-weight:700;background:rgba(255,179,71,.1);padding:4px 12px;border-radius:8px;display:inline-flex;align-items:center;gap:6px;}
+.btn-daily{background:linear-gradient(135deg,var(--accent3),var(--accent4));color:#fff;border:none;padding:12px 28px;border-radius:12px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-daily:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(255,179,71,.3);}
 
-/* ══════ PROBLEM SOLVING ══════ */
-.ps-tabs{display:flex;gap:8px;padding:20px 20px 0;flex-wrap:wrap;}
-.ps-tab{padding:10px 20px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;font-size:13px;font-weight:700;transition:all .2s;display:flex;align-items:center;gap:6px;}
-.ps-tab:hover{border-color:var(--accent);color:var(--text);}
-.ps-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
-.ps-tab .ps-count{background:rgba(255,255,255,.15);padding:1px 6px;border-radius:6px;font-size:11px;}
-.ps-tab.active .ps-count{background:rgba(255,255,255,.2);}
-.ps-content{padding:20px;}
-.ps-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;cursor:pointer;transition:all .2s;display:flex;gap:14px;align-items:flex-start;}
-.ps-item:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.15);}
-.ps-num{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;flex-shrink:0;}
-.ps-num.easy{background:rgba(74,234,188,.12);color:var(--accent2);}
-.ps-num.medium{background:rgba(255,196,107,.12);color:var(--accent3);}
-.ps-num.hard{background:rgba(255,107,138,.12);color:var(--accent4);}
-.ps-body{flex:1;}
-.ps-body h4{font-size:14px;font-weight:800;margin-bottom:4px;line-height:1.3;}
-.ps-body p{font-size:12px;color:var(--muted);line-height:1.4;}
-.ps-tags{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap;}
-.ps-tag{font-size:10px;padding:2px 8px;border-radius:6px;font-weight:700;background:var(--bg3);color:var(--muted);}
-.ps-done{font-size:16px;color:var(--accent2);}
+/* COMMUNITY */
+.community{text-align:center;}
+.community-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:48px;max-width:560px;margin:0 auto;transition:all .3s;}
+.community-card:hover{border-color:var(--accent2);transform:translateY(-4px);}
+.community-icon{font-size:48px;margin-bottom:20px;}
+.community-card h3{font-size:24px;font-weight:800;margin-bottom:8px;}
+.community-card p{font-size:15px;color:var(--text2);margin-bottom:24px;line-height:1.6;}
+.btn-whatsapp{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border:none;padding:14px 32px;border-radius:14px;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:10px;box-shadow:0 4px 24px rgba(37,211,102,.3);}
+.btn-whatsapp:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(37,211,102,.45);}
+.community-features{display:flex;gap:24px;justify-content:center;margin-top:28px;flex-wrap:wrap;}
+.community-feat{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);}
+.community-feat i{color:var(--accent2);}
 
-/* ══════ QUIZ ══════ */
-.diff-bar{display:flex;gap:6px;padding:12px 20px;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;}
-.diff-btn{padding:8px 16px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;font-size:12px;font-weight:700;transition:all .15s;white-space:nowrap;}
-.diff-btn:hover{border-color:var(--accent);color:var(--text);}
-.diff-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
-.lh{padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:10px;}
-.lh-back{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;transition:all .15s;flex-shrink:0;}
-.lh-back:hover{border-color:var(--accent);color:var(--accent);}
-.lh-title{font-size:15px;font-weight:800;flex-shrink:0;}
-.lh-prog{flex:1;min-width:60px;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
-.lh-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .3s;}
-.lh-count{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;flex-shrink:0;}
+/* LEADERBOARD */
+.lb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.lb-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;align-items:center;gap:14px;transition:all .2s;}
+.lb-card:hover{transform:translateY(-2px);}
+.lb-rank{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;width:36px;text-align:center;}
+.lb-avatar{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0;}
+.lb-info{flex:1;min-width:0;}
+.lb-name{font-weight:700;font-size:14px;}
+.lb-sub{font-size:11px;color:var(--muted);}
+.lb-xp{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--accent2);white-space:nowrap;}
 
-.q-area{padding:20px;max-width:640px;margin:0 auto;}
-.q-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:8px;font-size:11px;color:var(--muted);margin-bottom:14px;font-weight:700;background:var(--bg3);}
-.q-diff{font-size:9px;padding:2px 7px;border-radius:6px;font-weight:800;margin-left:4px;}
-.q-diff.basic{background:rgba(74,234,188,.12);color:var(--accent2);}
-.q-diff.inter{background:rgba(255,196,107,.12);color:var(--accent3);}
-.q-diff.adv{background:rgba(255,107,138,.12);color:var(--accent4);}
-.q-text{font-size:17px;font-weight:800;line-height:1.4;margin-bottom:18px;}
-.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
-.opt{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:13px 16px;cursor:pointer;font-size:14px;font-weight:600;transition:all .15s;text-align:left;color:var(--text);display:flex;align-items:center;gap:10px;}
-.opt:hover:not(:disabled){border-color:var(--accent);background:var(--hover);}
-.opt.correct{border-color:var(--accent2);background:rgba(74,234,188,.08);color:var(--accent2);}
-.opt.wrong{border-color:var(--accent4);background:rgba(255,107,138,.08);color:var(--accent4);}
-.opt:disabled{cursor:default;}
-.opt-l{width:26px;height:26px;border-radius:7px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;flex-shrink:0;transition:all .15s;}
-.opt.correct .opt-l{background:var(--accent2);color:var(--bg);}
-.opt.wrong .opt-l{background:var(--accent4);color:var(--bg);}
-.expl{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:1.5;display:none;}
-.expl.show{display:block;animation:fadeUp .3s ease;}
-.expl-t{font-size:10px;font-weight:800;color:var(--accent2);margin-bottom:4px;letter-spacing:1px;text-transform:uppercase;}
-.expl-code{font-family:'Space Mono',monospace;background:var(--code-bg);padding:8px 12px;border-radius:8px;font-size:11px;margin-top:6px;color:var(--accent3);border-left:3px solid var(--accent);line-height:1.6;white-space:pre-wrap;}
-.q-acts{display:flex;gap:8px;}
-.btn-next{background:var(--accent);color:#fff;border:none;padding:12px 28px;border-radius:12px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
-.btn-next:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(139,122,255,.3);}
-.btn-skip{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:12px 20px;border-radius:12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
-.btn-skip:hover{border-color:var(--muted);}
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24px;margin-top:40px;position:relative;z-index:1;}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
+.footer-left p{font-size:14px;color:var(--muted);}
+.footer-left span{color:var(--accent4);}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap;}
+.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s;}
+.footer-links a:hover{color:var(--accent);}
 
-.result-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;text-align:center;max-width:420px;margin:28px auto;}
-.result-emoji{font-size:48px;margin-bottom:10px;}
-.result-score{font-family:'Space Mono',monospace;font-size:42px;font-weight:700;color:var(--accent2);margin-bottom:6px;}
-.result-msg{font-size:14px;color:var(--muted);margin-bottom:6px;}
-.result-xp{font-size:13px;color:var(--accent3);font-weight:700;margin-bottom:20px;}
-.result-bd{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
-.rb-item{background:var(--bg3);border-radius:10px;padding:12px;}
-.rb-num{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;}
-.rb-label{font-size:11px;color:var(--muted);}
-.btn-retry{background:var(--accent);color:#fff;border:none;padding:12px 24px;border-radius:12px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-right:8px;transition:all .2s;}
-.btn-retry:hover{transform:translateY(-1px);}
-.btn-dash{background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;max-width:560px;width:100%;max-height:80vh;overflow-y:auto;animation:fadeUp .3s ease;}
+.modal h3{font-size:18px;font-weight:800;margin-bottom:6px;}
+.modal .q-meta{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.modal .solution-box{background:var(--code-bg);border:1px solid var(--border);border-radius:12px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:var(--accent3);white-space:pre-wrap;margin-bottom:16px;border-left:3px solid var(--accent2);}
+.modal-actions{display:flex;gap:10px;}
+.btn-modal{padding:10px 24px;border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+.btn-modal.primary{background:var(--accent);color:#fff;}
+.btn-modal.primary:hover{opacity:.85;}
+.btn-modal.secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border);}
 
-/* ══════ ASK ENGINE ══════ */
-.ask-wrap{max-width:660px;padding:20px;margin:0 auto;}
-.ask-hints{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
-.ask-hint{background:var(--bg3);border:1px solid var(--border);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s;}
-.ask-hint:hover{border-color:var(--accent);color:var(--accent);}
-.ask-input-wrap{display:flex;gap:8px;margin-bottom:16px;align-items:flex-end;}
-.ask-ta{flex:1;background:var(--input-bg);border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;font-family:'Nunito',sans-serif;font-size:14px;color:var(--text);resize:vertical;min-height:50px;max-height:160px;outline:none;transition:border-color .2s;}
-.ask-ta:focus{border-color:var(--accent);}
-.ask-ta::placeholder{color:var(--muted);}
-.ask-send{width:50px;height:50px;border-radius:14px;border:none;background:var(--accent);color:#fff;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
-.ask-send:hover{transform:scale(1.05);box-shadow:0 4px 16px rgba(139,122,255,.3);}
-.ask-send:disabled{opacity:.4;cursor:not-allowed;transform:none;}
-.chat{display:flex;flex-direction:column;gap:12px;}
-.cmsg{display:flex;gap:10px;animation:fadeUp .3s ease;}
-.cavatar{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
-.cuser .cavatar{background:var(--accent);color:#fff;}
-.cbot .cavatar{background:var(--accent2);color:var(--bg);}
-.cbubble{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;flex:1;line-height:1.5;font-size:13px;transition:background .3s,border-color .3s;}
-.cuser .cbubble{border-color:var(--accent);background:var(--glow);}
-.cbot .cbubble{border-color:rgba(74,234,188,.15);}
-.cbubble code{font-family:'Space Mono',monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px;font-size:11px;color:var(--accent3);}
-.cbubble pre{background:var(--code-bg);padding:10px 14px;border-radius:8px;margin:6px 0;font-family:'Space Mono',monospace;font-size:11px;overflow-x:auto;border-left:3px solid var(--accent2);color:var(--accent3);line-height:1.5;white-space:pre-wrap;}
-.cbubble .etag{display:inline-block;background:rgba(255,107,138,.1);color:var(--accent4);padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;margin-bottom:6px;}
-.cbubble .ctag{display:inline-block;background:rgba(74,234,188,.1);color:var(--accent2);padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;margin-bottom:6px;}
-.cbubble .itag{display:inline-block;background:rgba(139,122,255,.1);color:var(--accent);padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;margin-bottom:6px;}
-.cbubble .wtag{display:inline-block;background:rgba(255,196,107,.1);color:var(--accent3);padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;margin-bottom:6px;}
-.dots span{animation:dotPulse 1.2s infinite;display:inline-block;}
-.dots span:nth-child(2){animation-delay:.2s}
-.dots span:nth-child(3){animation-delay:.4s}
-
-/* ══════ LEADERBOARD ══════ */
-.lb-timer{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;display:flex;align-items:center;gap:6px;margin-bottom:14px;}
-.spin-icon{display:inline-block;width:12px;height:12px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.lb-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:6px;transition:all .15s;}
-.lb-item:hover{transform:translateX(3px);}
-.lb-rank{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;width:28px;text-align:center;}
-.lb-name{font-weight:700;flex:1;font-size:13px;}
-.lb-str{font-size:10px;color:var(--muted);}
-.lb-chg{font-size:10px;font-weight:700;padding:2px 5px;border-radius:5px;}
-.lb-up{color:var(--accent2);background:rgba(74,234,188,.1);}
-.lb-dn{color:var(--accent4);background:rgba(255,107,138,.1);}
-.lb-sm{color:var(--muted);background:var(--bg3);}
-.lb-sc{font-family:'Space Mono',monospace;color:var(--accent2);font-weight:700;font-size:13px;}
-.lb-me{border-color:var(--accent)!important;background:var(--glow)!important;}
-.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;}
-.badge-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 6px;text-align:center;transition:all .15s;}
-.badge-item:hover{transform:translateY(-2px);}
-.badge-icon{font-size:26px;margin-bottom:4px;}
-.badge-name{font-size:10px;font-weight:700;margin-bottom:2px;}
-.badge-desc{font-size:9px;color:var(--muted);}
-.badge-item.locked{opacity:.25;filter:grayscale(1);}
-
-/* ══════ PRACTICE ══════ */
-.code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:12px;padding:14px 18px;font-family:'Space Mono',monospace;font-size:13px;line-height:1.8;margin-bottom:16px;}
-.code-blank{background:transparent;border:none;border-bottom:2px solid var(--accent);color:var(--accent2);font-family:'Space Mono',monospace;font-size:13px;width:100px;text-align:center;outline:none;padding:0 4px;}
-.code-blank.correct{border-color:var(--accent2);color:var(--accent2);}
-.code-blank.wrong{border-color:var(--accent4);color:var(--accent4);}
-.check-btn{background:var(--accent2);border:none;color:var(--bg);padding:10px 22px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
-.check-btn:hover{transform:translateY(-1px);}
-
-/* ══════ FLASHCARDS ══════ */
-.fc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;cursor:pointer;min-height:170px;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:all .25s;max-width:520px;margin:14px auto;user-select:none;}
-.fc:hover{border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,.15);}
-.fc-f{font-size:17px;font-weight:800;}
-.fc-b{font-size:14px;color:var(--accent2);line-height:1.6;display:none;}
-.fc-h{font-size:10px;color:var(--muted);margin-top:12px;}
-.fc.flip .fc-f{display:none;}
-.fc.flip .fc-b{display:block;}
-.fc.flip{background:var(--glow2);border-color:var(--accent2);}
-.fc-nav{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:8px;}
-.fc-btn{background:var(--card);border:1px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
-.fc-btn:hover{border-color:var(--accent);color:var(--accent);}
-
-/* ══════ ROADMAP ══════ */
-.rm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;}
-.rm-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;gap:10px;align-items:flex-start;transition:all .15s;}
-.rm-item:hover{border-color:var(--accent);transform:translateY(-1px);}
-.rm-i{font-size:20px;flex-shrink:0;}
-.rm-t h4{font-size:12px;font-weight:800;margin-bottom:2px;}
-.rm-t p{font-size:11px;color:var(--muted);line-height:1.4;}
-.rm-s{font-size:9px;font-weight:700;padding:2px 6px;border-radius:6px;margin-top:3px;display:inline-block;}
-.rm-soon{background:rgba(74,234,188,.1);color:var(--accent2);}
-.rm-later{background:rgba(255,196,107,.1);color:var(--accent3);}
-.rm-plan{background:var(--bg3);color:var(--muted);}
-
-.toast{position:fixed;bottom:16px;right:16px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 18px;font-size:13px;font-weight:600;z-index:999;transform:translateY(70px);opacity:0;transition:all .3s;backdrop-filter:blur(12px);}
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 24px;font-size:14px;font-weight:600;z-index:3000;transform:translateY(80px);opacity:0;transition:all .35s;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px;}
 .toast.show{transform:translateY(0);opacity:1;}
-.toast.success{border-color:var(--accent2);color:var(--accent2);}
-.toast.error{border-color:var(--accent4);color:var(--accent4);}
-.toast.info{border-color:var(--accent);color:var(--accent);}
+.toast i{font-size:18px;}
 
-/* ══════ MOBILE ══════ */
-@media(max-width:768px){
-  .sidebar{position:fixed;left:0;top:54px;bottom:0;z-index:60;transform:translateX(-100%);width:260px;box-shadow:4px 0 24px rgba(0,0,0,.3);}
-  .sidebar.open{transform:translateX(0);}
-  .sidebar-overlay.show{display:block;z-index:55;}
+/* RESPONSIVE */
+@media(max-width:900px){
+  .nav-links{display:none;}
   .menu-btn{display:flex;}
-  .nav-center{padding:0 8px;}
-  .nav-btn{padding:8px 10px;font-size:11px;}
-  .dash{padding:16px;}
-  .hero-card{padding:20px;}
-  .hero-card h1{font-size:18px;}
-  .hero-btns{flex-direction:column;}
-  .btn-start,.btn-outline{width:100%;text-align:center;}
-  .stats-row{grid-template-columns:repeat(2,1fr);gap:8px;}
-  .topics-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
-  .topic-card{padding:12px;}
-  .q-text{font-size:15px;}
-  .opt{padding:11px 14px;font-size:13px;}
-  .ask-input-wrap{flex-direction:column;}
-  .ask-send{width:100%;height:44px;}
-  .ps-tabs{padding:14px 14px 0;}
-  .ps-tab{padding:8px 14px;font-size:12px;}
+  .hero-stats{gap:24px;}
+  .daily{flex-direction:column;text-align:center;gap:16px;}
+  .paths-grid,.projects-grid,.lb-grid{grid-template-columns:1fr;}
 }
-
-@media(max-width:400px){
-  .stats-row{grid-template-columns:1fr 1fr;}
-  .topics-grid{grid-template-columns:1fr;}
+@media(max-width:600px){
+  nav{padding:0 16px;gap:12px;}
+  .nav-search{display:none;}
+  .section{padding:48px 16px;}
+  .hero{min-height:80vh;padding:40px 16px;}
+  .hero-stats{flex-direction:column;gap:16px;}
+  .questions-grid{grid-template-columns:1fr;}
+  .community-card{padding:32px 20px;}
+  .footer-inner{flex-direction:column;text-align:center;}
+  .path-card{padding:22px;}
 }
 </style>
 </head>
 <body>
 
-<div class="bg-mesh"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<div class="bg-effects"><div class="bg-orb o1"></div><div class="bg-orb o2"></div><div class="bg-orb o3"></div></div>
 <div class="bg-grid"></div>
-<div class="sidebar-overlay" id="sb-overlay" onclick="closeSB()"></div>
 
 <nav>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <button class="menu-btn" onclick="toggleSB()">☰</button>
-    <div class="logo"><div class="dot"></div>PySeekho</div>
-  </div>
-  <div class="nav-center">
-    <button class="nav-btn active" onclick="go('dash')">Home</button>
-    <button class="nav-btn" onclick="go('problems')">Problems</button>
-    <button class="nav-btn" onclick="go('quiz')">Quiz</button>
-    <button class="nav-btn" onclick="go('practice')">Practice</button>
-    <button class="nav-btn" onclick="go('cards')">Cards</button>
-    <button class="nav-btn" onclick="go('ask')">Ask AI</button>
-    <button class="nav-btn" onclick="go('ranks')">Ranks</button>
+  <button class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+  <div class="logo"><i class="fas fa-code"></i> Sikh<span>le</span></div>
+  <div class="nav-search"><i class="fas fa-search"></i><input type="text" placeholder="Search courses, topics..." id="searchInput" oninput="filterQuestions(this.value)"></div>
+  <div class="nav-links">
+    <a class="nav-link" href="#paths">Paths</a>
+    <a class="nav-link" href="#practice">Practice</a>
+    <a class="nav-link" href="#projects">Projects</a>
+    <a class="nav-link" href="#community">Community</a>
   </div>
   <div class="nav-right">
-    <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
   </div>
 </nav>
 
-<div class="app">
-<div class="sidebar" id="sidebar"></div>
-<div class="content" id="mc"></div>
+<div class="mobile-menu" id="mobileMenu">
+  <a class="nav-link" href="#paths" onclick="toggleMenu()">📚 Learning Paths</a>
+  <a class="nav-link" href="#practice" onclick="toggleMenu()">🧩 Practice</a>
+  <a class="nav-link" href="#projects" onclick="toggleMenu()">🎯 Projects</a>
+  <a class="nav-link" href="#daily" onclick="toggleMenu()">🔥 Daily Challenge</a>
+  <a class="nav-link" href="#leaders" onclick="toggleMenu()">🏆 Leaderboard</a>
+  <a class="nav-link" href="#community" onclick="toggleMenu()">🧑‍🤝‍🧑 Community</a>
 </div>
-<div class="toast" id="toast"></div>
+
+<div class="main">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-code">def learn(skill):
+    while not mastered:
+        practice(skill)
+        build_projects()
+    return "Job Ready 🎯"</div>
+  <div class="hero-content">
+    <div class="hero-badge"><i class="fas fa-circle"></i> 100% Free — No Hidden Costs</div>
+    <h1>Learn Coding & Skills<br>for Free <em>🚀</em></h1>
+    <p>From Beginner to Job Ready — Step by Step. Master Web Development, Python, Cyber Security and more with hands-on projects.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('paths').scrollIntoView({behavior:'smooth'})"><i class="fas fa-play"></i> Start Learning</button>
+      <button class="btn-secondary" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})"><i class="fas fa-compass"></i> Explore Courses</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">50+</div><div class="label">Courses</div></div>
+      <div class="hero-stat"><div class="num">500+</div><div class="label">Exercises</div></div>
+      <div class="hero-stat"><div class="num">30+</div><div class="label">Projects</div></div>
+      <div class="hero-stat"><div class="num">10K+</div><div class="label">Learners</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARNING PATHS -->
+<section class="section fade-up" id="paths">
+  <div class="section-header">
+    <div class="section-badge"><i class="fas fa-route"></i> Learning Paths</div>
+    <h2 class="section-title">Choose Your Path</h2>
+    <p class="section-sub">Structured roadmaps from basics to job-ready. Pick one and start your journey.</p>
+  </div>
+  <div class="paths-grid">
+    <div class="path-card" onclick="go('quiz')">
+      <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#38bdf8,#7c5cfc);border-radius:4px 4px 0 0;"></div>
+      <div class="path-icon" style="background:rgba(56,189,248,.12);color:#38bdf8;"><i class="fas fa-globe"></i></div>
+      <h3>💻 Web Development</h3>
+      <p>Build modern websites and web applications from scratch. Master frontend and backend technologies.</p>
+      <div class="path-steps">
+        <div class="path-step"><i class="fas fa-circle"></i> HTML5 Fundamentals</div>
+        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> CSS3 & Flexbox/Grid</div>
+        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> JavaScript ES6+</div>
+        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> React / Node.js</div>
+        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Real Projects</div>
+      </div>
+      <button class="btn-path"><i class="fas fa-arrow-right"></i> Start Web Dev Path</button>
+    </div>
+    <div class="path-card" onclick="go('quiz')">
+      <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#00e89d,#38bdf8);border-radius:4px 4px 0 0;"></div>
+      <div class="path-icon" style="background:rgba(0,232,157,.12);color:#00e89d;"><i class="fab fa-python"></i></div>
+      <h3>🐍 Python Programming</h3>
+      <p>Learn Python from zero to hero. Covers basics to advanced topics including DSA and automation.</p>
+      <div class="path-steps">
+        <div class="path-step"><i class="fas fa-circle"></i> Variables & Data Types</div>
+        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Functions & OOP</div>
+        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> File Handling & Modules</div>
+        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> DSA with Python</div>
+        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Automation Projects</div>
+      </div>
+      <button class="btn-path"><i class="fas fa-arrow-right"></i> Start Python Path</button>
+    </div>
+    <div class="path-card" onclick="go('quiz')">
+      <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#ff5f7e,#ffb347);border-radius:4px 4px 0 0;"></div>
+      <div class="path-icon" style="background:rgba(255,95,126,.12);color:#ff5f7e;"><i class="fas fa-shield-halved"></i></div>
+      <h3>🔐 Cyber Security</h3>
+      <p>Learn ethical hacking, network security, and penetration testing. Protect systems like a pro.</p>
+      <div class="path-steps">
+        <div class="path-step"><i class="fas fa-circle"></i> Networking Fundamentals</div>
+        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Linux & Command Line</div>
+        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Security Tools (Kali)</div>
+        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Web App Pentesting</div>
+        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Bug Bounty Hunting</div>
+      </div>
+      <button class="btn-path"><i class="fas fa-arrow-right"></i> Start Security Path</button>
+    </div>
+  </div>
+</section>
+
+<!-- DAILY CHALLENGE -->
+<section class="section fade-up" id="daily" style="max-width:900px;">
+  <div class="daily">
+    <div class="daily-icon">🔥</div>
+    <div class="daily-text">
+      <h3>Daily Challenge</h3>
+      <p>Solve a new coding problem every day to build consistency and sharpen your skills.</p>
+      <div class="daily-reward"><i class="fas fa-trophy"></i> Earn bonus XP and streak rewards</div>
+    </div>
+    <button class="btn-daily" onclick="showToast('🎉 Challenge loaded! Check Practice section.','success')"><i class="fas fa-bolt"></i> Today's Challenge</button>
+  </div>
+</section>
+
+<!-- PRACTICE -->
+<section class="section fade-up" id="practice">
+  <div class="section-header">
+    <div class="section-badge"><i class="fas fa-dumbbell"></i> Practice & Improve</div>
+    <h2 class="section-title">500+ Coding Questions</h2>
+    <p class="section-sub">Solve questions categorized by difficulty. Track your progress and master problem-solving.</p>
+  </div>
+  <div class="practice-tabs">
+    <button class="ptab active" onclick="showTab('easy',this)"><i class="fas fa-seedling" style="color:var(--accent2)"></i> Easy <span class="count" id="easyCount"></span></button>
+    <button class="ptab" onclick="showTab('medium',this)"><i class="fas fa-fire" style="color:var(--accent3)"></i> Medium <span class="count" id="medCount"></span></button>
+    <button class="ptab" onclick="showTab('hard',this)"><i class="fas fa-skull-crossbones" style="color:var(--accent4)"></i> Hard <span class="count" id="hardCount"></span></button>
+  </div>
+  <div class="questions-grid" id="questionsGrid"></div>
+  <div style="text-align:center;margin-top:24px;">
+    <div class="coming-soon-badge"><i class="fas fa-flask"></i> Solve & Check Answer system — Coming Soon</div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="section fade-up" id="projects">
+  <div class="section-header">
+    <div class="section-badge"><i class="fas fa-rocket"></i> Build Projects</div>
+    <h2 class="section-title">Real-World Projects</h2>
+    <p class="section-sub">Build actual projects to strengthen your skills and create an impressive portfolio.</p>
+  </div>
+  <div class="projects-grid">
+    <div class="proj-card">
+      <div class="proj-img" style="background:linear-gradient(135deg,rgba(56,189,248,.1),rgba(124,92,252,.1));">🧮</div>
+      <div class="proj-body">
+        <span class="proj-level beginner">Beginner</span>
+        <h3>Calculator App</h3>
+        <p>Build a fully functional calculator with basic and scientific operations using HTML, CSS, and JavaScript.</p>
+        <div class="proj-tags"><span class="proj-tag">HTML</span><span class="proj-tag">CSS</span><span class="proj-tag">JavaScript</span></div>
+        <button class="btn-proj" onclick="showToast('📂 Project guide opening soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-img" style="background:linear-gradient(135deg,rgba(0,232,157,.1),rgba(56,189,248,.1));">🌐</div>
+      <div class="proj-body">
+        <span class="proj-level beginner">Beginner</span>
+        <h3>Portfolio Website</h3>
+        <p>Create a stunning portfolio website to showcase your projects, skills, and achievements to potential employers.</p>
+        <div class="proj-tags"><span class="proj-tag">HTML</span><span class="proj-tag">CSS</span><span class="proj-tag">Responsive</span></div>
+        <button class="btn-proj" onclick="showToast('📂 Project guide opening soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-img" style="background:linear-gradient(135deg,rgba(255,179,71,.1),rgba(255,95,126,.1));">🔐</div>
+      <div class="proj-body">
+        <span class="proj-level intermediate">Intermediate</span>
+        <h3>Login & Signup System</h3>
+        <p>Build a complete authentication system with registration, login, password reset, and session management.</p>
+        <div class="proj-tags"><span class="proj-tag">Python</span><span class="proj-tag">Flask</span><span class="proj-tag">SQLite</span></div>
+        <button class="btn-proj" onclick="showToast('📂 Project guide opening soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-img" style="background:linear-gradient(135deg,rgba(124,92,252,.1),rgba(0,232,157,.1));">📋</div>
+      <div class="proj-body">
+        <span class="proj-level intermediate">Intermediate</span>
+        <h3>Todo App with CRUD</h3>
+        <p>Full-stack todo application with Create, Read, Update, Delete operations using React and Node.js.</p>
+        <div class="proj-tags"><span class="proj-tag">React</span><span class="proj-tag">Node.js</span><span class="proj-tag">MongoDB</span></div>
+        <button class="btn-proj" onclick="showToast('📂 Project guide opening soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-img" style="background:linear-gradient(135deg,rgba(56,189,248,.1),rgba(255,179,71,.1));">🌤️</div>
+      <div class="proj-body">
+        <span class="proj-level intermediate">Intermediate</span>
+        <h3>Weather Application</h3>
+        <p>Build a weather app that fetches real-time data from an API and displays forecasts with beautiful UI.</p>
+        <div class="proj-tags"><span class="proj-tag">JavaScript</span><span class="proj-tag">API</span><span class="proj-tag">CSS</span></div>
+        <button class="btn-proj" onclick="showToast('📂 Project guide opening soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-img" style="background:linear-gradient(135deg,rgba(255,95,126,.1),rgba(124,92,252,.1));">🤖</div>
+      <div class="proj-body">
+        <span class="proj-level advanced">Advanced</span>
+        <h3>AI Chatbot Interface</h3>
+        <p>Create an interactive chatbot UI that connects to an AI API with conversation history and markdown rendering.</p>
+        <div class="proj-tags"><span class="proj-tag">React</span><span class="proj-tag">API</span><span class="proj-tag">WebSocket</span></div>
+        <button class="btn-proj" onclick="showToast('📂 Project guide opening soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEADERBOARD -->
+<section class="section fade-up" id="leaders">
+  <div class="section-header">
+    <div class="section-badge"><i class="fas fa-trophy"></i> Leaderboard</div>
+    <h2 class="section-title">Top Learners</h2>
+    <p class="section-sub">See who's leading the pack. Solve more questions to climb the ranks!</p>
+  </div>
+  <div class="lb-grid">
+    <div class="lb-card" style="border-color:var(--accent3);background:var(--glow);"><div class="lb-rank" style="color:var(--accent3);">1</div><div class="lb-avatar" style="background:linear-gradient(135deg,var(--accent3),var(--accent4));color:#fff;">A</div><div class="lb-info"><div class="lb-name">Arjun Mehta <i class="fas fa-crown" style="color:var(--accent3);font-size:12px;margin-left:4px;"></i></div><div class="lb-sub">Python Expert · 127 day streak</div></div><div class="lb-xp">12,450 XP</div></div>
+    <div class="lb-card" style="border-color:var(--muted);"><div class="lb-rank" style="color:var(--muted);">2</div><div class="lb-avatar" style="background:linear-gradient(135deg,var(--accent),var(--accent5));color:#fff;">P</div><div class="lb-info"><div class="lb-name">Priya Sharma</div><div class="lb-sub">Web Dev · 98 day streak</div></div><div class="lb-xp">11,280 XP</div></div>
+    <div class="lb-card"><div class="lb-rank" style="color:var(--accent4);">3</div><div class="lb-avatar" style="background:linear-gradient(135deg,var(--accent4),var(--accent3));color:#fff;">R</div><div class="lb-info"><div class="lb-name">Rahul Verma</div><div class="lb-sub">Full Stack · 85 day streak</div></div><div class="lb-xp">10,150 XP</div></div>
+    <div class="lb-card"><div class="lb-rank">4</div><div class="lb-avatar" style="background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;">S</div><div class="lb-info"><div class="lb-name">Sneha Gupta</div><div class="lb-sub">Cyber Security · 72 day streak</div></div><div class="lb-xp">9,870 XP</div></div>
+    <div class="lb-card"><div class="lb-rank">5</div><div class="lb-avatar" style="background:linear-gradient(135deg,var(--accent5),var(--accent2));color:#fff;">V</div><div class="lb-info"><div class="lb-name">Vikram Patel</div><div class="lb-sub">Python DSA · 64 day streak</div></div><div class="lb-xp">8,920 XP</div></div>
+    <div class="lb-card"><div class="lb-rank">6</div><div class="lb-avatar" style="background:var(--bg3);color:var(--muted);border:1px solid var(--border);">K</div><div class="lb-info"><div class="lb-name">Kavya Iyer</div><div class="lb-sub">Frontend · 51 day streak</div></div><div class="lb-xp">7,640 XP</div></div>
+    <div class="lb-card" style="border:1.5px dashed var(--accent);background:var(--glow);cursor:pointer;" onclick="showToast('🏆 Keep solving to climb the ranks!','info')"><div class="lb-rank" style="color:var(--accent);">?</div><div class="lb-avatar" style="background:var(--accent);color:#fff;"><i class="fas fa-user" style="font-size:14px;"></i></div><div class="lb-info"><div class="lb-name" style="color:var(--accent);">Your Position</div><div class="lb-sub">Start learning to appear here!</div></div><div class="lb-xp" style="color:var(--muted);">— XP</div></div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section class="section fade-up" id="community">
+  <div class="community">
+    <div class="community-card">
+      <div class="community-icon">🧑‍🤝‍🧑</div>
+      <h3>Join Our Community</h3>
+      <p>Connect with thousands of learners. Get help, share your progress, ask doubts, and stay motivated throughout your learning journey.</p>
+      <a href="https://chat.whatsapp.com/GI1Zz2oLuRi6mwdiIL0ShG" target="_blank" rel="noopener" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Join WhatsApp Group</a>
+      <div class="community-features">
+        <div class="community-feat"><i class="fas fa-check-circle"></i> Ask doubts 24/7</div>
+        <div class="community-feat"><i class="fas fa-check-circle"></i> Weekly challenges</div>
+        <div class="community-feat"><i class="fas fa-check-circle"></i> Job referrals</div>
+        <div class="community-feat"><i class="fas fa-check-circle"></i> Study groups</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <div class="logo" style="font-size:18px;margin-bottom:8px;"><i class="fas fa-code" style="font-size:18px;"></i> Sikh<span>le</span></div>
+      <p>Made for learners <span>❤️</span></p>
+    </div>
+    <div class="footer-links">
+      <a href="#paths">Learning Paths</a>
+      <a href="#practice">Practice</a>
+      <a href="#projects">Projects</a>
+      <a href="#community">Community</a>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+      <h3 id="modalTitle">Question</h3>
+      <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px;"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="q-meta" id="modalMeta"></div>
+    <p id="modalDesc" style="font-size:15px;line-height:1.6;margin-bottom:16px;color:var(--text2);"></p>
+    <div class="solution-box" id="modalSolution"></div>
+    <div class="modal-actions">
+      <button class="btn-modal primary" onclick="markSolved()"><i class="fas fa-check"></i> Mark Solved</button>
+      <button class="btn-modal secondary" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i></i><span></span></div>
 
 <script>
 // ═══════════════════════════════════
-// DATA
+// QUESTIONS DATA — 100+
 // ═══════════════════════════════════
-const T=[
-  {id:'basics',name:'Basics',icon:'⚡',color:'#8b7aff',qs:[]},
-  {id:'strings',name:'Strings',icon:'📝',color:'#ffc46b',qs:[]},
-  {id:'lists',name:'Lists',icon:'📋',color:'#ff6b8a',qs:[]},
-  {id:'loops',name:'Loops',icon:'🔄',color:'#4aeabc',qs:[]},
-  {id:'functions',name:'Functions',icon:'⚙️',color:'#7eb8f7',qs:[]},
-  {id:'dicts',name:'Dicts',icon:'📚',color:'#f7a06a',qs:[]},
-  {id:'oops',name:'OOP',icon:'🏗️',color:'#c76af7',qs:[]},
-  {id:'exceptions',name:'Errors',icon:'🛡️',color:'#f76a6a',qs:[]},
+const QUESTIONS=[
+// EASY — HTML/CSS (20)
+{d:'easy',t:'HTML',q:'What does HTML stand for?',opts:['Hyper Text Markup Language','High Tech Modern Language','Hyper Transfer Markup Language','Home Tool Markup Language'],a:0,solution:'HTML = Hyper Text Markup Language\n\nIt is the standard markup language for creating web pages. HTML describes the structure of a web page using tags.'},
+{d:'easy',t:'HTML',q:'Which tag is used to create a hyperlink?',opts:['<link>','<a>','<href>','<url>'],a:1,solution:'The <a> tag creates hyperlinks.\n\nExample:\n<a href="https://example.com">Click here</a>\n\nThe href attribute specifies the URL.'},
+{d:'easy',t:'HTML',q:'Which tag is used for the largest heading?',opts:['<heading>','<h6>','<h1>','<head>'],a:2,solution:'<h1> creates the largest heading.\n\nHTML headings range from <h1> (largest) to <h6> (smallest).\n\n<h1>Main Title</h1>\n<h2>Subtitle</h2>'},
+{d:'easy',t:'HTML',q:'Which attribute specifies an alternate text for an image?',opts:['title','src','alt','name'],a:2,solution:'The alt attribute provides alternative text.\n\n<img src="photo.jpg" alt="A beautiful sunset">\n\nIt is shown when the image cannot be loaded and is important for accessibility.'},
+{d:'easy',t:'HTML',q:'Which element is used to create an unordered list?',opts:['<ol>','<li>','<ul>','<list>'],a:2,solution:'<ul> creates an unordered (bulleted) list.\n\n<ul>\n  <li>Item 1</li>\n  <li>Item 2</li>\n</ul>\n\nFor ordered (numbered) lists, use <ol>.'},
+{d:'easy',t:'CSS',q:'Which CSS property changes the text color?',opts:['font-color','text-color','color','foreground'],a:2,solution:'The color property sets the text color.\n\np {\n  color: #333333;\n}\n\nAccepts: named colors, hex codes, rgb(), hsl().'},
+{d:'easy',t:'CSS',q:'Which property is used to change the background color?',opts:['bgcolor','background-color','bg-color','fill'],a:1,solution:'background-color sets the element\'s background.\n\nbody {\n  background-color: #f0f0f0;\n}\n\nCan also use gradients, images, etc.'},
+{d:'easy',t:'CSS',q:'What does CSS stand for?',opts:['Computer Style Sheets','Cascading Style Sheets','Creative Style System','Colorful Style Sheets'],a:1,solution:'CSS = Cascading Style Sheets\n\n"Cascading" refers to the way rules are applied — later rules can override earlier ones based on specificity and order.'},
+{d:'easy',t:'CSS',q:'Which property is used to set the font size?',opts:['text-size','font-size','size','font-height'],a:1,solution:'font-size sets the text size.\n\nh1 { font-size: 32px; }\np  { font-size: 16px; }\n\nUnits: px, em, rem, %, vw, vh'},
+{d:'easy',t:'CSS',q:'Which property creates space between the element\'s border and content?',opts:['margin','spacing','padding','border-spacing'],a:2,solution:'padding creates space inside the border.\n\n.box {\n  padding: 20px;\n}\n\nMargin = outside the border\nPadding = inside the border'},
+{d:'easy',t:'CSS',q:'How do you center a block element horizontally?',opts:['text-align: center','margin: 0 auto','float: center','position: center'],a:1,solution:'margin: 0 auto centers a block element.\n\n.box {\n  width: 300px;\n  margin: 0 auto;\n}\n\nRequires a defined width.'},
+{d:'easy',t:'CSS',q:'Which property makes an element completely invisible?',opts:['visibility: hidden','opacity: 0','display: none','hidden: true'],a:2,solution:'display: none removes the element from layout.\n\n.hidden { display: none; }  /* No space taken */\n.invisible { visibility: hidden; }  /* Space taken */\n.transparent { opacity: 0; }  /* Space taken, clickable */'},
+{d:'easy',t:'CSS',q:'Which property is used to create rounded corners?',opts:['corner-radius','border-radius','round','box-round'],a:1,solution:'border-radius creates rounded corners.\n\n.card {\n  border-radius: 12px;\n}\n\nCan set individual corners:\nborder-top-left-radius: 8px;'},
+{d:'easy',t:'CSS',q:'What does box-sizing: border-box do?',opts:['Adds padding to width','Includes padding in width','Removes padding','Sets border size'],a:1,solution:'border-box includes padding and border in the element\'s total width/height.\n\n* {\n  box-sizing: border-box;\n}\n\nWithout it: width = content only\nWith it: width = content + padding + border'},
+{d:'easy',t:'CSS',q:'Which property adds a shadow to an element?',opts:['filter: shadow','shadow','box-shadow','drop-shadow'],a:2,solution:'box-shadow adds shadow to elements.\n\ncard {\n  box-shadow: 0 4px 12px rgba(0,0,0,0.15);\n}\n\nSyntax: offsetX offsetY blur color'},
+{d:'easy',t:'CSS',q:'How do you make text bold using CSS?',opts:['font-weight: bold','text-style: bold','font-style: bold','text-weight: bold'],a:0,solution:'font-weight: bold makes text bold.\n\np {\n  font-weight: bold;\n}\n\nOr use numeric value: font-weight: 700;'},
+{d:'easy',t:'CSS',q:'Which property changes the font family?',opts:['font-name','font-family','text-font','typeface'],a:1,solution:'font-family sets the typeface.\n\nbody {\n  font-family: "Inter", sans-serif;\n}\n\nAlways provide fallback fonts.'},
+{d:'easy',t:'CSS',q:'What is Flexbox used for?',opts:['Adding colors','Creating layouts','Adding animations','Importing fonts'],a:1,solution:'Flexbox is a layout system for arranging items.\n\n.container {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\nOne-dimensional layout — row or column.'},
+{d:'easy',t:'CSS',q:'Which property sets the gap between flex items?',opts:['margin','spacing','gap','flex-gap'],a:2,solution:'gap sets the space between flex/grid items.\n\n.container {\n  display: flex;\n  gap: 16px;\n}\n\nReplaces margin hacks. No need for :last-child margin removal.'},
+
+// EASY — JavaScript (30)
+{d:'easy',t:'JavaScript',q:'How do you declare a variable in modern JavaScript?',opts:['var x = 1','let x = 1','variable x = 1','v x = 1'],a:1,solution:'Use let (or const) in modern JavaScript.\n\nlet x = 10;      // can be reassigned\nconst PI = 3.14; // cannot be reassigned\n\nvar is old — avoid it (function-scoped, hoisted).'},
+{d:'easy',t:'JavaScript',q:'What is the output of typeof null?',opts:['"null"','"object"','"undefined"','"boolean"'],a:1,solution:'typeof null returns "object" — this is a known JS bug.\n\ntypeof null      // "object" (bug!)\nnull === null     // true (correct way to check)'},
+{d:'easy',t:'JavaScript',q:'Which method converts a JSON string to an object?',opts:['JSON.stringify()','JSON.parse()','JSON.convert()','JSON.objectify()'],a:1,solution:'JSON.parse() converts JSON string to object.\n\nconst str = \'{"name": "Alice"}\';\nconst obj = JSON.parse(str);\nconsole.log(obj.name); // "Alice"\n\nJSON.stringify() does the opposite (object → string).'},
+{d:'easy',t:'JavaScript',q:'How do you select an element by its ID?',opts:['document.querySelector(".id")','document.getElement("#id")','document.getElementById("id")','document.selectById("id")'],a:2,solution:'document.getElementById() selects by ID.\n\nconst el = document.getElementById("myId");\n\nNote: No # symbol in the argument!'},
+{d:'easy',t:'JavaScript',q:'What does === check compared to ==?',opts:['Value only','Type only','Value AND type','Nothing different'],a:2,solution:'=== checks both value AND type (strict equality).\n\n1 == "1"   // true  (type coercion)\n1 === "1"  // false (no coercion)\n\nAlways prefer === to avoid unexpected bugs.'},
+{d:'easy',t:'JavaScript',q:'Which keyword defines a constant?',opts:['var','let','const','define'],a:2,solution:'const declares a constant (cannot be reassigned).\n\nconst API_URL = "https://api.example.com";\nAPI_URL = "new"; // TypeError!\n\nNote: Objects/Arrays declared with const can still be mutated.'},
+{d:'easy',t:'JavaScript',q:'What does console.log() do?',opts:['Creates an alert','Prints to browser console','Writes to HTML','Shows a popup'],a:1,solution:'console.log() outputs to the browser\'s developer console.\n\nconsole.log("Hello!"); // Prints in DevTools\nconsole.log(42);\nconsole.log({name: "Alice"});\n\nOpen DevTools (F12) → Console tab.'},
+{d:'easy',t:'JavaScript',q:'How do you write a conditional in JavaScript?',opts:['if (x = 5)','if (x == 5)','if x == 5','ask if x == 5'],a:1,solution:'JavaScript uses if/else if/else syntax.\n\nif (x > 10) {\n  console.log("big");\n} else if (x > 5) {\n  console.log("medium");\n} else {\n  console.log("small");\n}'},
+{d:'easy',t:'JavaScript',q:'What is an array in JavaScript?',opts:['A single value','An ordered collection of values','A function','A boolean'],a:1,solution:'An array is an ordered list of values.\n\nconst fruits = ["apple", "banana", "cherry"];\nconsole.log(fruits[0]); // "apple"\nconsole.log(fruits.length); // 3\n\nCan hold mixed types: [1, "hello", true, null]'},
+{d:'easy',t:'JavaScript',q:'Which method adds an element to the end of an array?',opts:['push()','pop()','shift()','unshift()'],a:0,solution:'push() adds to the end, pop() removes from end.\n\nconst arr = [1, 2, 3];\narr.push(4);    // [1,2,3,4]\narr.pop();       // returns 4, arr is [1,2,3]\n\nunshift() adds to the beginning.\nshift() removes from beginning.'},
+{d:'easy',t:'JavaScript',q:'What does a for loop do?',opts:['Runs once','Repeats code multiple times','Stops execution','Creates a function'],a:1,solution:'for loop repeats code a specific number of times.\n\nfor (let i = 0; i < 5; i++) {\n  console.log(i); // 0,1,2,3,4\n}\n\nThree parts: initialization; condition; increment.'},
+{d:'easy',t:'JavaScript',q:'How do you write a function in JavaScript?',opts:['function myFunc() {}','func myFunc() {}','def myFunc() {}','fn myFunc() {}'],a:0,solution:'Use the function keyword.\n\nfunction greet(name) {\n  return "Hello, " + name;\n}\n\n// Arrow function\nconst greet = (name) => `Hello, ${name}`;\n\n// Call it\ngreet("Alice");'},
+{d:'easy',t:'JavaScript',q:'What is NaN in JavaScript?',opts:['Not a Name','Not a Number','Null and None','New and Neat'],a:1,solution:'NaN = Not a Number.\n\nconsole.log(0 / 0);        // NaN\nconsole.log(parseInt("abc")); // NaN\nconsole.log(typeof NaN);   // "number"\n\nWeird: NaN !== NaN (always false).\nUse Number.isNaN() to check.'},
+{d:'easy',t:'JavaScript',q:'Which operator checks if a value is NOT equal?',opts:['!=','==!','<>','not='],a:0,solution:'!= checks inequality (loose), !== checks strict inequality.\n\n5 != "5"   // false (coercion)\n5 !== "5"  // true (no coercion)\n\nPrefer !== for type-safe comparisons.'},
+{d:'easy',t:'JavaScript',q:'What does the + operator do with strings?',opts:['Adds numbers','Concatenates strings','Subtracts','Compares'],a:1,solution:'+ concatenates (joins) strings.\n\n"Hello" + " " + "World"  // "Hello World"\n"Age: " + 25               // "Age: 25"\n\nWith a number: "Count: " + 5 → "Count: 5"'},
+{d:'easy',t:'JavaScript',q:'What is an object in JavaScript?',opts:['A single value','A key-value pair collection','An array','A function'],a:1,solution:'Objects store key-value pairs.\n\nconst person = {\n  name: "Alice",\n  age: 25,\n  city: "Mumbai"\n};\n\nAccess: person.name // "Alice"\nAdd: person.email = "a@b.com"'},
+{d:'easy',t:'JavaScript',q:'How do you access an object\'s property?',opts:['object.get("key")','object["key"] or object.key','object->key','object@key'],a:1,solution:'Two ways to access properties.\n\nconst obj = {name: "Alice", age: 25};\n\n// Dot notation\nobj.name  // "Alice"\n\n// Bracket notation (needed for dynamic keys)\nobj["name"]  // "Alice"\nconst key = "age";\nobj[key]     // 25'},
+{d:'easy',t:'JavaScript',q:'What does template literal use?',opts:['Single quotes','Double quotes','Backticks','Parentheses'],a:2,solution:'Template literals use backticks (``).\n\nconst name = "Alice";\nconst msg = `Hello, ${name}!`;\n\n// Multi-line\nconst html = `\n  <h1>${title}</h1>\n  <p>${desc}</p>\n`;\n\nSupports expressions inside ${}.'},
+{d:'easy',t:'JavaScript',q:'Which method converts a string to an integer?',opts:['Number.toInt()','parseInt()','String.toNumber()','convertInt()'],a:1,solution:'parseInt() converts string to integer.\n\nparseInt("42")     // 42\nparseInt("42px")   // 42 (stops at non-digit)\nparseInt("3.14")   // 3\nparseFloat("3.14") // 3.14\n\nAlways provide radix: parseInt("10", 2) → 2 (binary).'},
+{d:'easy',t:'JavaScript',q:'What is an arrow function?',opts:['A function with =>','A function with ::','A function with ->','A function with >>'],a:0,solution:'Arrow functions use => syntax.\n\n// Regular\nfunction add(a, b) { return a + b; }\n\n// Arrow\nconst add = (a, b) => a + b;\n\n// Single param (no parens needed)\nconst double = x => x * 2;\n\n// No binding of own "this" — important!'},
+{d:'easy',t:'JavaScript',q:'What is the difference between let and var?',opts:['No difference','let is block-scoped','var is block-scoped','let is function-scoped'],a:1,solution:'let is block-scoped, var is function-scoped.\n\nif (true) {\n  var x = 1; // function-scoped\n  let y = 2; // block-scoped\n}\nconsole.log(x); // 1\nconsole.log(y); // ReferenceError!\n\nAlways prefer let/const over var.'},
+{d:'easy',t:'JavaScript',q:'How do you add an event listener to a button?',opts:['button.addClick()','button.addEventListener("click", fn)','button.onClick(fn)','button.on("click", fn)'],a:1,solution:'addEventListener() attaches event handlers.\n\nconst btn = document.getElementById("myBtn");\nbtn.addEventListener("click", function() {\n  console.log("Clicked!");\n});\n\nRemove: btn.removeEventListener("click", fn)'},
+{d:'easy',t:'JavaScript',q:'What does the typeof operator return for an array?',opts:['"array"','"object"','"list"','"undefined"'],a:1,solution:'typeof [] returns "object" — a known JS quirk.\n\ntypeof []      // "object" (not helpful!)\nArray.isArray([]) // true  (correct way)\n\nThis is because arrays are technically objects in JavaScript.'},
+{d:'easy',t:'JavaScript',q:'What does the && operator do?',opts:['OR logic','AND logic','NOT logic','Assignment'],a:1,solution:'&& is logical AND — both sides must be true.\n\ntrue && true   // true\ntrue && false  // false\nfalse && true  // false\nfalse && false // false\n\nShort-circuits: returns first falsy value.\nlet x = null && "hello"; // null'},
+{d:'easy',t:'JavaScript',q:'What does the || operator do?',opts:['AND logic','OR logic','NOT logic','Assignment'],a:1,solution:'|| is logical OR — at least one side must be true.\n\ntrue || false  // true\nfalse || true  // true\ntrue || true   // true\nfalse || false // false\n\nShort-circuits: returns first truthy value.\nlet name = null || "Anonymous"; // "Anonymous"'},
+{d:'easy',t:'JavaScript',q:'What is the ternary operator?',opts:['a ? b : c','if-else statement','a && b','switch-case'],a:0,solution:'Ternary is a concise if-else in one line.\n\nconst age = 20;\nconst status = age >= 18 ? "Adult" : "Minor";\n\n// Equivalent to:\nlet status;\nif (age >= 18) status = "Adult";\nelse status = "Minor";\n\nCan be nested: a ? b : c ? d : e'},
+{d:'easy',t:'JavaScript',q:'What does the spread operator (...) do?',opts:['Deletes elements','Expands iterables','Compresses arrays','Sorts arrays'],a:1,solution:'... expands an iterable into individual elements.\n\nconst a = [1, 2, 3];\nconst b = [...a, 4, 5]; // [1,2,3,4,5]\n\nconst obj1 = {x: 1};\nconst obj2 = {...obj1, y: 2}; // {x:1, y:2}\n\nfunction sum(a, b, c) {}\nsum(...[1,2,3]); // same as sum(1,2,3)'},
+
+// MEDIUM (20)
+{d:'medium',t:'JavaScript',q:'What is a closure in JavaScript?',opts:['A loop structure','A function with access to its outer scope','An HTML element','A CSS property'],a:1,solution:'A closure is a function that retains access to its outer scope.\n\nfunction outer() {\n  let count = 0;\n  return function() {\n    count++;\n    return count;\n  };\n}\nconst counter = outer();\ncounter(); // 1\ncounter(); // 2\n\nThe inner function "remembers" count from outer scope.'},
+{d:'medium',t:'JavaScript',q:'What is the difference between map() and forEach()?',opts:['No difference','map() returns a new array, forEach() doesn\'t','forEach() is faster','map() is older'],a:1,solution:'map() returns a new array, forEach() returns undefined.\n\nconst nums = [1,2,3,4];\n\nconst doubled = nums.map(n => n * 2);\n// [2,4,6,8] — new array returned\n\nnums.forEach(n => console.log(n));\n// undefined — no return value\n\nUse map() when you need the transformed result.'},
+{d:'medium',t:'JavaScript',q:'What is the event loop in JavaScript?',opts:['A CSS animation loop','Asynchronous execution model','A for loop variant','DOM update cycle'],a:1,solution:'The event loop handles async operations.\n\nCall Stack → Web APIs → Callback Queue → Event Loop\n\nconsole.log("1");          // sync\nsetTimeout(() => {\n  console.log("2");    // async\n}, 0);\nconsole.log("3");          // sync\n\nOutput: 1, 3, 2 (setTimeout goes to Web API first, then callback queue).'},
+{d:'medium',t:'JavaScript',q:'What is Promise.all() used for?',opts:['Running one promise','Running all promises in parallel','Creating a promise','Rejecting a promise'],a:1,solution:'Promise.all() waits for ALL promises to resolve.\n\nconst p1 = fetch("/api/users");\nconst p2 = fetch("/api/posts");\nconst p3 = fetch("/api/comments");\n\nconst [users, posts, comments] = await Promise.all([p1, p2, p3]);\n\nFails fast: if ANY promise rejects, all() rejects.\nUse Promise.allSettled() to never reject.'},
+{d:'medium',t:'JavaScript',q:'What does async/await do?',opts:['Makes code run slower','Makes async code look synchronous','Adds animations','Creates threads'],a:1,solution:'async/await makes async code read like sync code.\n\nasync function getUser() {\n  const res = await fetch("/api/user");\n  const data = await res.json();\n  return data;\n}\n\n// Without await (messy):\nfetch("/api/user").then(res => res.json()).then(data => ...);\n\nawait pauses execution until the promise resolves.'},
+{d:'medium',t:'JavaScript',q:'What is the difference between deep copy and shallow copy?',opts:['No difference','Shallow copies one level, deep copies all nested','Deep copy is slower','Shallow copy is always better'],a:1,solution:'Shallow copy: only top level is copied (references nested).\nDeep copy: everything including nested objects is cloned.\n\n// Shallow\nconst copy = {...obj};\ncopy.nested.arr.push(4); // affects original!\n\n// Deep\nconst copy = JSON.parse(JSON.stringify(obj));\ncopy.nested.arr.push(4); // original safe\n\nOr use structuredClone() (modern browsers).'},
+{d:'medium',t:'JavaScript',q:'What is the purpose of the "use strict" directive?',opts:['Enables ES6 features','Prevents silent errors and makes JS stricter','Makes code run faster','Adds type checking'],a:1,solution:'"use strict" enables strict mode.\n\n"use strict";\n\n// Prevents:\nx = 10;           // ReferenceError (no implicit global)\ndelete Object.prototype; // TypeError\n\n// Improves error reporting and performance.'},
+{d:'medium',t:'JavaScript',q:'What is a higher-order function?',opts:['A function that runs slowly','A function that takes/returns functions','A function with many parameters','A class method'],a:1,solution:'A higher-order function takes a function as argument or returns one.\n\n// Takes a function\n[1,2,3].map(x => x * 2);\n[1,2,3].filter(x => x > 1);\n\n// Returns a function\nfunction multiplier(factor) {\n  return (n) => n * factor;\n}\nconst double = multiplier(2);\n\ndouble(5); // 10'},
+{d:'medium',t:'JavaScript',q:'What is destructuring assignment?',opts:['Deleting variables','Extracting values from arrays/objects','Destroying memory','Creating destructors'],a:1,solution:'Destructuring unpacks values from arrays or objects.\n\n// Array\nconst [a, b, c] = [10, 20, 30];\n\n// Object\nconst {name, age, city} = person;\n\n// Rename: const {name: n} = obj;\n// Default: const {x = 10} = obj;\n// Rest: const [first, ...rest] = arr;'},
+{d:'medium',t:'JavaScript',q:'What does the "this" keyword refer to in an arrow function?',opts:['The function itself','The object that calls the function','The window object','The class'],a:1,solution:'Arrow functions don\'t have their own "this" — they inherit from enclosing scope.\n\nconst obj = {\n  name: "Alice",\n  regular: function() { console.log(this.name); },  // "Alice"\n  arrow: () => { console.log(this.name); }       // undefined!\n};\n\nUse regular functions for object methods.'},
+{d:'medium',t:'JavaScript',q:'What is the difference between == and ===?',opts:['=== checks type, == doesn\'t','== is newer','=== is only for strings','No real difference'],a:0,solution:'== does type coercion, === does not.\n\n1 == "1"    // true  (string coerced to number)\n1 === "1"   // false (different types)\n\nnull == undefined  // true  (both are "falsy")\nnull === undefined // false\n\nRule: ALWAYS use === to avoid bugs.'},
+{d:'medium',t:'JavaScript',q:'What is event delegation?',opts:['Delegating events to a framework','Attaching handler to parent instead of children','Removing all events','Creating custom events'],a:1,solution:'Attaching one handler to a parent instead of many children.\n\n<ul id="list">\n  <li>Item 1</li>\n  <li>Item 2</li>\n  <li>Item 3</li>\n</ul>\n\ndocument.getElementById("list").addEventListener("click", (e) => {\n  if (e.target.tagName === "LI") {\n    console.log(e.target.textContent);\n  }\n});\n\nBetter performance with many items.'},
+{d:'medium',t:'JavaScript',q:'What is memoization?',opts:['Storing memories','Caching function results to avoid recomputation','Creating notes','Memory management'],a:1,solution:'Memoization caches function results for repeated calls.\n\nfunction memoize(fn) {\n  const cache = {};\n  return function(...args) {\n    const key = JSON.stringify(args);\n    if (cache[key]) return cache[key];\n    const result = fn(...args);\n    cache[key] = result;\n    return result;\n  };\n}\n\nconst fastFib = memoize(fibonacci);\nfastFib(40); // computed once, then cached'},
+{d:'medium',t:'JavaScript',q:'What is Object.keys() used for?',opts:['Getting all values','Getting all property names','Deleting keys','Creating keys'],a:1,solution:'Object.keys() returns an array of property names.\n\nconst user = {name: "Alice", age: 25, city: "Mumbai"};\nObject.keys(user); // ["name", "age", "city"]\n\nOther methods:\nObject.values(user)  // ["Alice", 25, "Mumbai"]\nObject.entries(user) // [["name","Alice"], ...]'},
+{d:'medium',t:'JavaScript',q:'What does the "this" keyword refer to in a method?',opts:['The class itself','The instance that called the method','The constructor','The window'],a:1,solution:'In a method, "this" refers to the instance that called it.\n\nclass Dog {\n  constructor(name) { this.name = name; }\n  bark() { console.log(this.name); }\n}\n\nconst rex = new Dog("Rex");\nrex.bark(); // "Rex"\n\nconst bella = new Dog("Bella");\nbella.bark(); // "Bella"  (this is different!)'},
+{d:'medium',t:'JavaScript',q:'What is the difference between call, apply, and bind?',opts:['No difference','call/apply call immediately, bind returns new function','bind is deprecated','apply doesn\'t work'],a:1,solution:'call/apply invoke immediately. bind returns a new function.\n\nfunction greet(greeting, punct) {\n  console.log(greeting + " " + this.name + punct);\n}\n\nconst person = {name: "Alice"};\ngreet.call(person, "Hi", "!");   // Hi Alice!\ngreet.apply(person, ["Hi", "!"]); // Hi Alice!\nconst bound = greet.bind(person, "Hey");\nbound("!"); // Hey Alice! (called later)'},
+{d:'medium',t:'JavaScript',q:'What is the purpose of Symbol in JavaScript?',opts:['Creating icons','Creating unique identifiers','Math operations','String manipulation'],a:1,solution:'Symbol creates a unique identifier, useful for object keys.\n\nconst id1 = Symbol("id");\nconst id2 = Symbol("id");\nid1 === id2; // false (always unique!)\n\nconst obj = {\n  [Symbol("id")]: 1,\n  [Symbol("id")]: 2  // no collision!\n};\n\nAlso used for well-known symbols: Symbol.iterator, Symbol.toPrimitive.'},
+
+// HARD (30)
+{d:'hard',t:'JavaScript',q:'What is the difference between prototypal and classical inheritance?',opts:['No difference','Prototypal uses __proto__, classical uses class keyword','Classical is newer','Prototypal is only in JS'],a:1,solution:'JS uses prototypal inheritance. "class" is syntactic sugar.\n\n// Prototypal\nfunction Animal(name) { this.name = name; }\nAnimal.prototype.speak = () => "generic";\nfunction Dog(name) { Animal.call(this, name); }\nDog.prototype = Object.create(Animal.prototype);\n\n// Classical (sugar for above)\nclass Dog extends Animal {\n  constructor(name) { super(name); }\n}\n\nUnder the hood, both use [[Prototype]] chain.'},
+{d:'hard',t:'JavaScript',q:'What is the prototype chain?',opts:['A linked list of objects','A CSS feature','A type of loop','An array method'],a:0,solution:'Every object has a hidden [[Prototype]] link to another object, forming a chain.\n\nconst arr = [1,2,3];\narr.hasOwnProperty("0");   // true (own property)\narr.hasOwnProperty("push"); // false\n"push" in arr;               // true (found in chain!)\n\nChain: arr → Array.prototype → Object.prototype → null'},
+{d:'hard',t:'JavaScript',q:'How does the "new" keyword work internally?',opts:['Creates a new variable','Creates object, links prototype, binds this, returns it','Only works with classes','Allocates memory'],a:1,solution:'new does 4 things with any function:\n\nfunction Person(name) { this.name = name; }\nconst p = new Person("Alice");\n\n// Internally:\n// 1. Creates empty object: {}\n// 2. Sets [[Prototype]] to Person.prototype\n// 3. Calls Person with this = {} and "Alice"\n// 4. Returns the object (if no explicit return)'},
+{d:'hard',t:'JavaScript',q:'What is a WeakMap and when should you use it?',opts:['A map with only numbers','A map that allows GC of keys','A slower version of Map','A map that weakly references keys'],a:1,solution:'WeakMap allows garbage collection of keys when no references exist.\n\n// Regular Map — holds strong references\nconst map = new Map();\nlet obj = {id: 1};\nmap.set(obj, "data");\nobj = null; // obj still in map! Memory leak!\n\n// WeakMap — keys can be GC\'d\nconst wm = new WeakMap();\nlet obj2 = {id: 1};\nwm.set(obj2, "data");\nobj2 = null; // key automatically removed!\n\nUse for metadata and caching.'},
+{d:'hard',t:'JavaScript',q:'What is the difference between microtasks and macrotasks?',opts:['Speed difference','Microtasks run before macrotasks in event loop','No difference','Microtasks are deprecated'],a:1,solution:'Microtasks (Promise callbacks) have higher priority than macrotasks (setTimeout).\n\nconsole.log("1");\nsetTimeout(() => console.log("2"), 0);\nPromise.resolve().then(() => console.log("3"));\nconsole.log("4");\n\n// Output: 1, 4, 3, 2\n\nCall stack → Microtasks → Macrotasks'},
+{d:'hard',t:'JavaScript',q:'What is a Proxy in JavaScript?',opts:['A network proxy','An object that intercepts operations on another object','A design pattern','A CSS feature'],a:1,solution:'Proxy intercepts and customizes fundamental operations on objects.\n\nconst handler = {\n  get(target, prop) {\n    console.log(`Accessing: ${prop}`);\n    return target[prop];\n  },\n  set(target, prop, value) {\n    console.log(`Setting ${prop} = ${value}`);\n    target[prop] = value;\n    return true;\n  }\n};\n\nconst proxy = new Proxy({}, handler);\nproxy.name = "Alice"; // Logs & sets\nproxy.name;              // Logs & gets'},
+{d:'hard',t:'JavaScript',q:'What is the difference between call, apply, and bind regarding "this"?',opts:['They all work the same','call: explicit args, apply: array args, bind: returns new fn with fixed "this"','Only bind works with "this"'],a:1,solution:'All set "this" but differently.\n\nfunction greet(g, p) { return g + " " + this.name + p; }\n\n// call: pass args individually\ngreet.call({name:"A"}, "Hi", "!");\n\n// apply: pass args as array\ngreet.apply({name:"B"}, ["Hey", "?"]);\n\n// bind: return NEW function with fixed "this"\nconst greetA = greet.bind({name: "C"}, "Yo", "!");\ngreetA(); // "Yo C!"  (this is permanently "C")'},
+{d:'hard',t:'JavaScript',q:'What is the purpose of Reflect API?',opts:['Creating reflections','Same operations as Proxy but as functions','DOM manipulation','Animation'],a:1,solution:'Reflect provides function forms of Proxy trap operations.\n// Instead of: delete obj.key → might throw\nReflect.deleteProperty(obj, "key"); // returns bool\n\n// Instead of: Object.keys → only own enumerable\nReflect.ownKeys(obj); // configurable: true/false\n\nUsed with Proxy handlers for forwarding operations correctly.'},
+{d:'hard',t:'JavaScript',q:'What is the Temporal Dead Zone (TDZ)?',opts:['A time zone','Period before let/const is initialized','A deprecated feature','Error handling zone'],a:1,solution:'TDZ is the zone from block start to variable declaration.\n\nconsole.log(x); // ReferenceError!\nlet x = 5;\nconsole.log(x); // 5\n\nThe variable "exists" in TDZ but cannot be accessed.\n\nSame for const, class, import.\nvar does NOT have TDZ (hoisted as undefined).'},
+{d:'hard',t:'JavaScript',q:'What is the difference between generator and async generator?',opts:['No difference','Regular returns {value, done}, async returns Promise','Async generator is faster','Regular generator doesn\'t exist'],a:1,solution:'Async generators return Promises instead of plain values.\n\nfunction* gen() {\n  yield 1;   // returns {value: 1, done: false}\n  yield 2;   // returns {value: 2, done: false}\n}\n\nasync function* asyncGen() {\n  yield fetch("/api");  // returns Promise!\n  yield fetch("/api2");\n}\n\nfor await (const p of asyncGen()) {\n  const data = await p;\n}\n\nUseful for async iteration patterns.'},
+{d:'hard',t:'JavaScript',q:'What is the difference between for...in and for...of?',opts:['No difference','for...in iterates keys (including inherited), for...of iterates values','for...of is for objects only','for...in is newer'],a:1,solution:'for...in: object keys (including inherited prototype chain).\nfor...of: iterable values (not object keys).\n\nconst arr = ["a", "b", "c"];\n\nfor (const key in arr) console.log(key);   // "0", "1", "2"\nfor (const val of arr) console.log(val);   // "a", "b", "c"\n\nUse for...of for arrays/strings. Avoid for...in on arrays.'},
+{d:'hard',t:'JavaScript',q:'What is Object.freeze() and what are its limitations?',opts:['Freezes the screen','Makes object immutable (shallow only)','Deep freezes everything','Removes all properties'],a:1,solution:'Object.freeze() makes an object shallow immutable.\n\nconst obj = { a: 1, nested: { b: 2 } };\nObject.freeze(obj);\nobj.a = 99;       // Error (frozen)\nobj.nested.b = 99; // Still works! (shallow only)\n\nFor deep freeze: use structuredClone() + freeze()\nor a recursive function.\n\nCannot be unfrozen — it\'s one-way.'},
+{d:'hard',t:'JavaScript',q:'What is a WeakRef and when would you use it?',opts:['A weak reference that can be garbage collected','A reference to a WeakMap','A deprecated API','A type of Promise'],a:0,solution:'WeakRef holds a weak reference — GC can collect the target.\n\nlet obj = {data: "important"};\nconst ref = new WeakRef(obj);\n\nobj = null; // can be GC\'d now\nref.deref(); // undefined (was collected)\n\nUse case: caching without preventing GC.\nCompanion: FinalizationRegistry — callback when GC\'d.'},
+{d:'hard',t:'JavaScript',q:'What is structuredClone() and why is it better than JSON.parse(JSON.stringify())?',opts:['They are identical','Handles more types: Date, RegExp, Map, Set, undefined, circular refs','It\'s slower but safer','Only works with strings'],a:1,solution:'structuredClone() deep copies with full fidelity.\n\n// JSON.stringify fails on:\nconst obj = {\n  date: new Date(),\n  regex: /test/,\n  fn: function(){},\n  undef: undefined,\n  circ: {}  // TypeError: Converting circular structure\n};\n\nstructuredClone(obj); // Works perfectly!\n\nLimitation: doesn\'t clone functions (throws error).'},
+{d:'hard',t:'JavaScript',q:'What is a Proxy revocable and when is it useful?',opts:['A proxy that auto-revokes after time','A proxy that can be permanently revoked','A security feature to restrict access','A deprecated pattern'],a:1,solution:'Proxy.revocable() creates a proxy that can be permanently disabled.\n\nconst {proxy, revoke} = Proxy.revocable(target, handler);\n\nproxy.name; // works\nrevoke();    // permanently disabled\nproxy.name; // TypeError!\n\nUse case: Security — grant temporary access to an object,\nthen revoke access (e.g., third-party plugins, sandboxes).'},
+{d:'hard',t:'JavaScript',q:'What is the difference between a generator and an iterator?',opts:['They are the same','Every generator is an iterator, not vice versa','Every iterator is a generator','They use different syntax'],a:1,solution:'Every generator creates an iterator, but not every iterator is a generator.\n// Generator (creates iterator)\nfunction* gen() {\n  yield 1; yield 2; yield 3;\n}\n\n// Manual iterator (more code)\nfunction createIterator(arr) {\n  let i = 0;\n  return {\n    next() { return i < arr.length ? {value: arr[i++], done: false} : {done: true}; }\n  };\n}\n\nBoth have .next() returning {value, done}.'},
+{d:'hard',t:'JavaScript',q:'What is the purpose of Symbol.toPrimitive?',opts:['Converts symbol to string','Defines how objects convert to primitives','Creates primitive types','Imports primitives'],a:1,solution:'Symbol.toPrimitive controls type coercion behavior.\n\nconst obj = {\n  [Symbol.toPrimitive](hint) {\n    if (hint === "number") return 42;\n    if (hint === "string") return "hello";\n    return true;\n  }\n};\n\n+obj;     // calls with hint "number" → 42\n`${obj}` // calls with hint "string" → "hello"\nobj == true;  // calls with hint "default" → true'},
+{d:'hard',t:'JavaScript',q:'How does JavaScript garbage collection work?',opts:['Manual memory management','Automatic — marks-and-sweep algorithm','Reference counting only','No garbage collection in JS'],a:1,solution:'JS uses mark-and-sweep garbage collection.\n\n1. GC finds all "roots" (global, stack variables)\n2. "Marks" all objects reachable from roots\n3. "Sweeps" unmarked objects (frees memory)\n\n// Circular references are handled correctly:\nlet a = {};\nlet b = {};\na.ref = b;\nb.ref = a;\na = null; b = null; // both become unreachable → GC\'d\n\nCannot manually trigger GC (it\'s automatic).'},
+{d:'hard',t:'JavaScript',q:'What is a Web Worker and what are its limitations?',opts:['A DOM helper','A background thread for heavy computation','A CSS feature','A testing tool'],a:1,solution:'Web Worker runs JS in a background thread (no UI access).\n\n// main.js\nconst worker = new Worker("worker.js");\nworker.postMessage({num: 10000});\nworker.onmessage = (e) => console.log(e.data);\n\n// worker.js\nself.onmessage = (e) => {\n  let sum = 0;\n  for (let i = 0; i < e.data.num; i++) sum += i;\n  self.postMessage(sum);\n};\n\nLimitations: No DOM, window, document. Can use: fetch, WebSocket, IndexedDB.'},
+{d:'hard',t:'JavaScript',q:'What is the difference between AbortController and simply removing event listeners?',opts:['No difference','AbortController can cancel fetch + listeners; removeEventListener only removes listeners','AbortController is deprecated','AbortController is faster'],a:1,solution:'AbortController can cancel in-progress operations.\n\nconst ctrl = new AbortController();\nfetch("/api/data", { signal: ctrl.signal })\n  .then(data => data)\n  .catch(err => {\n    if (err.name === "AbortError")\n      console.log("Cancelled!");\n  });\n\nctrl.abort(); // cancels the fetch!\n\nremoveEventListener only removes the handler — can\'t stop a running fetch.'},
+{d:'hard',t:'JavaScript',q:'What is tree shaking and why is it important?',opts:['DOM tree optimization','Removing unused code during bundling','An algorithm pattern','CSS optimization'],a:1,solution:'Tree shaking eliminates dead code from the final bundle.\n// utils.js\nexport function used() { return "used"; }\nexport function unused() { return "unused"; }\n\n// main.js\nimport { used } from "./utils.js";\n// Only "used" is included in the bundle!\n\nRequires: ES modules (import/export), static analysis.\nDoesn\'t work with CommonJS (require).'},
 ];
 
-const QS=[
-  // BASICS
-  {t:'basics',d:1,q:"What type of language is Python?",o:["Compiled","Interpreted","Machine Level","Assembly"],a:1,e:"Python is interpreted — executed line by line.",c:"python script.py  # runs directly"},
-  {t:'basics',d:1,q:"Which data type stores whole numbers?",o:["str","bool","int","char"],a:2,e:"int stores whole numbers.",c:"age = 25\ntype(age)  # <class 'int'>"},
-  {t:'basics',d:1,q:"How do you write a comment?",o:["// comment","/* comment */","# comment","-- comment"],a:2,e:"# starts a single-line comment.",c:"# This is a comment"},
-  {t:'basics',d:1,q:"Output of print('2' + '3')?",o:["5","23","Error","None"],a:1,e:"String concatenation, not addition.",c:"print('2' + '3')  # '23'"},
-  {t:'basics',d:2,q:"What does bool('') return?",o:["True","False","Error","None"],a:1,e:"Empty string is falsy.",c:"bool('')   # False\nbool('hi') # True"},
-  {t:'basics',d:2,q:"Result of 10 % 3?",o:["3","1","0.33","7"],a:1,e:"% is modulo — returns remainder.",c:"10 % 3  # 1"},
-  {t:'basics',d:2,q:"What happens with int('abc')?",o:["Returns 0","Returns 'abc'","ValueError","None"],a:2,e:"int() can't convert non-numeric strings.",c:"int('abc')  # ValueError!"},
-  {t:'basics',d:3,q:"What is 2 ** 10?",o:["20","100","1024","512"],a:2,e:"** is exponentiation. 2^10 = 1024.",c:"2 ** 10  # 1024"},
-  {t:'basics',d:3,q:"Result of (True and False) or True?",o:["True","False","None","Error"],a:0,e:"and has higher precedence: (F) or T = T.",c:"(True and False) or True  # True"},
-  {t:'basics',d:3,q:"Output of print(0.1 + 0.2 == 0.3)?",o:["True","False","Error","None"],a:1,e:"Floating point precision issue!",c:"0.1 + 0.2  # 0.30000000000000004"},
-  // STRINGS
-  {t:'strings',d:1,q:"What does 'hello'[1] return?",o:["h","e","l","o"],a:1,e:"Index starts at 0.",c:"s = 'hello'\ns[1]  # 'e'"},
-  {t:'strings',d:1,q:"What does 'Python'[-1] return?",o:["P","y","n","o"],a:2,e:"-1 is last character.",c:"'Python'[-1]  # 'n'"},
-  {t:'strings',d:2,q:"What does 'a,b,c'.split(',') return?",o:["'a b c'","['a','b','c']","('a','b','c')","Error"],a:1,e:".split() divides into list.",c:"'a,b,c'.split(',')  # ['a','b','c']"},
-  {t:'strings',d:2,q:"What does '  hello  '.strip() return?",o:["'  hello  '","'hello'","'hello  '","Error"],a:1,e:".strip() removes whitespace.",c:"'  hello  '.strip()  # 'hello'"},
-  {t:'strings',d:3,q:"What does 'hello'[1:4:2] return?",o:["el","helo","he","ell"],a:0,e:"[start:stop:step] — e(1), l(3).",c:"'hello'[1:4:2]  # 'el'"},
-  {t:'strings',d:3,q:"Result of 'abc' * 3?",o:["abc3","abcabcabc","Error","'abc' * 3"],a:1,e:"String repetition with *.",c:"'abc' * 3  # 'abcabcabc'"},
-  // LISTS
-  {t:'lists',d:1,q:"After append('mango'), what is ['apple','banana']?",o:["['apple','banana']","['mango','apple','banana']","['apple','banana','mango']","Error"],a:2,e:".append() adds to end.",c:"fruits.append('mango')"},
-  {t:'lists',d:2,q:"After sort(), what is [3,1,4,1,5]?",o:["Same","Reversed","[1,1,3,4,5]","Error"],a:2,e:".sort() sorts ascending.",c:"nums.sort()  # [1,1,3,4,5]"},
-  {t:'lists',d:2,q:"List vs Tuple difference?",o:["No difference","Tuple faster","Tuple immutable","Lists only for numbers"],a:2,e:"Tuples can't change after creation.",c:"t = (1,2,3)  # immutable\nl = [1,2,3]  # mutable"},
-  {t:'lists',d:3,q:"What does [x**2 for x in range(4)] return?",o:["[1,4,9,16]","[0,1,4,9]","[0,1,2,3]","[1,2,3,4]"],a:1,e:"List comprehension.",c:"[x**2 for x in range(4)]  # [0,1,4,9]"},
-  {t:'lists',d:3,q:"Output: a=[1,2,3]; b=a; b.append(4); print(a)?",o:["[1,2,3]","[1,2,3,4]","Error","[4]"],a:1,e:"b=a is same reference, not a copy!",c:"b = a  # same object!\nb.append(4)\nprint(a)  # [1,2,3,4]"},
-  // LOOPS
-  {t:'loops',d:1,q:"What does 'for i in range(3): print(i)' print?",o:["1 2 3","0 1 2","0 1 2 3","1 2"],a:1,e:"range(3) generates 0,1,2.",c:"for i in range(3):\n    print(i)  # 0,1,2"},
-  {t:'loops',d:2,q:"What does 'continue' do?",o:["Stops loop","Skips iteration","Restarts loop","Raises error"],a:1,e:"Skips to next iteration.",c:"for i in range(5):\n    if i==2: continue"},
-  {t:'loops',d:3,q:"When does 'while True' stop?",o:["Never","After 1 iter","After 10","Automatically"],a:0,e:"Infinite loop — needs break.",c:"while True:\n    if condition: break"},
-  {t:'loops',d:3,q:"When does for-else run?",o:["Always","Never","No break occurred","On error"],a:2,e:"else runs if loop completes without break.",c:"for i in [1,2]:\n    pass\nelse:\n    print('done')  # runs!"},
-  // FUNCTIONS
-  {t:'functions',d:1,q:"What is 'def' for?",o:["Variables","Functions","Classes","Imports"],a:1,e:"def defines a function.",c:"def greet(name):\n    return 'Hello ' + name"},
-  {t:'functions',d:2,q:"What is 'lambda x: x*2'?",o:["Normal func","Anonymous func","Class","Loop"],a:1,e:"lambda = anonymous one-line function.",c:"double = lambda x: x*2\ndouble(5)  # 10"},
-  {t:'functions',d:3,q:"What does *args allow?",o:["One arg","Keyword args","Any positional args","Error"],a:2,e:"Accepts any number of positional args.",c:"def sum_all(*nums):\n    return sum(nums)"},
-  {t:'functions',d:3,q:"What does **kwargs do?",o:["Positional args","Keyword args as dict","Unpacks list","Nothing"],a:1,e:"Collects keyword arguments into dict.",c:"def info(**kw):\n    print(kw)\ninfo(name='Alice', age=25)"},
-  // DICTS
-  {t:'dicts',d:1,q:"After d['b']=2 on {'a':1}, what is d?",o:["{'a':1}","{'b':2}","{'a':1,'b':2}","Error"],a:2,e:"New key-value pair added.",c:"d['b'] = 2  # {'a':1,'b':2}"},
-  {t:'dicts',d:2,q:"What does d.get('y') return if 'y' not in d?",o:["KeyError","0","None","'y'"],a:2,e:".get() returns None, not KeyError.",c:"d.get('y')    # None\nd.get('y',0)  # 0"},
-  {t:'dicts',d:3,q:"What does {**d1, **d2} do?",o:["Error","Merges dicts","Compares","Deletes"],a:1,e:"Unpacks and merges two dicts.",c:"a={'x':1}; b={'y':2}\nc={**a,**b}  # {'x':1,'y':2}"},
-  // OOP
-  {t:'oops',d:1,q:"Which keyword defines a class?",o:["def","class","object","new"],a:1,e:"class keyword.",c:"class Dog:\n    pass"},
-  {t:'oops',d:2,q:"What does 'self' refer to?",o:["Class","Current instance","Parent","Module"],a:1,e:"self = current object.",c:"class Dog:\n    def bark(self):\n        print(self.name)"},
-  {t:'oops',d:3,q:"What does super() do?",o:["Creates object","Calls parent methods","Deletes class","Runs loop"],a:1,e:"Accesses parent class methods.",c:"class Puppy(Dog):\n    def __init__(self, name):\n        super().__init__(name)"},
-  // EXCEPTIONS
-  {t:'exceptions',d:1,q:"Why use try-except?",o:["Loops","Handle errors","Define functions","Create classes"],a:1,e:"Catches errors gracefully.",c:"try:\n    x = int('abc')\nexcept ValueError:\n    print('Error!')"},
-  {t:'exceptions',d:2,q:"What does 'raise' do?",o:["Catches error","Throws exception","Ignores error","Prints"],a:1,e:"Manually triggers exception.",c:"raise ValueError('No!')"},
-  {t:'exceptions',d:3,q:"Can you create custom exceptions?",o:["No","Yes, inherit Exception","Only Python devs","With try"],a:1,e:"Subclass Exception.",c:"class MyError(Exception):\n    pass\nraise MyError('oops')"},
-];
-QS.forEach(q=>{const t=T.find(t=>t.id===q.t);if(t)t.qs.push(q);});
+// Track solved
+let solvedSet=new Set(JSON.parse(localStorage.getItem('sikhle_solved')||'[]'));
+function saveSolved(){localStorage.setItem('sikhle_solved',JSON.stringify([...solvedSet]));}
 
-// PROBLEM SOLVING DATA
-const PROBLEMS=[
-  // EASY
-  {d:'easy',q:"Write a function that returns the sum of two numbers.",tags:['Functions','Basics'],solution:"def add(a, b):\n    return a + b\n\nprint(add(3, 5))  # 8"},
-  {d:'easy',q:"Check if a number is even or odd.",tags:['Conditionals','Basics'],solution:"def check_even(n):\n    if n % 2 == 0:\n        return 'Even'\n    return 'Odd'\n\nprint(check_even(7))  # Odd"},
-  {d:'easy',q:"Reverse a string without using [::-1].",tags:['Strings','Loops'],solution:"def reverse_str(s):\n    result = ''\n    for char in s:\n        result = char + result\n    return result\n\nprint(reverse_str('hello'))  # olleh"},
-  {d:'easy',q:"Find the largest number in a list without using max().",tags:['Lists','Loops'],solution:"def find_max(nums):\n    largest = nums[0]\n    for n in nums:\n        if n > largest:\n            largest = n\n    return largest\n\nprint(find_max([3,7,2,9,1]))  # 9"},
-  {d:'easy',q:"Count vowels in a string.",tags:['Strings','Loops'],solution:"def count_vowels(s):\n    vowels = 'aeiouAEIOU'\n    count = 0\n    for char in s:\n        if char in vowels:\n            count += 1\n    return count\n\nprint(count_vowels('hello world'))  # 3"},
-  {d:'easy',q:"Remove duplicates from a list without using set.",tags:['Lists','Logic'],solution:"def remove_dup(lst):\n    result = []\n    for item in lst:\n        if item not in result:\n            result.append(item)\n    return result\n\nprint(remove_dup([1,2,2,3,3,3]))  # [1,2,3]"},
-  // MEDIUM
-  {d:'medium',q:"Check if a string is a palindrome.",tags:['Strings','Logic'],solution:"def is_palindrome(s):\n    s = s.lower().replace(' ', '')\n    return s == s[::-1]\n\nprint(is_palindrome('racecar'))  # True\nprint(is_palindrome('hello'))    # False"},
-  {d:'medium',q:"Find the factorial of a number using recursion.",tags:['Functions','Recursion'],solution:"def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n\nprint(factorial(5))  # 120"},
-  {d:'medium',q:"Count frequency of each character in a string using a dictionary.",tags:['Dicts','Strings'],solution:"def char_freq(s):\n    freq = {}\n    for char in s:\n        freq[char] = freq.get(char, 0) + 1\n    return freq\n\nprint(char_freq('hello'))\n# {'h':1,'e':1,'l':2,'o':1}"},
-  {d:'medium',q:"Implement bubble sort on a list.",tags:['Lists','Algorithms'],solution:"def bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        for j in range(0, n-i-1):\n            if arr[j] > arr[j+1]:\n                arr[j], arr[j+1] = arr[j+1], arr[j]\n    return arr\n\nprint(bubble_sort([64,34,25,12,22]))\n# [12,22,25,34,64]"},
-  {d:'medium',q:"Flatten a nested list (one level deep).",tags:['Lists','Comprehension'],solution:"def flatten(lst):\n    result = []\n    for item in lst:\n        if isinstance(item, list):\n            result.extend(item)\n        else:\n            result.append(item)\n    return result\n\nprint(flatten([1,[2,3],[4,5],6]))\n# [1,2,3,4,5,6]"},
-  {d:'medium',q:"Find the second largest number in a list.",tags:['Lists','Logic'],solution:"def second_largest(nums):\n    unique = list(set(nums))\n    unique.sort()\n    return unique[-2]\n\nprint(second_largest([10,20,4,45,99,99]))  # 45"},
-  // HARD / INTERVIEW
-  {d:'hard',q:"Implement a stack with push, pop, peek, and is_empty using a class.",tags:['OOP','Data Structures'],solution:"class Stack:\n    def __init__(self):\n        self.items = []\n    def push(self, item):\n        self.items.append(item)\n    def pop(self):\n        return self.items.pop() if self.items else None\n    def peek(self):\n        return self.items[-1] if self.items else None\n    def is_empty(self):\n        return len(self.items) == 0\n\ns = Stack()\ns.push(10)\ns.push(20)\nprint(s.peek())   # 20\nprint(s.pop())     # 20\nprint(s.is_empty()) # False"},
-  {d:'hard',q:"Write a function that checks if two strings are anagrams.",tags:['Strings','Dicts','Logic'],solution:"def is_anagram(s1, s2):\n    s1 = s1.lower().replace(' ', '')\n    s2 = s2.lower().replace(' ', '')\n    return sorted(s1) == sorted(s2)\n\n# Or with dict:\ndef is_anagram2(s1, s2):\n    s1, s2 = s1.lower(), s2.lower()\n    if len(s1) != len(s2):\n        return False\n    count = {}\n    for c in s1: count[c] = count.get(c,0)+1\n    for c in s2: count[c] = count.get(c,0)-1\n    return all(v==0 for v in count.values())\n\nprint(is_anagram('listen','silent'))  # True"},
-  {d:'hard',q:"Implement a basic linked list with insert, delete, and display.",tags:['OOP','Data Structures','Pointers'],solution:"class Node:\n    def __init__(self, data):\n        self.data = data\n        self.next = None\n\nclass LinkedList:\n    def __init__(self):\n        self.head = None\n    def insert(self, data):\n        new_node = Node(data)\n        new_node.next = self.head\n        self.head = new_node\n    def delete(self, key):\n        curr = self.head\n        prev = None\n        while curr:\n            if curr.data == key:\n                if prev: prev.next = curr.next\n                else: self.head = curr.next\n                return\n            prev = curr\n            curr = curr.next\n    def display(self):\n        result = []\n        curr = self.head\n        while curr:\n            result.append(str(curr.data))\n            curr = curr.next\n        print(' -> '.join(result))\n\nll = LinkedList()\nll.insert(10)\nll.insert(20)\nll.insert(30)\nll.display()  # 30 -> 20 -> 10\nll.delete(20)\nll.display()  # 30 -> 10"},
-  {d:'hard',q:"Write a decorator that measures execution time of any function.",tags:['Decorators','Advanced'],solution:"import time\n\ndef timer(func):\n    def wrapper(*args, **kwargs):\n        start = time.time()\n        result = func(*args, **kwargs)\n        end = time.time()\n        print(f'{func.__name__} took {end-start:.4f}s')\n        return result\n    return wrapper\n\n@timer\ndef slow_function():\n    time.sleep(1)\n    return 'done'\n\nslow_function()  # slow_function took 1.00xxs"},
-  {d:'hard',q:"Implement a generator that yields Fibonacci numbers up to n.",tags:['Generators','Advanced'],solution:"def fibonacci(n):\n    a, b = 0, 1\n    while a <= n:\n        yield a\n        a, b = b, a + b\n\nfor num in fibonacci(50):\n    print(num, end=' ')\n# 0 1 1 2 3 5 8 13 21 34"},
-  {d:'hard',q:"Write a function to find all prime numbers up to n using Sieve of Eratosthenes.",tags:['Algorithms','Lists','Math'],solution:"def sieve(n):\n    is_prime = [True] * (n + 1)\n    is_prime[0] = is_prime[1] = False\n    for i in range(2, int(n**0.5) + 1):\n        if is_prime[i]:\n            for j in range(i*i, n+1, i):\n                is_prime[j] = False\n    return [i for i in range(2, n+1) if is_prime[i]]\n\nprint(sieve(30))\n# [2,3,5,7,11,13,17,19,23,29]"},
-];
+// ═══════════════════════════════
+// RENDER QUESTIONS
+// ═══════════════════════════════
+let currentTab='easy';
+const allEasy=QUESTIONS.filter(q=>q.d==='easy');
+const allMedium=QUESTIONS.filter(q=>q.d==='medium');
+const allHard=QUESTIONS.filter(q=>q.d==='hard');
 
-const PRACTICE_Qs=[
-  {q:"Store 10 in variable x",pre:"",blank:"x",post:"\nprint(x)",hint:"x = 10",ans:["x = 10","x=10"]},
-  {q:"Print 'Hello World'",pre:"",blank:"print",post:"('Hello World')",hint:"print()",ans:["print"]},
-  {q:"Add 'mango' to list",pre:"fruits=['apple','banana']\nfruits.",blank:"append",post:"('mango')",hint:".append()",ans:["append"]},
-  {q:"Convert to uppercase",pre:"s='hello'\nresult=s.",blank:"upper",post:"()",hint:".upper()",ans:["upper"]},
-  {q:"Get list length",pre:"nums=[1,2,3,4,5]\nn=",blank:"len",post:"(nums)",hint:"len()",ans:["len"]},
-  {q:"Write for loop 0 to 4",pre:"",blank:"for i in range",post:"(5):\n    print(i)",hint:"for i in range",ans:["for i in range","for i in range "]},
-  {q:"Define function 'greet'",pre:"",blank:"def",post:" greet():\n    print('Hello!')",hint:"def",ans:["def"]},
-  {q:"Get 'age' from dict",pre:"p={'name':'Ali','age':25}\nage=p",blank:"['age']",post:"",hint:"['age']",ans:["['age']","[\"age\"]"]},
-  {q:"Create a set from list",pre:"s=",blank:"set",post:"([1,2,2,3])",hint:"set()",ans:["set"]},
-  {q:"Sort list descending",pre:"nums=[3,1,4,1,5]\nnums.",blank:"sort",post:"(reverse=True)",hint:".sort()",ans:["sort"]},
-];
+document.getElementById('easyCount').textContent=allEasy.length;
+document.getElementById('medCount').textContent=allMedium.length;
+document.getElementById('hardCount').textContent=allHard.length;
 
-// ═══════════════════════════════════
-// ASK ENGINE (UPGRADED)
-// ═══════════════════════════════════
-const KB=[
-  {keys:['len','length','size','count'],resp:"<span class='ctag'>LEN()</span><br><code>len()</code> returns number of items.<pre>len('hello')       # 5\nlen([1,2,3])      # 3\nlen({'a':1,'b':2}) # 2\nlen(range(10))    # 10 (lazy but countable)</pre>Works with any collection or sequence."},
-  {keys:['for loop','iteration','iterate','for'],resp:"<span class='ctag'>FOR LOOP</span><br>Iterates over any iterable.<pre># Over list\nfor fruit in ['apple','banana']:\n    print(fruit)\n\n# With range\nfor i in range(5):\n    print(i)  # 0,1,2,3,4\n\n# With enumerate\nfor i, v in enumerate(['a','b']):\n    print(f'{i}: {v}')  # 0:a  1:b\n\n# With zip\nnames = ['Alice','Bob']\nages = [25,30]\nfor n, a in zip(names, ages):\n    print(f'{n}: {a}')</pre>"},
-  {keys:['type','data type','check type','typeof'],resp:"<span class='ctag'>TYPE()</span><br>Returns the data type of any object.<pre>type(10)      # <class 'int'>\ntype(3.14)    # <class 'float'>\ntype('hi')    # <class 'str'>\ntype(True)    # <class 'bool'>\ntype([1,2])   # <class 'list'>\ntype((1,2))   # <class 'tuple'>\ntype({'a':1}) # <class 'dict'>\ntype({1,2})   # <class 'set'>\ntype(None)    # <class 'NoneType'>\n\n# Check type:\nisinstance(42, int)  # True</pre>"},
-  {keys:['read file','file','open','file handling','write file'],resp:"<span class='ctag'>FILE I/O</span><br><pre># Read entire file\nwith open('data.txt', 'r') as f:\n    content = f.read()\n\n# Read line by line\nwith open('data.txt') as f:\n    for line in f:\n        print(line.strip())\n\n# Write to file\nwith open('out.txt', 'w') as f:\n    f.write('Hello!')\n\n# Append to file\nwith open('out.txt', 'a') as f:\n    f.write('More text')\n\n# Read into list\nwith open('data.txt') as f:\n    lines = f.readlines()</pre><code>with</code> auto-closes the file even on error."},
-  {keys:['list vs tuple','difference list tuple','tuple vs list'],resp:"<span class='ctag'>LIST vs TUPLE</span><br>Key difference: <strong>mutability</strong>.<pre># LIST - mutable (can change)\nmy_list = [1, 2, 3]\nmy_list[0] = 99     # OK\nmy_list.append(4)   # OK\n\n# TUPLE - immutable (cannot change)\nmy_tuple = (1, 2, 3)\nmy_tuple[0] = 99    # TypeError!\nmy_tuple.append(4)  # AttributeError!\n\n# Performance: tuples are slightly faster\n# Use case: coordinates, config, dict keys = tuple\n# Use case: dynamic data, shopping cart = list</pre>"},
-  {keys:['append','add to list','extend','insert'],resp:"<span class='ctag'>LIST METHODS</span><br><pre>fruits = ['apple', 'banana']\n\n# append: add ONE item at end\nfruits.append('mango')\n# ['apple','banana','mango']\n\n# extend: add multiple items\nfruits.extend(['grape','kiwi'])\n# ['apple','banana','mango','grape','kiwi']\n\n# insert: at specific position\nfruits.insert(1, 'orange')\n# ['apple','orange','banana',...]\n\n# remove: by value\nfruits.remove('banana')\n\n# pop: by index (default last)\nfruits.pop()      # removes last\nfruits.pop(0)     # removes first</pre>"},
-  {keys:['while loop','while'],resp:"<span class='ctag'>WHILE LOOP</span><br><pre># Basic\ncount = 0\nwhile count < 5:\n    print(count)\n    count += 1\n\n# Infinite (needs break)\nwhile True:\n    x = input('q to quit: ')\n    if x == 'q': break\n\n# while-else\nx = 5\nwhile x > 0:\n    x -= 1\nelse:\n    print('completed!')  # runs if no break</pre>Always ensure condition eventually becomes False."},
-  {keys:['dictionary','dict','key value','hash map'],resp:"<span class='ctag'>DICTIONARY</span><br>Key-value pairs. Keys must be unique & immutable.<pre>person = {'name':'Alice','age':25}\n\n# Access\nperson['name']         # 'Alice'\nperson.get('phone','N/A')  # 'N/A'\n\n# Modify/Add\nperson['age'] = 26\nperson['email'] = 'a@b.com'\n\n# Delete\ndel person['age']\n\n# Methods\nperson.keys()    # all keys\nperson.values()  # all values\nperson.items()   # (key,value) pairs\n\n# Merge dicts\nmerged = {**d1, **d2}\n\n# Comprehension\nsq = {x:x**2 for x in range(5)}\n# {0:0, 1:1, 2:4, 3:9, 4:16}</pre>"},
-  {keys:['class','oop','object','instance','self'],resp:"<span class='ctag'>OOP BASICS</span><br><pre>class Dog:\n    # Class variable (shared)\n    species = 'Canine'\n    \n    # Constructor\n    def __init__(self, name, breed):\n        self.name = name      # instance var\n        self.breed = breed\n    \n    # Method\n    def bark(self):\n        return f'{self.name} says Woof!'\n\n# Create objects\ndog1 = Dog('Rex', 'Shepherd')\ndog2 = Dog('Bella', 'Labrador')\n\nprint(dog1.bark())  # Rex says Woof!\nprint(dog2.name)   # Bella\nprint(Dog.species)  # Canine (shared)</pre><code>self</code> = current instance. Each object has own data."},
-  {keys:['inheritance','super','parent','child','extends'],resp:"<span class='ctag'>INHERITANCE</span><br>Child class reuses parent code.<pre>class Animal:\n    def __init__(self, name):\n        self.name = name\n    def speak(self):\n        return 'Some sound'\n\nclass Cat(Animal):\n    # Override method\n    def speak(self):\n        return f'{self.name} says Meow!'\n\nclass Dog(Animal):\n    def __init__(self, name, breed):\n        super().__init__(name)  # call parent\n        self.breed = breed\n\nc = Cat('Whiskers')\nprint(c.name)    # Whiskers (from Animal)\nprint(c.speak()) # Whiskers says Meow!</pre><code>super()</code> calls parent methods. MRO = Method Resolution Order."},
-  {keys:['try except','exception','error handling','catch','finally'],resp:"<span class='ctag'>ERROR HANDLING</span><br><pre># Basic\ntry:\n    x = int('hello')\nexcept ValueError:\n    print('Not a number!')\n\n# Multiple except\ntry:\n    result = 10 / 0\nexcept ZeroDivisionError as e:\n    print(f'Division error: {e}')\nexcept Exception as e:\n    print(f'Other: {e}')\nfinally:\n    print('Always runs!')\n\n# Custom exception\nclass MyError(Exception):\n    pass\nraise MyError('Custom error!')\n\n# else (no error)\ntry:\n    x = 10\nexcept:\n    pass\nelse:\n    print('No error!')</pre>"},
-  {keys:['lambda','anonymous function','map','filter'],resp:"<span class='ctag'>LAMBDA</span><br>Anonymous one-line function.<pre># Basic\ndouble = lambda x: x * 2\nprint(double(5))  # 10\n\n# Multiple args\nadd = lambda a, b: a + b\n\n# With map\nnums = [1,2,3,4,5]\nsquares = list(map(lambda x: x**2, nums))\n# [1,4,9,16,25]\n\n# With filter\nevens = list(filter(lambda x: x%2==0, nums))\n# [2,4]\n\n# With sorted\nstudents = [('Alice',85),('Bob',92)]\nstudents.sort(key=lambda s: s[1])\n\n# In sorted()\nsorted(['banana','apple','cherry'], key=lambda s: len(s))</pre>"},
-  {keys:['f-string','format string','string format','.format'],resp:"<span class='ctag'>F-STRINGS</span><br>Python 3.6+ formatting.<pre>name = 'Alice'\nage = 25\n\n# Basic\nprint(f'{name} is {age}')\n\n# Expressions\nprint(f'2+2 = {2+2}')\nprint(f'Next year: {age+1}')\n\n# Formatting\npi = 3.14159\nprint(f'Pi: {pi:.2f}')    # 3.14\nprint(f'{1000000:,}')      # 1,000,000\nprint(f'{42:05d}')        # 00042\nprint(f'{0.75:.0%}')      # 75%\n\n# Multi-line\nmsg = f\"\"\"\nName: {name}\nAge: {age}\n\"\"\"\n\n# Old methods still work\n'Hello {}'.format(name)\n'Hello %s' % name</pre>"},
-  {keys:['list comprehension','comprehension','list comp'],resp:"<span class='ctag'>COMPREHENSION</span><br>Create lists in one line.<pre># Basic\n[x**2 for x in range(6)]\n# [0,1,4,9,16,25]\n\n# With condition\n[x for x in range(20) if x%2==0]\n# [0,2,4,6,8,10,12,14,16,18]\n\n# if-else\n['even' if x%2==0 else 'odd' for x in range(5)]\n# ['even','odd','even','odd','even']\n\n# Nested\n[[j for j in range(3)] for i in range(3)]\n# [[0,1,2],[0,1,2],[0,1,2]]\n\n# Flatten\n[x for row in matrix for x in row]\n\n# Dict comprehension\n{x: x**2 for x in range(5)}\n# {0:0, 1:1, 2:4, 3:9, 4:16}\n\n# Set comprehension\n{x**2 for x in range(-3,4)}\n# {0,1,4,9}</pre>"},
-  {keys:['slice','slicing','substring','indexing'],resp:"<span class='ctag'>SLICING</span><br><code>[start:stop:step]</code> — stop is excluded.<pre>s = 'Python'\ns[0:3]   # 'Pyt'\ns[2:5]   # 'tho'\ns[:3]    # 'Pyt'  (from start)\ns[3:]    # 'hon'  (to end)\ns[:]     # 'Python' (copy)\ns[-3:]   # 'hon'  (from end)\ns[:-2]   # 'Pyth'\ns[::2]   # 'Pto'  (every 2nd)\ns[::-1]  # 'nohtyP' (reversed!)\n\n# Works for lists too\nnums = [0,1,2,3,4,5]\nnums[1:4]  # [1,2,3]\nnums[::-1] # [5,4,3,2,1,0]</pre>"},
-  {keys:['set','union','intersection','difference','unique'],resp:"<span class='ctag'>SETS</span><br>Unique elements + math operations.<pre># Create\ns = {1,2,3,2,1}  # {1,2,3}\ns = set([1,2,3])   # {1,2,3}\n\n# Operations\na = {1,2,3,4}\nb = {3,4,5,6}\na | b    # union: {1,2,3,4,5,6}\na & b    # intersection: {3,4}\na - b    # difference: {1,2}\na ^ b    # symmetric diff: {1,2,5,6}\n\n# Methods\ns.add(5)\ns.remove(3)  # KeyError if missing\ns.discard(3) # no error if missing\n\n# Membership (O(1) fast!)\n3 in {1,2,3}  # True\n\n# Frozen set (immutable)\nfs = frozenset([1,2,3])</pre>"},
-  {keys:['global','nonlocal','scope','variable scope'],resp:"<span class='itag'>SCOPE</span><br><pre># Global scope\nx = 10\ndef foo():\n    global x\n    x = 20  # modifies global x\n\n# Nonlocal (nested functions)\ndef outer():\n    x = 10\n    def inner():\n        nonlocal x\n        x = 20  # modifies outer's x\n    inner()\n    print(x)  # 20\n\n# LEGB Rule:\n# L = Local\n# E = Enclosing\n# G = Global\n# B = Built-in\n\nx = 'global'\ndef outer():\n    x = 'enclosing'\n    def inner():\n        x = 'local'  # L > E > G > B</pre>"},
-  {keys:['decorator','decorators','@','wrapper'],resp:"<span class='itag'>DECORATORS</span><br>Functions that modify other functions.<pre>def timer(func):\n    def wrapper(*args, **kwargs):\n        import time\n        start = time.time()\n        result = func(*args, **kwargs)\n        print(f'{func.__name__}: {time.time()-start:.4f}s')\n        return result\n    return wrapper\n\n@timer\ndef slow():\n    import time; time.sleep(1)\nslow()  # slow: 1.00xxs\n\n# Stacked decorators\n@decorator1\n@decorator2\ndef func(): pass\n\n# Decorator with args\ndef repeat(n):\n    def decorator(func):\n        def wrapper(*args):\n            for _ in range(n):\n                result = func(*args)\n            return result\n        return wrapper\n    return decorator\n\n@repeat(3)\ndef say_hi(): print('hi')</pre>"},
-  {keys:['generator','yield','lazy','iterate'],resp:"<span class='itag'>GENERATORS</span><br>Produce values lazily with <code>yield</code>.<pre>def countdown(n):\n    while n > 0:\n        yield n\n        n -= 1\n\nfor i in countdown(3):\n    print(i)  # 3, 2, 1\n\ngen = countdown(5)\nnext(gen)  # 5\nnext(gen)  # 4\n\n# Generator expression\nsquares = (x**2 for x in range(5))\nnext(squares)  # 0\n\n# Infinite generator\ndef fibonacci():\n    a, b = 0, 1\n    while True:\n        yield a\n        a, b = b, a + b\n\n# Benefits: memory efficient!\n# range(1000000) uses ~no memory\n# [x for x in range(1000000)] uses lots</pre>"},
-  {keys:['print','output','display','console'],resp:"<span class='ctag'>PRINT()</span><br><pre>print('Hello')\n\n# Multiple args (space-separated)\nprint('Name:', 'Alice', 'Age:', 25)\n\n# Separator\nprint('A','B','C', sep='-')  # A-B-C\n\n# Custom ending\nprint('Load', end='...')\nprint('Done')  # Load...Done\n\n# f-strings\nprint(f'Value: {42}')\n\n# repr vs str\nprint(str('hello'))  # hello\nprint(repr('hello')) # 'hello'\n\n# print returns None\nresult = print('hi')\nprint(result)  # None\n\n# To string\nprint('hello', end='')\nprint('world')  # helloworld</pre>"},
-  {keys:['input','user input','read input','stdin'],resp:"<span class='ctag'>INPUT()</span><br>Reads user input as <strong>string</strong>.<pre># Basic\nname = input('Name: ')\nprint(f'Hello {name}!')\n\n# ALWAYS returns string!\nage = input('Age: ')  # '25' not 25\n\n# Convert\nage = int(input('Age: '))\nheight = float(input('Height: '))\n\n# Safe conversion\ntry:\n    age = int(input('Age: '))\nexcept ValueError:\n    print('Enter a number!')\n\n# Multiple values\ndata = input('3 nums: ').split()\n# '1 2 3' -> ['1','2','3']\nnums = [int(x) for x in data]\n\n# Password input\nimport getpass\npw = getpass.getpass('Password: ')</pre>"},
-  {keys:['variable','assign','assignment','declare'],resp:"<span class='ctag'>VARIABLES</span><br>No declaration keyword needed.<pre># Basic\nx = 10\nname = 'Alice'\npi = 3.14\nactive = True\n\n# Multiple\na, b, c = 1, 2, 3\nx = y = z = 0\n\n# Swap (Python way!)\na, b = b, a\n\n# Dynamic typing\nx = 10      # int\nx = 'hello' # now str\nx = [1,2]   # now list\n\n# Naming rules\nmy_var = 1     # snake_case (PEP 8)\n_private = 2   # convention: private\n__magic__ = 3  # dunder: special\nCONSTANT = 4   # UPPER = constant\n# 2var = 5      # ERROR: can't start with number\n# my-var = 6     # ERROR: no hyphens</pre>"},
-  {keys:['if else','elif','conditional','ternary'],resp:"<span class='ctag'>CONDITIONALS</span><br><pre># if\nif age >= 18:\n    print('Adult')\n\n# if-else\nif age >= 18:\n    print('Adult')\nelse:\n    print('Minor')\n\n# if-elif-else\nif score >= 90: grade = 'A'\nelif score >= 80: grade = 'B'\nelif score >= 70: grade = 'C'\nelse: grade = 'F'\n\n# Ternary (one-liner)\nstatus = 'Adult' if age>=18 else 'Minor'\n\n# Walrus operator (3.8+)\nif (n := len(items)) > 10:\n    print(f'Too many: {n}')\n\n# Match-case (3.10+)\nmatch command:\n    case 'start': run()\n    case 'stop': halt()\n    case _: print('unknown')</pre>"},
-  {keys:['split','join','string split','string join'],resp:"<span class='ctag'>SPLIT & JOIN</span><br><pre># split: string -> list\n'hello world'.split()      # ['hello','world']\n'a,b,c'.split(',')         # ['a','b','c']\n'a-b-c-d'.split('-', 2)    # ['a','b','c-d']\n'text\\nmore'.splitlines()  # ['text','more']\n\n# join: list -> string\n'-'.join(['a','b','c'])  # 'a-b-c'\n'\\n'.join(['L1','L2'])  # multi-line\n''.join(['a','b','c'])  # 'abc'\n\n# IMPORTANT: elements must be strings!\n# ','.join([1,2,3])  # ERROR!\n','.join(str(x) for x in [1,2,3])  # '1,2,3'\n\n# Common pattern\nname, age, city = 'Alice,25,NYC'.split(',')\n# name='Alice', age='25', city='NYC'</pre>"},
-  {keys:['range','number sequence','sequence'],resp:"<span class='ctag'>RANGE()</span><br>Generates numbers (lazy, memory efficient).<pre>range(stop)       # 0 to stop-1\nlist(range(5))   # [0,1,2,3,4]\n\nrange(start, stop)\nlist(range(2,8))  # [2,3,4,5,6,7]\n\nrange(start, stop, step)\nlist(range(0,20,3))   # [0,3,6,9,12,15,18]\nlist(range(10,0,-1))  # [10,9,8,7,6,5,4,3,2,1]\nlist(range(0,10,-1))  # [] (empty!)\n\n# In loops\nfor i in range(5):\n    print(i)\n\n# Memory: almost none!\nrange(1000000)  # ~0 bytes\nlist(range(1000000))  # ~8MB\n\n# len of range\nlen(range(100))  # 100</pre>"},
-  {keys:['sort','sorted','reverse','order','ascending','descending'],resp:"<span class='ctag'>SORTING</span><br><pre># .sort() - in place (lists only)\nnums = [3,1,4,1,5,9]\nnums.sort()              # [1,1,3,4,5,9]\nnums.sort(reverse=True)  # [9,5,4,3,1,1]\n\n# sorted() - returns new (any iterable)\nnew = sorted(nums)\nsorted('banana')  # ['a','a','a','b','n','n']\n\n# By key function\nstudents = [('Alice',85),('Bob',92),('Eve',78)]\nstudents.sort(key=lambda s: s[1])\n# [('Eve',78),('Alice',85),('Bob',92)]\n\n# Reverse sort\nstudents.sort(key=lambda s: s[1], reverse=True)\n\n# By multiple keys\nitems.sort(key=lambda x: (x[1], x[0]))\n\n# Strings: case-insensitive\nwords.sort(key=str.lower)</pre>"},
-  {keys:['none','null','none type','nonevalue'],resp:"<span class='wtag'>COMMON MISTAKE</span><br>None is NOT 0, False, or ''!<pre>type(None)   # <class 'NoneType'>\ntype(0)      # <class 'int'>\ntype(False)  # <class 'bool'>\ntype('')     # <class 'str'>\n\n# All are falsy but NOT equal:\nNone == 0    # False\nNone == False # False\nNone == ''   # False\nNone is None  # True (use 'is'!)\n\n# When do you get None?\ndef foo(): pass\nprint(foo())  # None\n\nx = None\nif x is None:  # correct check\n    print('no value')\n\n# Common mistake:\nresult = []\nfor x in items:\n    result = result.append(x)  # WRONG! append returns None\n# Fix:\nresult = []\nfor x in items:\n    result.append(x)  # correct</pre>"},
-  {keys:['is vs ==','identity','equality','same object'],resp:"<span class='wtag'>COMMON MISTAKE</span><br><code>==</code> compares values. <code>is</code> compares identity.<pre>a = [1,2,3]\nb = [1,2,3]\n\na == b    # True (same values)\na is b    # False (different objects!)\n\na = [1,2,3]\nb = a\na is b    # True (same object)\n\n# For None, always use 'is'\nx = None\nx == None  # True but not recommended\nx is None  # True (correct!)\n\n# Cache behavior (small ints)\na = 256\nb = 256\na is b  # True (cached)\n\na = 257\nb = 257\na is b  # False (not cached!)\n\n# Strings\na = 'hello'\nb = 'hello'\na is b  # True (interned)</pre>"},
-  {keys:['mutable','immutable','change','modify','cannot change'],resp:"<span class='itag'>MUTABILITY</span><br><pre># MUTABLE (can change after creation)\nlist  = [1,2,3]\ndict  = {'a':1}\nset   = {1,2,3}\nbytearray = b'abc'\n\n# IMMUTABLE (cannot change)\nint     = 42\nfloat   = 3.14\nstr     = 'hello'\ntuple   = (1,2,3)\nfrozenset = frozenset([1,2])\nbytes   = b'abc'\n\n# Why it matters:\ndef add_item(lst, item):\n    lst.append(item)  # modifies original!\n\ndef bad_func(x):\n    x = x + '!'  # creates NEW string\n    # original unchanged!\n\n# Tuple as dict key (immutable)\nd = {(1,2): 'value'}  # OK\n# d = {[1,2]: 'value'}  # TypeError!</pre>"},
-  {keys:['deep copy','shallow copy','copy','deepcopy','reference'],resp:"<span class='wtag'>COMMON MISTAKE</span><br><pre>import copy\n\n# Assignment = same reference\na = [1,2,[3,4]]\nb = a             # b points to SAME list\nb[0] = 99\nprint(a)  # [99,2,[3,4]] — a changed too!\n\n# Shallow copy\nb = a.copy()       # or list(a)\nb[0] = 99\nprint(a)  # [1,2,[3,4]] — a safe\nb[2][0] = 99\nprint(a)  # [1,2,[99,4]] — nested CHANGED!\n\n# Deep copy (safe!)\nb = copy.deepcopy(a)\nb[2][0] = 99\nprint(a)  # [1,2,[3,4]] — fully safe!\n\n# For dicts\nd2 = d.copy()           # shallow\nd2 = copy.deepcopy(d)    # deep\n\n# For tuples (immutable, but...)\nt = ([1,2], [3,4])\nt2 = copy.deepcopy(t)  # needed if nested</pre>"},
-];
-
-const WRONG_PAT=[
-  {p:/list\s*(is|are)\s*(immutable|unchangeable|can'?t change)/i,w:"Lists are <strong>mutable</strong> — you CAN change them. You're thinking of tuples.",f:"my_list = [1,2,3]\nmy_list[0] = 99  # Works!\n\nmy_tuple = (1,2,3)\nmy_tuple[0] = 99  # TypeError!"},
-  {p:/tuple\s*(is|are)\s*(mutable|changeable|can change)/i,w:"Tuples are <strong>immutable</strong> — cannot change after creation.",f:"t = (1,2,3)\nt[0] = 99  # TypeError!"},
-  {p:/input\s*\(\s*\)\s*(returns|gives)\s*(an?\s*)?(int|integer|number)/i,w:"input() <strong>always returns string</strong>. Convert with int() or float().",f:"x = input()      # '25' (string!)\nx = int(input())  # 25 (int)"},
-  {p:/(python|it)\s*(is|are)\s*(a\s*)?compiled/i,w:"Python is <strong>interpreted</strong>. It compiles to bytecode internally but is fundamentally interpreted.",f:"python script.py  # runs directly\n# C is compiled:\ngcc program.c -o program"},
-  {p:/none\s*(is|means|equals)\s*(0|zero|empty|false|'')/i,w:"None is NOT 0, False, or ''. It's <code>NoneType</code>.",f:"type(None)  # <class 'NoneType'>\nNone == 0   # False\nNone == ''   # False\nNone is None  # True"},
-  {p:/#\s*(is|does not|doesn'?t)\s*(not\s*)?(work|comment)/i,w:"# <strong>IS</strong> how you write comments in Python.",f:"# This is a comment\nprint('hi')  # inline comment"},
-  {p:/(=|==)\s*(is|are)\s*(the same|same thing|identical)/i,w:"<code>=</code> assigns. <code>==</code> compares. Completely different.",f:"x = 10   # assign\nx == 10  # compare -> True"},
-  {p:/append\s*(returns|gives|gives back)/i,w:".append() returns <strong>None</strong>! It modifies the list in place.",f:"# WRONG:\nresult = my_list.append(4)\nprint(result)  # None!\n\n# RIGHT:\nmy_list.append(4)\nprint(my_list)  # [..., 4]"},
-  {p:/is\s+vs\s+==|==\s+vs\s+is/i,w:"<code>==</code> checks value equality. <code>is</code> checks object identity (same object in memory).",f:"a = [1,2]\nb = [1,2]\na == b  # True (same values)\na is b  # False (different objects)\n\na = None\na is None  # True (correct for None)"},
-];
-
-function processQuestion(input){
-  const q=input.trim().toLowerCase();
-  // Wrong patterns
-  for(const wp of WRONG_PAT){if(wp.p.test(q))return `<span class='etag'>INCORRECT STATEMENT</span><br><br>${wp.w}<pre>${wp.f}</pre>`;}
-  // Code evaluation
-  const cr=evalCode(input.trim());
-  if(cr)return cr;
-  // Knowledge base
-  let best=null,bs=0;
-  for(const e of KB){let s=0;for(const k of e.keys)if(q.includes(k.toLowerCase()))s+=k.length;if(s>bs){bs=s;best=e;}}
-  if(best&&bs>=2)return best.resp;
-  // Fallback
-  const suggestions=KB.slice(0,6).map(e=>`"${e.keys[0]}"`).join(', ');
-  return `<span class='itag'>NO EXACT MATCH</span><br><br>I don't have a specific entry for that. Try asking about:<br><br><pre>${suggestions}\n\n# Or paste code like:\n# print(2 + 3)\n# x = [1,2,3]\n# type(3.14)</pre>`;
+function showTab(tab,btn){
+  currentTab=tab;
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderQuestions(tab);
 }
 
-function evalCode(input){
-  const lines=input.trim().split('\n');const results=[];
-  for(const line of lines){
-    const lt=line.trim();if(!lt||lt.startsWith('#'))continue;
-    const pm=lt.match(/^print\s*\(\s*(.+?)\s*\)$/);
-    if(pm){
-      const expr=pm[1].trim();let r=null;
-      if(/^['"][^'"]+['"]\s*\+\s*['"][^'"]+['"]$/.test(expr)){const p=expr.match(/['"]([^'"]+)['"]/g);if(p)r=p.map(x=>x.slice(1,-1)).join('');}
-      else if(/^len\s*\(\s*['"]([^'"]+)['"]\s*\)$/.test(expr)){const s=expr.match(/['"]([^'"]+)['"]/);if(s)r=s[1].length;}
-      else if(/^type\s*\(\s*(.+?)\s*\)$/.test(expr)){const inner=expr.match(/type\s*\(\s*(.+?)\s*\)/)[1].trim();if(/^['"]/.test(inner))r="<class 'str'>";else if(/^\d+$/.test(inner))r="<class 'int'>";else if(/^\d+\.\d+$/.test(inner))r="<class 'float'>";else if(inner==='True'||inner==='False')r="<class 'bool'>";else if(inner==='None')r="<class 'NoneType'>";}
-      else if(/^[\d\s\+\-\*\/\%\(\)\.]+$/.test(expr)){try{r=eval(expr);}catch(e){}}
-      else if(expr==='True')r='True';else if(expr==='False')r='False';else if(expr==='None')r='None';
-      else if(/^list\s*\(\s*range\s*\(.+\)\s*\)$/.test(expr)){const args=expr.match(/range\s*\((.+)\)/)[1].split(',').map(s=>parseInt(s.trim()));let st=0,sp=args[0],step=1;if(args.length===2){st=args[0];sp=args[1];}if(args.length===3){st=args[0];sp=args[1];step=args[2];}const arr=[];if(step>0){for(let i=st;i<sp;i+=step)arr.push(i);}else if(step<0){for(let i=st;i>sp;i+=step)arr.push(i);}r='['+arr.join(', ')+']';}
-      if(r!==null)results.push(`print(${esc(expr)})  # ${r}`);
-    }
-    const am=lt.match(/^(\w+)\s*=\s*(.+)$/);
-    if(am&&!lt.includes('def ')&&!lt.includes('class ')){const v=am[2].trim();let vt='unknown';if(/^['"]/.test(v))vt='str';else if(/^\d+$/.test(v))vt='int';else if(/^\d+\.\d+$/.test(v))vt='float';else if(v==='True'||v==='False')vt='bool';else if(v==='None')vt='NoneType';else if(v.startsWith('['))vt='list';else if(v.startsWith('('))vt='tuple';else if(v.startsWith('{')&&v.includes(':'))vt='dict';else if(v.startsWith('{'))vt='set';if(vt!=='unknown')results.push(`${am[1]} = ${esc(v)}  # <class '${vt}'>`);}
+function renderQuestions(filter){
+  const search=document.getElementById('searchInput').value.toLowerCase();
+  let pool=filter==='easy'?allEasy:filter==='medium'?allMedium:allHard;
+  if(search){pool=pool.filter(q=>q.q.toLowerCase().includes(search)||q.t.toLowerCase().includes(search));}
+  const grid=document.getElementById('questionsGrid');
+  if(!pool.length){grid.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;grid-column:1/-1;">No questions found for this filter.</p>';return;}
+  grid.innerHTML=pool.map((q,i)=>{const idx=QUESTIONS.indexOf(q);const solved=solvedSet.has(idx);
+  return`<div class="q-card"><div class="q-num ${q.d}">${i+1}</div><div class="q-body"><h4>${q.q}</h4><p><span class="q-tag">${q.t}</span></p><div class="q-actions"><button class="btn-solve ${solved?'solved':'go'}" onclick="openQ(${idx})">${solved?'<i class="fas fa-check"></i> Solved':'<i class="fas fa-play"></i> Solve'}</button></div></div></div>`;}).join('');
+}
+renderQuestions('easy');
+
+function filterQuestions(val){
+  renderQuestions(currentTab);
+}
+
+// ═════════════════════════════════
+// MODAL
+// ═════════════════════════════════
+let currentQIdx=-1;
+function openQ(idx){
+  currentQIdx=idx;
+  const q=QUESTIONS[idx];const solved=solvedSet.has(idx);
+  document.getElementById('modalTitle').textContent=`Question #${idx+1}`;
+  document.getElementById('modalMeta').innerHTML=`<span class="q-tag">${q.t}</span><span class="q-num ${q.d}" style="width:auto;height:auto;padding:2px 10px;display:inline-flex;align-items:center;justify-content:center;">${q.d.toUpperCase()}</span>`;
+  document.getElementById('modalDesc').textContent=q.q;
+  document.querySelector('.modal .btn-modal.primary').innerHTML=solved?'<i class="fas fa-check"></i> Already Solved':'<i class="fas fa-check"></i> Mark Solved';
+  document.querySelector('.modal .btn-modal.primary').onclick=solved?null:'';
+  document.getElementById('modalSolution').textContent=q.solution;
+  document.getElementById('modal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('show');
+  document.body.style.overflow='';
+}
+
+function markSolved(){
+  if(currentQIdx>=0&&!solvedSet.has(currentQIdx)){
+    solvedSet.add(currentQIdx);saveSolved();
+    renderQuestions(currentTab);
+    showToast('🎉 Marked as solved!','success');
+    closeModal();
   }
-  if(results.length)return `<span class='ctag'>CODE ANALYSIS</span><br><pre>${results.join('\n')}</pre>`;
-  return null;
 }
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-// ═══════════════════════════════════
-// STATE
-// ═══════════════════════════════════
-let S=JSON.parse(localStorage.getItem('pys4')||'{}');
-if(!S.solved)S={solved:0,correct:0,streak:0,lastDate:'',ts:{},badges:[],askCount:0,xp:0,dailyDone:null,act:[],solvedProblems:[]};
-function save(){localStorage.setItem('pys4',JSON.stringify(S));}
-function addXP(n){S.xp+=n;if(getLevel()>(S.xp-n)/100|0)showToast(`Level ${getLevel()}!`,'info');save();}
-function getLevel(){return Math.floor(S.xp/100)+1;}
-
-// ═══════════════════════════════════
-// LEADERBOARD ENGINE
 // ═════════════════════════════════
-const LB_BASE=[{n:'Ravi Kumar',b:1400,s:12},{n:'Priya Sharma',b:1360,s:9},{n:'Rahul Singh',b:1230,s:7},{n:'Anjali Verma',b:1080,s:5},{n:'Aditya Patel',b:950,s:8},{n:'Sneha Gupta',b:870,s:4},{n:'Vikram Reddy',b:760,s:6},{n:'Meera Joshi',b:650,s:3}];
-let lbP=JSON.parse(localStorage.getItem('pys4lb')||'null');
-let lbT=parseInt(localStorage.getItem('pys4lbt')||'0');
-function updLB(){const now=Date.now();if(!lbP||now-lbT>2*36e5){lbP=LB_BASE.map(p=>({...p,sc:p.b+Math.floor(Math.random()*200)-100,s:Math.max(0,p.s+(Math.random()>.7?(Math.random()>.5?1:-1):0)),ch:Math.floor(Math.random()*60)-30}));if(Math.random()>.6){const nn=['Arjun Nair','Kavya Iyer','Rohan Das','Isha Malhotra','Dev Chauhan'];lbP.push({n:nn[Math.floor(Math.random()*nn.length)],sc:500+Math.floor(Math.random()*500),s:Math.floor(Math.random()*10)+1,ch:0});}lbT=now;localStorage.setItem('pys4lb',JSON.stringify(lbP));localStorage.setItem('pys4lbt',String(now));}}
-
-// ═══════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════
-let cv='dash';
-function go(v){
-  cv=v;closeSB();
-  document.querySelectorAll('.nav-btn').forEach((b,i)=>{b.classList.toggle('active',['dash','problems','quiz','practice','cards','ask','ranks'][i]===v);});
-  if(v==='dash')renderDash();
-  else if(v==='problems')renderProblems();
-  else if(v==='quiz')initQuiz(null,0);
-  else if(v==='practice'){pIdx=0;renderPractice();}
-  else if(v==='cards')initFlash(null);
-  else if(v==='ask')renderAsk();
-  else if(v==='ranks'){updLB();renderRanks();}
-}
-function toggleSB(){document.getElementById('sidebar').classList.add('open');document.getElementById('sb-overlay').classList.add('show');}
-function closeSB(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sb-overlay').classList.remove('show');}
-
-// ═══════════════════════════════════
-// THEME
-// ═══════════════════════════════════
-let theme=localStorage.getItem('pys4theme')||'dark';
-function applyTheme(){document.documentElement.setAttribute('data-theme',theme);document.getElementById('theme-btn').textContent=theme==='dark'?'☀️':'🌙';}
-function toggleTheme(){theme=theme==='dark'?'light':'dark';localStorage.setItem('pys4theme',theme);applyTheme();}
-applyTheme();
-
-// ═══════════════════════════════════
-// DASHBOARD
-// ═══════════════════════════════════
-function renderDash(){
-  const acc=S.solved>0?Math.round(S.correct/S.solved*100):0;
-  const lvl=getLevel();const xpi=S.xp%100;const gold=lvl>=5;
-  const circ=2*Math.PI*22;const off=circ-(xpi/100)*circ;
-  const today=new Date().toDateString();const dd=S.dailyDone===today;
-  const diffNames=['','Basic','Intermediate','Advanced'];
-  const diffCls=['','basic','inter','adv'];
-  const diffBg=['','rgba(74,234,188,.12)','rgba(255,196,107,.12)','rgba(255,107,138,.12)'];
-  const diffCol=['','var(--accent2)','var(--accent3)','var(--accent4)'];
-
-  document.getElementById('mc').innerHTML=`<div class="dash">
-  <div class="hero-card fade-up">
-    <h1>Master Python <em>Interactively</em></h1>
-    <p>Quiz yourself, solve real problems, ask AI anything, and track your journey from beginner to expert.</p>
-    <div class="hero-btns">
-      <button class="btn-start" onclick="go('quiz')">▶ Start Learning</button>
-      <button class="btn-outline" onclick="go('problems')">🎯 Problem Solving</button>
-      <button class="btn-outline" onclick="go('ask')">🤖 Ask AI</button>
-    </div>
-  </div>
-  <div class="xp-row fade-up" style="animation-delay:.05s">
-    <div class="xp-ring"><svg viewBox="0 0 50 50"><circle class="bg-r" cx="25" cy="25" r="22"/><circle class="fg-r ${gold?'gold':''}" cx="25" cy="25" r="22" stroke-dasharray="${circ}" stroke-dashoffset="${off}"/></svg><div class="xp-lvl ${gold?'gold':''}">${lvl}</div></div>
-    <div class="xp-info"><div class="xp-bar"><div class="xp-bar-fill ${gold?'gold':''}" style="width:${xpi}%"></div></div><div class="xp-text">${xpi}/100 XP to Level ${lvl+1} · Total: ${S.xp} XP</div></div>
-  </div>
-  <div class="stats-row stagger">
-    <div class="stat-card"><div class="stat-top"><span class="stat-icon">✔️</span></div><div class="stat-num" style="color:var(--accent)">${S.solved}</div><div class="stat-label">Solved</div></div>
-    <div class="stat-card"><div class="stat-top"><span class="stat-icon">⭐</span></div><div class="stat-num" style="color:var(--accent2)">${S.correct}</div><div class="stat-label">Correct</div></div>
-    <div class="stat-card"><div class="stat-top"><span class="stat-icon">🔥</span></div><div class="stat-num" style="color:var(--accent3)">${S.streak}</div><div class="stat-label">Streak</div></div>
-    <div class="stat-card"><div class="stat-top"><span class="stat-icon">🎯</span></div><div class="stat-num" style="color:var(--accent4)">${acc}%</div><div class="stat-label">Accuracy</div></div>
-  </div>
-  ${!dd?`<div class="daily-card fade-up" onclick="go('quiz')" style="animation-delay:.2s"><div class="daily-icon">🎯</div><div class="daily-text"><h4>Daily Challenge Available!</h4><p>Complete a mixed quiz to earn bonus XP</p><div class="daily-reward">+50 XP</div></div></div>`:`<div class="daily-card fade-up" style="animation-delay:.2s;border-color:var(--accent2)"><div class="daily-icon">✅</div><div class="daily-text"><h4>Daily Challenge Done!</h4><p>Come back tomorrow</p></div></div>`}
-  <div class="section-title fade-up" style="animation-delay:.25s"><span>📚</span> Topics & Difficulty</div>
-  <div class="topics-grid stagger">
-    ${T.map(t=>{const done=(S.ts[t.id]||{}).d||0;const total=t.qs.length;const pct=total?Math.round(done/total*100):0;const b1=t.qs.filter(q=>q.d===1).length;const b2=t.qs.filter(q=>q.d===2).length;const b3=t.qs.filter(q=>q.d===3).length;return`<div class="topic-card" style="--tc:${t.color}" onclick="go('quiz');initQuiz('${t.id}',0)"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:${t.color};border-radius:3px 3px 0 0;"></div><div class="tc-icon">${t.icon}</div><h3>${t.name}</h3><p>${done}/${total} solved</p><div class="tc-bar"><div class="tc-fill" style="width:${pct}%;background:${t.color}"></div></div><div class="tc-diff"><span style="background:${diffBg[1]};color:${diffCol[1]}">${b1}★</span><span style="background:${diffBg[2]};color:${diffCol[2]}">${b2}★★</span><span style="background:${diffBg[3]};color:${diffCol[3]}">${b3}★★★</span></div></div>`;}).join('')}
-  </div>
-</div>`;
-  // Sidebar
-  document.getElementById('sidebar').innerHTML=`<div class="sb-label">Difficulty</div>
-  <div class="sb-item" onclick="go('quiz');initQuiz(null,1)"><div class="sb-dot" style="background:var(--accent2)"></div>Basic<span class="sb-diff"><span class="sb-star f1">★</span></span></div>
-  <div class="sb-item" onclick="go('quiz');initQuiz(null,2)"><div class="sb-dot" style="background:var(--accent3)"></div>Intermediate<span class="sb-diff"><span class="sb-star f2">★★</span></span></div>
-  <div class="sb-item" onclick="go('quiz');initQuiz(null,3)"><div class="sb-dot" style="background:var(--accent4)"></div>Advanced<span class="sb-diff"><span class="sb-star f3">★★★</span></span></div>
-  <div class="sb-label">Topics</div>
-  ${T.map(t=>{const done=(S.ts[t.id]||{}).d||0;const total=t.qs.length;return`<div class="sb-item" onclick="go('quiz');initQuiz('${t.id}',0)"><div class="sb-dot" style="background:${t.color}"></div>${t.icon} ${t.name}<span class="sb-pct">${total?Math.round(done/total*100):0}%</span></div>`;}).join('')}`;
-}
-
-// ═══════════════════════════════════
-// PROBLEM SOLVING
-// ═══════════════════════════════════
-let psView='easy';
-function renderProblems(){
-  const easy=PROBLEMS.filter(p=>p.d==='easy');
-  const med=PROBLEMS.filter(p=>p.d==='medium');
-  const hard=PROBLEMS.filter(p=>p.d==='hard');
-  const lists={easy,medium:med,hard};
-  const items=lists[psView];
-  const numCls={easy:'easy',medium:'medium',hard:'hard'};
-  const numBg={easy:'rgba(74,234,188,.12)',medium:'rgba(255,196,107,.12)',hard:'rgba(255,107,138,.12)'};
-  const numCol={easy:'var(--accent2)',medium:'var(--accent3)',hard:'var(--accent4)'};
-
-  document.getElementById('mc').innerHTML=`<div class="ps-tabs">
-    <div class="ps-tab ${psView==='easy'?'active':''}" onclick="psView='easy';renderProblems()">🟢 Easy<span class="ps-count">${easy.length}</span></div>
-    <div class="ps-tab ${psView==='medium'?'active':''}" onclick="psView='medium';renderProblems()">🟡 Medium<span class="ps-count">${med.length}</span></div>
-    <div class="ps-tab ${psView==='hard'?'active':''}" onclick="psView='hard';renderProblems()">🔴 Interview<span class="ps-count">${hard.length}</span></div>
-  </div>
-  <div class="ps-content stagger">
-    ${items.map((p,i)=>{const done=S.solvedProblems.includes(psView+i);return`<div class="ps-item" onclick="showProblem('${psView}',${i})">
-      <div class="ps-num ${numCls[p.d]}" style="background:${numBg[p.d]};color:${numCol[p.d]}">${i+1}</div>
-      <div class="ps-body"><h4>${p.q}</h4><div class="ps-tags">${p.tags.map(t=>`<span class="ps-tag">${t}</span>`).join('')}</div></div>
-      ${done?'<div class="ps-done">✅</div>':''}
-    </div>`;}).join('')}
-  </div>`;
-}
-
-function showProblem(d,i){
-  const p=PROBLEMS.filter(x=>x.d===d)[i];
-  const done=S.solvedProblems.includes(d+i);
-  document.getElementById('mc').innerHTML=`<div class="lh"><button class="lh-back" onclick="renderProblems()">←</button><div class="lh-title">Problem #${i+1}</div></div>
-  <div class="q-area">
-    <div class="q-badge" style="background:${d==='easy'?'rgba(74,234,188,.12)':d==='medium'?'rgba(255,196,107,.12)':'rgba(255,107,138,.12)'};color:${d==='easy'?'var(--accent2)':d==='medium'?'var(--accent3)':'var(--accent4)'}">${d.toUpperCase()}</div>
-    <div class="q-text">${p.q}</div>
-    <div class="ps-tags" style="margin-bottom:16px">${p.tags.map(t=>`<span class="ps-tag">${t}</span>`).join('')}</div>
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-        <span style="font-size:12px;font-weight:800;color:var(--accent2)">💡 SOLUTION</span>
-        ${!done?`<button class="btn-next" style="padding:8px 16px;font-size:12px" onclick="markSolved('${d}',${i})">✅ Mark Solved (+15 XP)</button>`:'<span style="font-size:12px;color:var(--accent2);font-weight:700">✅ Solved</span>'}
-      </div>
-      <div class="expl-code">${esc(p.solution)}</div>
-    </div>
-    <button class="btn-skip" onclick="renderProblems()">← Back to Problems</button>
-  </div>`;
-}
-
-function markSolved(d,i){
-  const key=d+i;
-  if(!S.solvedProblems.includes(key)){S.solvedProblems.push(key);addXP(15);showToast('+15 XP!','success');save();}
-  showProblem(d,i);
-}
-
-// ═══════════════════════════════════
-// QUIZ
-// ═══════════════════════════════════
-let qS={qs:[],i:0,sc:0,ans:false,topic:null,diff:0};
-function initQuiz(tid,diff){
-  let qs=tid?T.find(t=>t.id===tid).qs:[...QS];
-  if(diff>0)qs=qs.filter(q=>q.d===diff);
-  qs=shuffle([...qs]).slice(0,Math.min(qs.length,12));
-  if(!qs.length)qs=shuffle([...QS]).slice(0,10);
-  qS={qs,i:0,sc:0,ans:false,topic:tid,diff};
-  renderQuiz();
-}
-function renderQuiz(){
-  const tName=qS.topic?T.find(t=>t.id===qS.topic)?.name+' Quiz':'Mixed Quiz';
-  const diffNames=['All','Basic ★','Intermediate ★★','Advanced ★★★'];
-  const diffCls=['','basic','inter','adv'];
-  document.getElementById('mc').innerHTML=`<div class="diff-bar">
-    <button class="diff-btn ${qS.diff===0?'active':''}" onclick="initQuiz(${qS.topic?`'${qS.topic}'`:'null'},0)">All</button>
-    <button class="diff-btn ${qS.diff===1?'active':''}" onclick="initQuiz(${qS.topic?`'${qS.topic}'`:'null'},1)">★ Basic</button>
-    <button class="diff-btn ${qS.diff===2?'active':''}" onclick="initQuiz(${qS.topic?`'${qS.topic}'`:'null'},2)">★★ Intermediate</button>
-    <button class="diff-btn ${qS.diff===3?'active':''}" onclick="initQuiz(${qS.topic?`'${qS.topic}'`:'null'},3)">★★★ Advanced</button>
-  </div>
-  <div class="lh"><button class="lh-back" onclick="go('dash')">←</button><div class="lh-title">${tName}</div><div class="lh-prog"><div class="lh-prog-fill" id="qp" style="width:0%"></div></div><div class="lh-count" id="qc">0/0</div></div>
-  <div class="q-area" id="qa"></div>`;
-  renderQ();
-}
-function renderQ(){
-  const a=document.getElementById('qa');if(!a)return;
-  if(qS.i>=qS.qs.length){showRes();return;}
-  const q=qS.qs[qS.i];const dl=['','Basic','Intermediate','Advanced'];
-  document.getElementById('qp').style.width=(qS.i/qS.qs.length*100)+'%';
-  document.getElementById('qc').textContent=`${qS.i+1}/${qS.qs.length}`;
-  a.innerHTML=`<div class="q-badge">${T.find(t=>t.id===q.t)?.icon||'?'} ${T.find(t=>t.id===q.t)?.name||q.t}<span class="q-diff ${dl[q.d].toLowerCase()}">${dl[q.d]}</span></div><div class="q-text">${q.q}</div><div class="opts">${q.o.map((o,i)=>`<button class="opt" onclick="selOpt(${i})"><span class="opt-l">${'ABCD'[i]}</span>${o}</button>`).join('')}</div><div class="expl" id="ex"><div class="expl-t">Explanation</div><div>${q.e}</div>${q.c?`<div class="expl-code">${q.c.replace(/\n/g,'<br>')}</div>`:''}</div><div class="q-acts"><button class="btn-next hidden" id="bn" onclick="qS.i++;renderQ()">Next →</button><button class="btn-skip" onclick="qS.i++;renderQ()">Skip</button></div>`;
-  qS.ans=false;
-}
-function selOpt(i){
-  if(qS.ans)return;qS.ans=true;const q=qS.qs[qS.i];
-  document.querySelectorAll('.opt').forEach((o,idx)=>{o.disabled=true;if(idx===q.a)o.classList.add('correct');else if(idx===i)o.classList.add('wrong');});
-  document.getElementById('ex').classList.add('show');document.getElementById('bn').classList.remove('hidden');
-  const ok=i===q.a;const xp=q.d*5+(ok?q.d*5:0);
-  if(ok){qS.sc++;S.correct++;showToast(`+${xp} XP`,'success');}else showToast('Wrong!','error');
-  S.solved++;addXP(xp);if(!S.ts[q.t])S.ts[q.t]={d:0,c:0};S.ts[q.t].d++;if(ok)S.ts[q.t].c++;
-  if(qS.sc>=8&&S.dailyDone!==new Date().toDateString()){S.dailyDone=new Date().toDateString();addXP(50);}
-  updateStreak();checkBadges();save();
-}
-function showRes(){
-  const a=document.getElementById('qa');if(!a)return;
-  const pct=Math.round(qS.sc/qS.qs.length*100);const xp=qS.qs.reduce((s,q)=>s+q.d*5,0)+qS.sc*qS.qs.reduce((s,q)=>s+q.d,0);
-  a.innerHTML=`<div class="result-card fade-up"><div class="result-emoji">${pct>=80?'🎉':pct>=50?'👍':'😅'}</div><div class="result-score">${pct}%</div><div class="result-msg">${pct>=80?'Excellent!':pct>=50?'Good effort!':'Keep trying!'}</div><div class="result-xp">+${xp} XP earned</div><div class="result-bd"><div class="rb-item"><div class="rb-num" style="color:var(--accent2)">${qS.sc}</div><div class="rb-label">Correct</div></div><div class="rb-item"><div class="rb-num" style="color:var(--accent4)">${qS.qs.length-qS.sc}</div><div class="rb-label">Wrong</div></div></div><button class="btn-retry" onclick="initQuiz(qS.topic,qS.diff)">Retry</button><button class="btn-dash" onclick="go('dash')">Home</button></div>`;
-}
-
-// ═══════════════════════════════════
-// PRACTICE
-// ═══════════════════════════════════
-let pIdx=0;
-function renderPractice(){
-  const a=document.getElementById('mc');
-  if(pIdx>=PRACTICE_Qs.length){a.innerHTML=`<div class="lh"><button class="lh-back" onclick="go('dash')">←</button><div class="lh-title">Practice</div></div><div class="q-area"><div class="result-card"><div class="result-emoji">🎉</div><div class="result-score">Done!</div><div class="result-msg">All practice complete!</div><button class="btn-retry" onclick="pIdx=0;renderPractice()">Restart</button></div></div>`;return;}
-  const q=PRACTICE_Qs[pIdx];
-  a.innerHTML=`<div class="lh"><button class="lh-back" onclick="go('dash')">←</button><div class="lh-title">Fill the Blanks</div><div class="lh-prog"><div class="lh-prog-fill" style="width:${pIdx/PRACTICE_Qs.length*100}%"></div></div><div class="lh-count">${pIdx+1}/${PRACTICE_Qs.length}</div></div>
-  <div class="q-area"><div class="q-badge">Practice ${pIdx+1}</div><div class="q-text" style="font-size:15px">${q.q}</div><div class="code-block"><code>${q.pre?q.pre.replace(/\n/g,'<br>')+'<br>':''}<input class="code-blank" id="bi" placeholder="${q.hint}" autocomplete="off">${q.post.replace(/\n/g,'<br>')}</code></div><div class="expl hidden" id="pe"><div class="expl-t">Answer</div><div id="pet"></div></div><div style="display:flex;gap:8px"><button class="check-btn" onclick="chkP()">Check</button><button class="btn-skip" onclick="pIdx++;renderPractice()">Skip</button></div></div>`;
-  setTimeout(()=>{const inp=document.getElementById('bi');if(inp){inp.focus();inp.onkeydown=e=>{if(e.key==='Enter')chkP();};}},50);
-}
-function chkP(){
-  const q=PRACTICE_Qs[pIdx];const v=document.getElementById('bi').value.trim();
-  const ok=q.ans.some(a=>v.toLowerCase()===a.toLowerCase());
-  const inp=document.getElementById('bi');inp.classList.add(ok?'correct':'wrong');inp.disabled=true;
-  document.getElementById('pe').classList.remove('hidden');
-  document.getElementById('pet').innerHTML=ok?`Correct! <code style="color:var(--accent2)">${q.ans[0]}</code>`:`Wrong. Answer: <code style="color:var(--accent2)">${q.ans[0]}</code>`;
-  showToast(ok?'Correct!':'Wrong!',ok?'success':'error');S.solved++;if(ok)S.correct++;addXP(ok?8:2);updateStreak();checkBadges();save();
-  setTimeout(()=>{pIdx++;renderPractice();},1400);
-}
-
-// ═══════════════════════════════════
-// FLASHCARDS
-// ═══════════════════════════════════
-let fS={qs:[],i:0};
-function initFlash(tid){fS={qs:shuffle(tid?T.find(t=>t.id===tid).qs:[...QS]),i:0};renderFlash();}
-function renderFlash(){
-  const q=fS.qs[fS.i];
-  document.getElementById('mc').innerHTML=`<div class="lh"><button class="lh-back" onclick="go('dash')">←</button><div class="lh-title">Flashcards</div><div class="lh-count">${fS.i+1}/${fS.qs.length}</div></div>
-  <div class="q-area"><div class="fc" id="fc" onclick="document.getElementById('fc').classList.toggle('flip')"><div class="fc-f">${q.q}</div><div class="fc-b">${q.e}${q.c?`<div class="expl-code">${q.c.replace(/\n/g,'<br>')}</div>`:''}</div><div class="fc-h">Tap to reveal</div></div><div class="fc-nav"><button class="fc-btn" onclick="if(fS.i>0){fS.i--;renderFlash();}">←</button><span style="color:var(--muted);font-size:12px">${fS.i+1}/${fS.qs.length}</span><button class="fc-btn" onclick="if(fS.i<fS.qs.length-1){fS.i++;renderFlash();}">→</button><button class="fc-btn" onclick="initFlash(null)" style="margin-left:6px;font-size:10px;width:auto;padding:0 10px">Shuffle</button></div></div>`;
-}
-
-// ═══════════════════════════════════
-// ASK AI
-// ═══════════════════════════════════
-function renderAsk(){
-  document.getElementById('mc').innerHTML=`<div class="lh"><button class="lh-back" onclick="go('dash')">←</button><div class="lh-title">Ask AI Anything</div></div>
-  <div class="ask-wrap">
-    <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Ask questions, paste code, or explore concepts. Wrong statements get corrected!</p>
-    <div class="ask-hints">
-      <span class="ask-hint" onclick="document.getElementById('ai').value='What does len() do?'">len()</span>
-      <span class="ask-hint" onclick="document.getElementById('ai').value='Explain decorators'">decorators</span>
-      <span class="ask-hint" onclick="document.getElementById('ai').value='What is a generator?'">generators</span>
-      <span class="ask-hint" onclick="document.getElementById('ai').value='Lists are immutable'">wrong statement</span>
-      <span class="ask-hint" onclick="document.getElementById('ai').value='append returns the new list'">common mistake</span>
-      <span class="ask-hint" onclick="document.getElementById('ai').value='is vs == difference'">is vs ==</span>
-      <span class="ask-hint" onclick="document.getElementById('ai').value='deep copy vs shallow copy'">deep copy</span>
-    </div>
-    <div class="ask-input-wrap"><textarea class="ask-ta" id="ai" placeholder="Ask anything or paste code..." rows="2"></textarea><button class="ask-send" id="ab" onclick="sendQ()">➤</button></div>
-    <div class="chat" id="ch"></div>
-  </div>`;
-  document.getElementById('ai').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendQ();}});
-}
-function sendQ(){
-  const inp=document.getElementById('ai');if(!inp)return;const q=inp.value.trim();if(!q)return;
-  const ch=document.getElementById('ch');
-  ch.innerHTML+=`<div class="cmsg cuser fade-up"><div class="cavatar">?</div><div class="cbubble">${esc(q)}</div></div>`;
-  inp.value='';const btn=document.getElementById('ab');btn.disabled=true;
-  ch.innerHTML+=`<div class="cmsg cbot fade-up"><div class="cavatar">🤖</div><div class="cbubble dots"><span>.</span><span>.</span><span>.</span></div></div>`;
-  ch.scrollTop=ch.scrollHeight;
-  setTimeout(()=>{
-    const last=ch.lastElementChild;last.querySelector('.cbubble').className='cbubble';
-    last.querySelector('.cbubble').innerHTML=processQuestion(q);ch.scrollTop=ch.scrollHeight;
-    btn.disabled=false;S.askCount++;addXP(3);checkBadges();save();
-  },500+Math.random()*500);
-}
-
-// ═══════════════════════════════════
-// LEADERBOARD
-// ═════════════════════════════════
-const BADGES=[{id:'f',i:'🌱',n:'First Step',d:'First question',c:s=>s.solved>=1},{id:'t',i:'🔟',n:'Warming Up',d:'10 questions',c:s=>s.solved>=10},{id:'h',i:'🏅',n:'Half Century',d:'50 questions',c:s=>s.solved>=50},{id:'s',i:'🔥',n:'On Fire',d:'3 day streak',c:s=>s.streak>=3},{id:'a',i:'🎯',n:'Sharpshooter',d:'80%+ accuracy',c:s=>s.solved>10&&s.correct/s.solved>=.8},{id:'e',i:'🗺️',n:'Explorer',d:'All 8 topics',c:s=>Object.keys(s.ts).length>=8},{id:'q',i:'❓',n:'Curious',d:'Ask 5',c:s=>s.askCount>=5},{id:'l',i:'👑',n:'Rising Star',d:'Level 5',c:s=>getLevel()>=5},{id:'p',i:'🧩',n:'Problem Solver',d:'Solve 5 problems',c:s=>s.solvedProblems.length>=5},{id:'m',i:'💎',n:'Master',d:'Level 10',c:s=>getLevel()>=10}];
-function checkBadges(){BADGES.forEach(b=>{if(!S.badges.includes(b.id)&&b.c(S)){S.badges.push(b.id);showToast('Badge: '+b.i+' '+b.n,'success');}});}
-function updateStreak(){const t=new Date().toDateString();if(S.lastDate!==t){S.streak=S.lastDate===new Date(Date.now()-864e5).toDateString()?S.streak+1:1;S.lastDate=t;}}
-
-function renderRanks(){
-  const my=S.xp;const all=[...lbP.map(p=>({...p})),{n:'You',sc:my,s:S.streak,isMe:true,ch:0}].sort((a,b)=>b.sc-a.sc);
-  const el=Date.now()-lbT;const m=Math.floor(el/6e4);const s=Math.floor((el%6e4)/1e3);
-  document.getElementById('mc').innerHTML=`<div style="padding:20px;max-width:600px;margin:0 auto;">
-    <div class="lb-timer"><span class="spin-icon"></span>Shuffles in ${m}m ${s}s</div>
-    <h2 style="margin-bottom:14px;font-size:18px">🏆 Leaderboard</h2>
-    ${all.map((p,i)=>{const cc=p.ch>5?'lb-up':p.ch<-5?'lb-dn':'lb-sm';return`<div class="lb-item ${p.isMe?'lb-me':''}"><div class="lb-rank" style="color:${i===0?'var(--accent3)':i===1?'var(--muted)':i===2?'var(--accent4)':'var(--muted)'}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div><div class="lb-name">${p.n}${p.isMe?' ←':''}</div><div class="lb-str">${p.s}🔥</div>${!p.isMe?`<div class="lb-chg ${cc}">${p.ch>5?'↑'+p.ch:p.ch<-5?'↓'+Math.abs(p.ch):'—'}</div>`:''}<div class="lb-sc">${p.sc}</div></div>`;}).join('')}
-    <h2 style="margin:20px 0 10px;font-size:18px">🎖️ Badges (${S.badges.length}/${BADGES.length})</h2>
-    <div class="badge-grid">${BADGES.map(b=>`<div class="badge-item ${S.badges.includes(b.id)?'':'locked'}"><div class="badge-icon">${b.i}</div><div class="badge-name">${b.n}</div><div class="badge-desc">${b.d}</div></div>`).join('')}</div>
-  </div>`;
-  setTimeout(()=>{if(cv==='ranks'){updLB();renderRanks();}},1000);
-}
-
-// ═══════════════════════════════════
 // UTILS
-// ═══════════════════════════════════
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+type;clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2000);}
+// ═════════════════════════════════
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('show');}
+function toggleTheme(){
+  const t=document.documentElement.getAttribute('data-theme');
+  const nt=t==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',nt);
+  localStorage.setItem('sikhle_theme',nt);
+  document.getElementById('themeBtn').innerHTML=t==='dark'?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>';
+}
 
-// INIT
-updLB();renderDash();
+// Load theme
+(function(){const t=localStorage.getItem('sikhle_theme')||'dark';document.documentElement.setAttribute('data-theme',t);document.getElementById('themeBtn').innerHTML=t==='dark'?'<i class="fas fa-moon"></i>':'<i class="fas fa-sun"></i>';})();
+
+function showToast(msg,type){
+  const toast=document.getElementById('toast');
+  const icons={success:'fa-check-circle',info:'fa-info-circle',error:'fa-exclamation-circle'};
+  toast.innerHTML=`<i class="fas ${icons[type]||icons.info}" style="color:${type==='success'?'var(--accent2)':type==='error'?'var(--accent4)':'var(--accent)'}"></i><span>${msg}</span>`;
+  toast.className='toast show';
+  clearTimeout(toast._t);toast._t=setTimeout(()=>toast.classList.remove('show'),3000);
+}
+
+// Scroll animations
+const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');}});},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const target=document.querySelector(this.getAttribute('href'));if(target)target.scrollIntoView({behavior:'smooth',block:'start'});toggleMenu();});});
 </script>
 </body>
 </html>
