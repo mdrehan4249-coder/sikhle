@@ -1,272 +1,253 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Sikhle — Learn Coding & Skills for Free</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-[data-theme="dark"]{
-  --bg:#06060f;--bg2:#0b0b1a;--bg3:#111128;--card:#12122a;--card2:#181838;
-  --border:#1e1e45;--border2:#2a2a5a;--accent:#7c5cfc;--accent2:#00e89d;--accent3:#ffb347;
-  --accent4:#ff5f7e;--accent5:#38bdf8;--text:#eeeef8;--text2:#b0b0d0;--muted:#6a6a95;
-  --glow:rgba(124,92,252,.12);--glow2:rgba(0,232,157,.08);--code-bg:#0a0a1e;
-  --input-bg:#0e0e22;--hover:rgba(124,92,252,.06);--shadow:0 8px 32px rgba(0,0,0,.4);
-  --grad1:linear-gradient(135deg,#06060f 0%,#0d0b2e 50%,#0a0620 100%);
-  --grad2:linear-gradient(135deg,rgba(124,92,252,.15),rgba(0,232,157,.08));
-  --nav-bg:rgba(6,6,15,.85);
-}
-[data-theme="light"]{
-  --bg:#f5f6fc;--bg2:#ffffff;--bg3:#eeeef8;--card:#ffffff;--card2:#f8f8ff;
-  --border:#dde0f0;--border2:#c8cce0;--accent:#6c4ce6;--accent2:#00b87a;--accent3:#f0982a;
-  --accent4:#e0556e;--accent5:#2b9de6;--text:#12122e;--text2:#3a3a60;--muted:#8888aa;
-  --glow:rgba(108,76,230,.06);--glow2:rgba(0,184,122,.04);--code-bg:#f0f0fa;
-  --input-bg:#eeeff8;--hover:rgba(108,76,230,.04);--shadow:0 8px 32px rgba(0,0,0,.08);
-  --grad1:linear-gradient(135deg,#f5f6fc 0%,#eeeaff 50%,#f0f0ff 100%);
-  --grad2:linear-gradient(135deg,rgba(108,76,230,.06),rgba(0,184,122,.04));
-  --nav-bg:rgba(255,255,255,.88);
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s;}
-::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--bg2);}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px;}
-::selection{background:var(--accent);color:#fff;}
-
-/* ANIMATED BG */
-.bg-effects{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-.bg-orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4;animation:orbMove 30s ease-in-out infinite alternate;}
-[data-theme="light"] .bg-orb{opacity:.2;}
-.bg-orb.o1{width:600px;height:600px;background:var(--accent);top:-20%;left:-15%;animation-delay:0s;}
-.bg-orb.o2{width:500px;height:500px;background:var(--accent2);bottom:-15%;right:-10%;animation-delay:-10s;}
-.bg-orb.o3{width:400px;height:400px;background:var(--accent4);top:50%;left:40%;animation-delay:-20s;}
-@keyframes orbMove{0%{transform:translate(0,0) scale(1)}33%{transform:translate(60px,-40px) scale(1.1)}66%{transform:translate(-40px,60px) scale(.9)}100%{transform:translate(30px,30px) scale(1.05)}}
-.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:100px 100px;opacity:.08;}
-[data-theme="light"] .bg-grid{opacity:.15;}
+*,*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#05050e;--bg2:#0a0a1a;--bg3:#101028;--card:#13132e;--border:#1e1e45;--border2:#2a2a5e;--accent:#7c5cfc;--accent2:#00e89d;--accent3:#ffb347;--accent4:#ff5f7e;--accent5:#38bdf8;--text:#e8e8f8;--text2:#a8a8cc;--muted:#5c5c85;--code-bg:#0a0a1e;--input-bg:#0d0d20;--glow:rgba(124,92,252,.12);--shadow:0 8px 32px rgba(0,0,0,.4);--nav-bg:rgba(5,5,14,.88)}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+::selection{background:var(--accent);color:#fff}
+.bg-fx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(120px);animation:orbDrift 30s ease-in-out infinite alternate}
+.orb.a{width:600px;height:600px;background:var(--accent);top:-20%;left:-12%;animation-delay:0s}
+.orb.b{width:500px;height:500px;background:var(--accent2);bottom:-15%;right:-8%;animation-delay:-12s}
+.orb.c{width:400px;height:400px;background:var(--accent4);top:45%;left:35%;animation-delay:-22s}
+@keyframes orbDrift{0%{transform:translate(0,0) scale(1)}33%{transform:translate(60px,-40px) scale(1.1)}66%{transform:translate(-40px,60px) scale(.9)}100%{transform:translate(30px,30px) scale(1.05)}}
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:100px 100px;opacity:.06}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;gap:20px;transition:background .4s;}
-.logo{font-size:22px;font-weight:900;letter-spacing:-1px;color:var(--text);display:flex;align-items:center;gap:8px;flex-shrink:0;}
-.logo i{color:var(--accent);font-size:24px;}
-.logo span{color:var(--accent);}
-.nav-search{flex:1;max-width:420px;position:relative;}
-.nav-search input{width:100%;padding:10px 16px 10px 40px;border-radius:12px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:all .2s;}
-.nav-search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow);}
-.nav-search input::placeholder{color:var(--muted);}
-.nav-search i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;}
-.nav-links{display:flex;gap:4px;align-items:center;}
-.nav-link{padding:8px 16px;border-radius:10px;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;border:none;background:none;font-family:'Inter',sans-serif;}
-.nav-link:hover{color:var(--text);background:var(--hover);}
-.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.theme-toggle{width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--accent3);transition:all .2s;}
-.theme-toggle:hover{border-color:var(--accent);transform:scale(1.05);}
-.menu-btn{display:none;width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:18px;color:var(--text);align-items:center;justify-content:center;}
-.mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--bg2);z-index:999;padding:20px;flex-direction:column;gap:8px;border-top:1px solid var(--border);}
-.mobile-menu.show{display:flex;}
-
-/* LAYOUT */
-.main{position:relative;z-index:1;padding-top:64px;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);height:64px;display:flex;align-items:center;padding:0 24px;gap:16px;transition:background .4s}
+.logo{font-size:22px;font-weight:900;letter-spacing:-1px;color:var(--text);display:flex;align-items:center;gap:8px;flex-shrink:0}
+.logo i{color:var(--accent);font-size:20px}
+.logo span{color:var(--accent)}
+.search-box{flex:1;max-width:400px;position:relative}
+.search-box input{width:100%;padding:10px 16px 10px 40px;border-radius:12px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:all .2s}
+.search-box input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+.search-box input::placeholder{color:var(--muted)}
+.search-box i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px}
+.nav-links{display:flex;gap:2px;align-items:center}
+.nav-link{padding:8px 16px;border-radius:10px;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;border:none;background:none;font-family:'Inter',sans-serif;text-decoration:none}
+.nav-link:hover{color:var(--text);background:var(--bg3)}
+.nav-link.active{color:var(--accent);background:var(--glow)}
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.theme-btn{width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--accent3);transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);transform:scale(1.05)}
+.menu-btn{display:none;width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:18px;color:var(--text);align-items:center;justify-content:center}
+.mobile-nav{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--bg2);z-index:999;padding:20px;border-top:1px solid var(--border);flex-direction:column;gap:6px}
+.mobile-nav.show{display:flex}
+.main{position:relative;z-index:1;padding-top:64px}
 
 /* ANIMATIONS */
 @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(124,92,252,.3)}50%{box-shadow:0 0 40px rgba(124,92,252,.5)}}
-@keyframes slideRight{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
-.fade-up{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease;}
-.fade-up.visible{opacity:1;transform:translateY(0);}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 20px rgba(124,92,252,.3)}50%{box-shadow:0 0 40px rgba(124,92,252,.5)}}
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
+.fade-up.vis{opacity:1;transform:translateY(0)}
 
 /* HERO */
-.hero{min-height:90vh;display:flex;align-items:center;justify-content:center;padding:60px 24px;position:relative;overflow:hidden;}
-.hero-content{text-align:center;max-width:800px;position:relative;z-index:2;}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--glow);border:1px solid var(--border);padding:8px 20px;border-radius:50px;font-size:13px;font-weight:600;color:var(--accent);margin-bottom:28px;animation:fadeUp .8s ease forwards;}
-.hero-badge i{font-size:10px;animation:float 2s ease-in-out infinite;}
-.hero h1{font-size:clamp(32px,6vw,56px);font-weight:900;line-height:1.1;margin-bottom:20px;animation:fadeUp .8s ease .1s forwards;opacity:0;}
-.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hero p{font-size:clamp(16px,2.5vw,20px);color:var(--text2);line-height:1.6;margin-bottom:36px;max-width:600px;margin-left:auto;margin-right:auto;animation:fadeUp .8s ease .2s forwards;opacity:0;}
-.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s ease .3s forwards;opacity:0;}
-.btn-primary{background:linear-gradient(135deg,var(--accent),#9b7aff);color:#fff;border:none;padding:16px 36px;border-radius:14px;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:10px;box-shadow:0 4px 24px rgba(124,92,252,.35);}
-.btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 36px rgba(124,92,252,.5);}
-.btn-secondary{background:transparent;color:var(--text);border:2px solid var(--border2);padding:14px 32px;border-radius:14px;font-family:'Inter',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:10px;}
-.btn-secondary:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
-.hero-code{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',monospace;font-size:clamp(12px,2vw,16px);color:var(--muted);opacity:.06;white-space:pre;line-height:1.8;pointer-events:none;z-index:0;text-align:left;}
-.hero-stats{display:flex;gap:40px;justify-content:center;margin-top:48px;animation:fadeUp .8s ease .4s forwards;opacity:0;}
-.hero-stat{text-align:center;}
-.hero-stat .num{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--accent);}
-.hero-stat .label{font-size:12px;color:var(--muted);font-weight:600;margin-top:2px;}
+.hero{min-height:92vh;display:flex;align-items:center;justify-content:center;padding:60px 24px;position:relative;overflow:hidden}
+.hero-code{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',monospace;font-size:clamp(11px,1.8vw,15px);color:var(--muted);opacity:.05;white-space:pre;line-height:1.8;pointer-events:none;z-index:0;text-align:left;max-width:500px;width:100%}
+.hero-content{text-align:center;max-width:760px;position:relative;z-index:2}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--glow);border:1px solid var(--border);padding:8px 20px;border-radius:50px;font-size:13px;font-weight:600;color:var(--accent);margin-bottom:28px;animation:fadeUp .7s ease forwards;opacity:0}
+.hero-badge i{font-size:10px;animation:float 2s ease-in-out infinite}
+.hero h1{font-size:clamp(32px,6vw,56px);font-weight:900;line-height:1.1;margin-bottom:20px;animation:fadeUp .7s ease .1s forwards;opacity:0}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:clamp(15px,2.4vw,19px);color:var(--text2);line-height:1.6;margin-bottom:36px;max-width:560px;margin:0 auto;animation:fadeUp .7s ease .2s forwards;opacity:0}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeUp .7s ease .3s forwards;opacity:0}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#9b7aff);color:#fff;border:none;padding:16px 36px;border-radius:14px;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:10px;box-shadow:0 4px 24px rgba(124,92,252,.35)}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 36px rgba(124,92,252,.5)}
+.btn-secondary{background:transparent;color:linear-gradient(135deg,var(--accent),var(--accent2));border:2px solid var(--border2);padding:14px 32px;border-radius:14px;font-family:'Inter',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:10px}
+.btn-secondary:hover{transform:translateY(-2px);border-color:var(--accent)}
+.hero-stats{display:flex;gap:40px;justify-content:center;margin-top:48px;animation:fadeUp .7s ease .4s forwards;opacity:0}
+.hero-stat{text-align:center}
+.hero-stat .num{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--accent)}
+.hero-stat .label{font-size:12px;color:var(--muted);font-weight:600;margin-top:2px}
 
 /* SECTIONS */
-.section{padding:80px 24px;max-width:1200px;margin:0 auto;}
-.section-header{text-align:center;margin-bottom:48px;}
-.section-badge{display:inline-flex;align-items:center;gap:6px;background:var(--glow);border:1px solid var(--border);padding:6px 16px;border-radius:50px;font-size:12px;font-weight:600;color:var(--accent);margin-bottom:14px;letter-spacing:.5px;text-transform:uppercase;}
-.section-title{font-size:clamp(24px,4vw,36px);font-weight:900;margin-bottom:12px;line-height:1.2;}
-.section-sub{font-size:16px;color:var(--text2);max-width:550px;margin:0 auto;line-height:1.6;}
+.sec{padding:80px 24px;max-width:1200px;margin:0 auto}
+.sec-head{text-align:center;margin-bottom:48px}
+.sec-badge{display:inline-flex;align-items:center;gap:6px;background:var(--glow);border:1px solid var(--border);padding:6px 16px;border-radius:50px;font-size:12px;font-weight:600;color:var(--accent);margin-bottom:14px;letter-spacing:.5px;text-transform:uppercase}
+.sec-title{font-size:clamp(22px,4vw,36px);font-weight:900;margin-bottom:12px;line-height:1.2}
+.sec-sub{font-size:16px;color:var(--text2);max-width:550px;margin:0 auto;line-height:1.6}
 
-/* LEARNING PATHS */
-.paths-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;}
-.path-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;transition:all .3s;position:relative;overflow:hidden;cursor:pointer;}
-.path-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;}
-.path-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:var(--border2);}
-.path-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;}
-.path-card h3{font-size:20px;font-weight:800;margin-bottom:8px;}
-.path-card p{font-size:14px;color:var(--text2);line-height:1.5;margin-bottom:20px;}
-.path-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
-.path-step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);}
-.path-step i{font-size:8px;color:var(--accent2);}
-.path-step .arrow{color:var(--muted);font-size:10px;}
-.btn-path{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 24px;border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;width:100%;justify-content:center;}
-.btn-path:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
-
-/* PRACTICE */
-.practice-tabs{display:flex;gap:8px;justify-content:center;margin-bottom:32px;flex-wrap:wrap;}
-.ptab{padding:10px 24px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;font-size:14px;font-weight:700;transition:all .2s;font-family:'Inter',sans-serif;}
-.ptab:hover{border-color:var(--accent);color:var(--text);}
-.ptab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
-.ptab .count{background:rgba(255,255,255,.15);padding:1px 8px;border-radius:8px;font-size:12px;margin-left:4px;}
-.questions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;max-height:600px;overflow-y:auto;padding:4px;}
-.q-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;transition:all .2s;cursor:pointer;display:flex;gap:14px;align-items:flex-start;}
-.q-card:hover{border-color:var(--accent);transform:translateY(-2px);}
-.q-num{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;flex-shrink:0;}
-.q-num.easy{background:rgba(0,232,157,.12);color:var(--accent2);}
-.q-num.medium{background:rgba(255,179,71,.12);color:var(--accent3);}
-.q-num.hard{background:rgba(255,95,126,.12);color:var(--accent4);}
-.q-body{flex:1;min-width:0;}
-.q-body h4{font-size:14px;font-weight:700;margin-bottom:4px;line-height:1.3;}
-.q-body p{font-size:12px;color:var(--muted);}
-.q-tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:6px;font-weight:700;background:var(--bg3);color:var(--muted);margin-right:4px;}
-.q-actions{display:flex;gap:6px;margin-top:10px;}
-.btn-solve{padding:6px 14px;border-radius:8px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
-.btn-solve.go{background:var(--accent);color:#fff;}
-.btn-solve.go:hover{opacity:.85;}
-.btn-solve.solved{background:rgba(0,232,157,.12);color:var(--accent2);cursor:default;}
-.btn-solve.soon{background:var(--bg3);color:var(--muted);cursor:default;opacity:.6;}
-.coming-soon-badge{display:inline-flex;align-items:center;gap:4px;background:var(--glow);border:1px solid var(--border);padding:4px 12px;border-radius:8px;font-size:11px;font-weight:600;color:var(--accent);margin-top:20px;}
-
-/* PROJECTS */
-.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;}
-.proj-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:all .3s;cursor:pointer;}
-.proj-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);}
-.proj-img{height:180px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;}
-.proj-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,var(--card),transparent);}
-.proj-body{padding:20px;}
-.proj-level{font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;display:inline-block;margin-bottom:10px;}
-.proj-level.beginner{background:rgba(0,232,157,.12);color:var(--accent2);}
-.proj-level.intermediate{background:rgba(255,179,71,.12);color:var(--accent3);}
-.proj-level.advanced{background:rgba(255,95,126,.12);color:var(--accent4);}
-.proj-body h3{font-size:18px;font-weight:800;margin-bottom:6px;}
-.proj-body p{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:14px;}
-.proj-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
-.proj-tag{font-size:11px;padding:3px 10px;border-radius:6px;font-weight:600;background:var(--bg3);color:var(--muted);}
-.btn-proj{width:100%;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
-.btn-proj:hover{border-color:var(--accent);color:var(--accent);}
+/* PATH CARDS */
+.paths-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr);gap:20px}
+.path-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;transition:all .3s;position:relative;overflow:hidden;cursor:pointer}
+.path-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:4px 4px 0 0}
+.path-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:var(--border2)}
+.path-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px}
+.path-card h3{font-size:20px;font-weight:800;margin-bottom:8px}
+.path-card p{font-size:14px;color:var(--text2);line-height:1.5;margin-bottom:20px}
+.path-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.path-step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.path-step i{font-size:7px;color:var(--accent2)}
+.path-step .arr{color:var(--muted);font-size:10px}
+.btn-path{width:100%;padding:10px 24px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-path:hover{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-2px)}
 
 /* DAILY CHALLENGE */
-.daily{background:linear-gradient(135deg,rgba(124,92,252,.08),rgba(255,179,71,.06));border:1.5px solid rgba(124,92,252,.2);border-radius:20px;padding:32px;display:flex;align-items:center;gap:28px;transition:all .3s;}
-.daily:hover{border-color:var(--accent);transform:translateY(-2px);}
-.daily-icon{font-size:48px;animation:float 3s ease-in-out infinite;flex-shrink:0;}
-.daily-text h3{font-size:22px;font-weight:800;margin-bottom:6px;}
-.daily-text p{font-size:14px;color:var(--text2);margin-bottom:12px;}
-.daily-reward{font-size:13px;color:var(--accent3);font-weight:700;background:rgba(255,179,71,.1);padding:4px 12px;border-radius:8px;display:inline-flex;align-items:center;gap:6px;}
-.btn-daily{background:linear-gradient(135deg,var(--accent3),var(--accent4));color:#fff;border:none;padding:12px 28px;border-radius:12px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
-.btn-daily:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(255,179,71,.3);}
+.daily{background:linear-gradient(135deg,rgba(124,92,252,.08),rgba(255,179,71,.05));border:1.5px solid rgba(124,92,252,.2);border-radius:20px;padding:32px;display:flex;align-items:center;gap:28px;transition:all .3px}
+.daily:hover{border-color:var(--accent);transform:translateY(-2px)}
+.daily-icon{font-size:48px;animation:float 3s ease-in-out infinite;flex-shrink:0}
+.daily-text h3{font-size:22px;font-weight:800;margin-bottom:6px}
+.daily-text p{font-size:14px;color:var(--text2);margin-bottom:12px}
+.daily-reward{display:inline-flex;align-items:center;gap:6px;background:rgba(255,179,71,.1);color:var(--accent3);padding:4px 12px;border-radius:8px;font-size:13px;font-weight:700}
+.btn-daily{background:linear-gradient(135deg,var(--accent3),var(--accent4));color:#fff;border:none;padding:12px 28px;border-radius:12px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(255,179,71,.25)}
+.btn-daily:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,179,71,.4)}
+
+/* PRACTICE */
+.tabs-wrap{display:flex;gap:8px;justify-content:center;margin-bottom:28px;flex-wrap:wrap}
+.tab-btn{padding:10px 24px;border-radius:12px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;font-size:14px;font-weight:700;transition:all .2s;font-family:'inherit'}
+.tab-btn:hover{border-color:var(--accent);color:var(--text)}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.tab-btn .cnt{background:rgba(255,255,255,.15);padding:1px 8px;border-radius:8px;font-size:12px;margin-left:4px}
+.q-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr);gap:10px;max-height:620px;overflow-y:auto;padding:4px}
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;transition:all .2s;cursor:pointer;display:flex;gap:12px;align-items:flex-start}
+.q-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.q-num{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;flex-shrink:0}
+.q-num.easy{background:rgba(0,232,157,.12);color:var(--accent2)}
+.q-num.medium{background:rgba(255,179,71,.12);color:var(--accent3)}
+.q-num.hard{background:rgba(255,95,126,.12);color:var(--accent4)}
+.q-body{flex:1;min-width:0}
+.q-body h4{font-size:14px;font-weight:700;margin-bottom:4px;line-height:1.3}
+.q-tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:6px;font-weight:700;background:var(--bg3);color:var(--muted);margin-right:4px}
+.q-actions{display:flex;gap:6px;margin-top:10px}
+.btn-solve{padding:6px 14px;border-radius:8px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.btn-solve.go{background:var(--accent);color:#fff}
+.btn-solve.go:hover{opacity:.85}
+.btn-solve.done{background:rgba(0,232,157,.12);color:var(--accent2);cursor:default}
+.coming-soon{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--glow);border:1px solid var(--border);padding:6px 16px;border-radius:8px;font-size:12px;font-weight:600;color:var(--accent);margin-top:20px}
+.coming-soon i{font-size:10px;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* PROJECTS */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr);gap:18px}
+.proj-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:all .3s;cursor:pointer}
+.proj-card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.proj-img{height:180px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative}
+.proj-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,var(--card),transparent)}
+.proj-body{padding:20px}
+.proj-level{font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;display:inline-block;margin-bottom:10px}
+.proj-level.beginner{background:rgba(0,232,157,.12);color:var(--accent2)}
+.proj-level.inter{background:rgba(255,179,71,.12);color:var(--accent3)}
+.proj-level.adv{background:rgba(255,95,126,.12);color:var(--accent4)}
+.proj-body h3{font-size:18px;font-weight:800;margin-bottom:6px}
+.proj-body p{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:14px}
+.proj-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.proj-tag{font-size:11px;padding:3px 10px;border-radius:6px;font-weight:600;background:var(--bg3);color:var(--muted)}
+.btn-proj{width:100%;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-proj:hover{border-color:var(--accent);color:var(--accent)}
 
 /* COMMUNITY */
-.community{text-align:center;}
-.community-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:48px;max-width:560px;margin:0 auto;transition:all .3s;}
-.community-card:hover{border-color:var(--accent2);transform:translateY(-4px);}
-.community-icon{font-size:48px;margin-bottom:20px;}
-.community-card h3{font-size:24px;font-weight:800;margin-bottom:8px;}
-.community-card p{font-size:15px;color:var(--text2);margin-bottom:24px;line-height:1.6;}
-.btn-whatsapp{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border:none;padding:14px 32px;border-radius:14px;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:10px;box-shadow:0 4px 24px rgba(37,211,102,.3);}
-.btn-whatsapp:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(37,211,102,.45);}
-.community-features{display:flex;gap:24px;justify-content:center;margin-top:28px;flex-wrap:wrap;}
-.community-feat{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);}
-.community-feat i{color:var(--accent2);}
+.comm-wrap{text-align:center;padding:20px 0}
+.comm-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:48px;max-width:540px;margin:0 auto;transition:all .3s}
+.comm-card:hover{border-color:var(--accent2);transform:translateY(-4px)}
+.comm-icon{font-size:48px;margin-bottom:20px}
+.comm-card h3{font-size:24px;font-weight:800;margin-bottom:8px}
+.comm-card p{font-size:15px;color:var->text2);margin-bottom:24px;line-height:1.6}
+.btn-wa{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border:none;padding:14px 32px;border-radius:14px;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:10px;box-shadow:0 4px 24px rgba(37,211,102,.3)}
+.btn-wa:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(37,211,102,.45)}
+.comm-feats{display:flex;gap:24px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+.comm-feat{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)}
+.comm-feat i{color:var(--accent2);font-size:14px}
 
 /* LEADERBOARD */
-.lb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
-.lb-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;align-items:center;gap:14px;transition:all .2s;}
-.lb-card:hover{transform:translateY(-2px);}
-.lb-rank{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;width:36px;text-align:center;}
-.lb-avatar{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0;}
-.lb-info{flex:1;min-width:0;}
-.lb-name{font-weight:700;font-size:14px;}
-.lb-sub{font-size:11px;color:var(--muted);}
-.lb-xp{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--accent2);white-space:nowrap;}
+.lb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr);gap:14px}
+.lb-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;display:flex;align-items:center;gap:14px;transition:all .2s}
+.lb-card:hover{transform:translateY(-2px)}
+.lb-rank{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;width:36px;text-align:center}
+.lb-avatar{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0}
+.lb-info{flex:1;min-width:0}
+.lb-name{font-weight:700;font-size:14px}
+.lb-sub{font-size:11px;color:var(--muted)}
+.lb-xp{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--accent2);white-space:nowrap}
+.lb-card.gold{border-color:rgba(255,179,71,.3);background:rgba(255,179,71,.04)}
+.lb-card.you{border:1.5px dashed var(--accent);background:var(--glow);cursor:pointer}
+.lb-card.you:hover{border-color:var(--accent);transform:translateY(-2px)}
 
 /* FOOTER */
-footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24px;margin-top:40px;position:relative;z-index:1;}
-.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
-.footer-left p{font-size:14px;color:var(--muted);}
-.footer-left span{color:var(--accent4);}
-.footer-links{display:flex;gap:20px;flex-wrap:wrap;}
-.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s;}
-.footer-links a:hover{color:var(--accent);}
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24px;margin-top:40px;position:relative;z-index:1}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+.footer-left p{font-size:14px;color:var(--muted)}
+.footer-left span{color:var(--accent4)}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap}
+.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+.footer-links a:hover{color:var(--accent)}
 
 /* MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
-.modal-overlay.show{display:flex;}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;max-width:560px;width:100%;max-height:80vh;overflow-y:auto;animation:fadeUp .3s ease;}
-.modal h3{font-size:18px;font-weight:800;margin-bottom:6px;}
-.modal .q-meta{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
-.modal .solution-box{background:var(--code-bg);border:1px solid var(--border);border-radius:12px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:var(--accent3);white-space:pre-wrap;margin-bottom:16px;border-left:3px solid var(--accent2);}
-.modal-actions{display:flex;gap:10px;}
-.btn-modal{padding:10px 24px;border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
-.btn-modal.primary{background:var(--accent);color:#fff;}
-.btn-modal.primary:hover{opacity:.85;}
-.btn-modal.secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;max-width:560px;width:100%;max-height:80vh;overflow-y:auto;animation:fadeUp .3s ease}
+.modal h3{font-size:18px;font-weight:800;margin-bottom:6px}
+.modal .q-meta{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.modal .sol-box{background:var(--code-bg);border:1px solid var(--border);border-radius:12px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:var(--accent3);white-space:pre-wrap;margin-bottom:16px;border-left:3px solid var(--accent2)}
+.modal-acts{display:flex;gap:10px}
+.btn-m{padding:10px 24px;border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+.btn-m.pri{background:var(--);color:#fff}
+.btn-m.pri:hover{opacity:.85}
+.btn-m.sec{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+.btn-m.sec:hover{border-color:var(--accent);color:var(--accent)}
 
 /* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 24px;font-size:14px;font-weight:600;z-index:3000;transform:translateY(80px);opacity:0;transition:all .35s;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px;}
-.toast.show{transform:translateY(0);opacity:1;}
-.toast i{font-size:18px;}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 24px;font-size:14px;font-weight:600;z-index:3000;transform:translateY(80px);opacity:0;transition:all .35s;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast i{font-size:18px}
 
 /* RESPONSIVE */
 @media(max-width:900px){
-  .nav-links{display:none;}
-  .menu-btn{display:flex;}
-  .hero-stats{gap:24px;}
-  .daily{flex-direction:column;text-align:center;gap:16px;}
-  .paths-grid,.projects-grid,.lb-grid{grid-template-columns:1fr;}
+  .nav-links{display:none}
+  .menu-btn{display:flex}
+  .hero-stats{gap:20px}
+  .daily{flex-direction:column;text-align:center;gap:16px}
+  .paths-grid,.proj-grid,.lb-grid{grid-template-columns:1fr}
+  .q-grid{grid-template-columns:1fr}
+  .comm-card{padding:32px 20px}
+  .footer-inner{flex-direction:column;text-align:center}
 }
 @media(max-width:600px){
-  nav{padding:0 16px;gap:12px;}
-  .nav-search{display:none;}
-  .section{padding:48px 16px;}
-  .hero{min-height:80vh;padding:40px 16px;}
-  .hero-stats{flex-direction:column;gap:16px;}
-  .questions-grid{grid-template-columns:1fr;}
-  .community-card{padding:32px 20px;}
-  .footer-inner{flex-direction:column;text-align:center;}
-  .path-card{padding:22px;}
+  nav{padding:0 16px;gap:10px}
+  .nav-search{display:none}
+  .section{padding:48px 16px}
+  .hero{min-height:80vh;padding:40px 16px}
+  .hero-stats{flex-direction:column;gap:16px}
+  .hero-btns{flex-direction:column;align-items:stretch}
+  .btn-primary,.btn-secondary{width:100%;justify-content:center}
+  .path-card{padding:22px}
+  .community-feats{flex-direction:column;align-items:center;}
 }
 </style>
 </head>
 <body>
 
-<div class="bg-effects"><div class="bg-orb o1"></div><div class="bg-orb o2"></div><div class="bg-orb o3"></div></div>
-<div class="bg-grid"></div>
+<div class="bg-fx"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div></div>
+<div class="grid-bg"></div>
 
 <nav>
   <button class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
   <div class="logo"><i class="fas fa-code"></i> Sikh<span>le</span></div>
-  <div class="nav-search"><i class="fas fa-search"></i><input type="text" placeholder="Search courses, topics..." id="searchInput" oninput="filterQuestions(this.value)"></div>
+  <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Search courses, topics..." id="searchInput" oninput="filterQs(this.value)"></div>
   <div class="nav-links">
-    <a class="nav-link" href="#paths">Paths</a>
-    <a class="nav-link" href="#practice">Practice</a>
-    <a class="nav-link" href="#projects">Projects</a>
-    <a class="nav-link" href="#community">Community</a>
+    <a class="nav-link" href="#paths" onclick="toggleMenu()">📚 Paths</a>
+    <a class="nav-link" href="#practice" onclick="toggleMenu()">🧩 Practice</a>
+    <a class="nav-link" href="#projects" onclick="toggleMenu()">🎯 Projects</a>
+    <a class="nav-link" href="#leaders" onclick="toggleMenu()">🏆 Leaderboard</a>
+    <a class="nav-link" href="#community" onclick="toggleMenu()">🧑‍🤝‍🧑 Community</a>
   </div>
   <div class="nav-right">
-    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
   </div>
 </nav>
 
-<div class="mobile-menu" id="mobileMenu">
+<div class="mobile-nav" id="mobileMenu">
   <a class="nav-link" href="#paths" onclick="toggleMenu()">📚 Learning Paths</a>
   <a class="nav-link" href="#practice" onclick="toggleMenu()">🧩 Practice</a>
-  <a class="nav-link" href="#projects" onclick="toggleMenu()">🎯 Projects</a>
   <a class="nav-link" href="#daily" onclick="toggleMenu()">🔥 Daily Challenge</a>
   <a class="nav-link" href="#leaders" onclick="toggleMenu()">🏆 Leaderboard</a>
   <a class="nav-link" href="#community" onclick="toggleMenu()">🧑‍🤝‍🧑 Community</a>
@@ -280,9 +261,14 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24p
     while not mastered:
         practice(skill)
         build_projects()
-    return "Job Ready 🎯"</div>
+    return "Job Ready 🎯"
+
+class Learner:
+    skills: ["HTML", "CSS", "JS"]
+    attitude: "Never Stop"
+    status: "On Fire 🔥"</div>
   <div class="hero-content">
-    <div class="hero-badge"><i class="fas fa-circle"></i> 100% Free — No Hidden Costs</div>
+    <div class="hero-badge"><i class="fas fa-circle" style="font-size:8px;animation:float 2s ease-in-out infinite;"></i> 100% Free — No Hidden Costs</div>
     <h1>Learn Coding & Skills<br>for Free <em>🚀</em></h1>
     <p>From Beginner to Job Ready — Step by Step. Master Web Development, Python, Cyber Security and more with hands-on projects.</p>
     <div class="hero-btns">
@@ -299,191 +285,141 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24p
 </section>
 
 <!-- LEARNING PATHS -->
-<section class="section fade-up" id="paths">
-  <div class="section-header">
-    <div class="section-badge"><i class="fas fa-route"></i> Learning Paths</div>
-    <h2 class="section-title">Choose Your Path</h2>
-    <p class="section-sub">Structured roadmaps from basics to job-ready. Pick one and start your journey.</p>
+<section class="sec fade-up" id="paths">
+  <div class="sec-head">
+    <div class="sec-badge"><i class="fas fa-route"></i> Learning Paths</div>
+    <h2 class="sec-title">Choose Your Path</h2>
+    <p class="sec-sub">Structured roadmaps from basics to job-ready. Pick one and start your journey.</p>
   </div>
   <div class="paths-grid">
     <div class="path-card" onclick="go('quiz')">
       <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#38bdf8,#7c5cfc);border-radius:4px 4px 0 0;"></div>
-      <div class="path-icon" style="background:rgba(56,189,248,.12);color:#38bdf8;"><i class="fas fa-globe"></i></div>
+      <div class="path-icon" style="background:rgba(56,189,248,.1);color:#38bdf8;"><i class="fas fa-globe"></i></div>
       <h3>💻 Web Development</h3>
       <p>Build modern websites and web applications from scratch. Master frontend and backend technologies.</p>
-      <div class="path-steps">
-        <div class="path-step"><i class="fas fa-circle"></i> HTML5 Fundamentals</div>
-        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> CSS3 & Flexbox/Grid</div>
-        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> JavaScript ES6+</div>
-        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> React / Node.js</div>
-        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Real Projects</div>
-      </div>
+      <div class="path-steps"><div class="path-step"><i class="fas fa-circle"></i> HTML5 Fundamentals</div><div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> CSS3 & Flexbox/Grid</div><div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fa-circle"></i> JavaScript ES6+</div><div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> React / Node.js</div><div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Real Projects</div></div>
       <button class="btn-path"><i class="fas fa-arrow-right"></i> Start Web Dev Path</button>
     </div>
     <div class="path-card" onclick="go('quiz')">
       <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#00e89d,#38bdf8);border-radius:4px 4px 0 0;"></div>
-      <div class="path-icon" style="background:rgba(0,232,157,.12);color:#00e89d;"><i class="fab fa-python"></i></div>
+      <div class="path-icon" style="background:rgba(0,232,157,.1);color:#00e89d;"><i class="fab fa-python"></i></div>
       <h3>🐍 Python Programming</h3>
       <p>Learn Python from zero to hero. Covers basics to advanced topics including DSA and automation.</p>
-      <div class="path-steps">
-        <div class="path-step"><i class="fas fa-circle"></i> Variables & Data Types</div>
-        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Functions & OOP</div>
-        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> File Handling & Modules</div>
-        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> DSA with Python</div>
-        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Automation Projects</div>
-      </div>
+      <div class="path-steps><div class="path-step"><i class="fas fa-circle"></i> Variables & Data Types</div><div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Functions & OOP</div><div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> File Handling & Modules</div><div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> DSA with Python</div><div class="path-step"><i class="fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Automation Projects</div></div>
       <button class="btn-path"><i class="fas fa-arrow-right"></i> Start Python Path</button>
     </div>
     <div class="path-card" onclick="go('quiz')">
       <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#ff5f7e,#ffb347);border-radius:4px 4px 0 0;"></div>
-      <div class="path-icon" style="background:rgba(255,95,126,.12);color:#ff5f7e;"><i class="fas fa-shield-halved"></i></div>
+      <div class="path-icon" style="background:rgba(255,95,126,.1);color:#ff5f7e;"><i class="fas fa-shield-halved"></i></div>
       <h3>🔐 Cyber Security</h3>
       <p>Learn ethical hacking, network security, and penetration testing. Protect systems like a pro.</p>
-      <div class="path-steps">
-        <div class="path-step"><i class="fas fa-circle"></i> Networking Fundamentals</div>
-        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Linux & Command Line</div>
-        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Security Tools (Kali)</div>
-        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Web App Pentesting</div>
-        <div class="path-step"><i class="fas fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Bug Bounty Hunting</div>
-      </div>
+      <div class="path-steps"><div class="path-step"><i class="fas fa-circle"></i> Networking Fundamentals</div><div class="path-step"><i class="fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Linux & CLI</div><div class="path-step"><i class="fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Security Tools (Kali)</div><div class="path-step"><i class="fa-arrow-right arrow"></i><i class="fa-circle"></i> Web App Pentesting</div><div class="path-step"><i class="fa-arrow-right arrow"></i><i class="fas fa-circle"></i> Bug Bounty Hunting</div></div>
       <button class="btn-path"><i class="fas fa-arrow-right"></i> Start Security Path</button>
     </div>
   </div>
 </section>
 
 <!-- DAILY CHALLENGE -->
-<section class="section fade-up" id="daily" style="max-width:900px;">
+<section class="sec fade-up" id="daily" style="max-width:900px;">
   <div class="daily">
     <div class="daily-icon">🔥</div>
     <div class="daily-text">
       <h3>Daily Challenge</h3>
-      <p>Solve a new coding problem every day to build consistency and sharpen your skills.</p>
-      <div class="daily-reward"><i class="fas fa-trophy"></i> Earn bonus XP and streak rewards</div>
+      <p>Solve a new problem every day to build consistency and sharpen your skills.</p>
+      <div class="daily-reward><i class="fas fa-trophy"></i> Earn bonus XP and streak rewards</div>
     </div>
     <button class="btn-daily" onclick="showToast('🎉 Challenge loaded! Check Practice section.','success')"><i class="fas fa-bolt"></i> Today's Challenge</button>
   </div>
 </section>
 
 <!-- PRACTICE -->
-<section class="section fade-up" id="practice">
-  <div class="section-header">
-    <div class="section-badge"><i class="fas fa-dumbbell"></i> Practice & Improve</div>
-    <h2 class="section-title">500+ Coding Questions</h2>
-    <p class="section-sub">Solve questions categorized by difficulty. Track your progress and master problem-solving.</p>
+<section class="sec fade-up" id="practice">
+  <div class="sec-head">
+    <div class="sec-badge"><i class="fas fa-dumbbell"></i> Practice & Improve</div>
+    <h2 class="sec-title">500+ Coding Questions</h2>
+    <p class="sec-sub">Solve questions by difficulty. Track your progress and master problem-solving.</p>
   </div>
-  <div class="practice-tabs">
-    <button class="ptab active" onclick="showTab('easy',this)"><i class="fas fa-seedling" style="color:var(--accent2)"></i> Easy <span class="count" id="easyCount"></span></button>
-    <button class="ptab" onclick="showTab('medium',this)"><i class="fas fa-fire" style="color:var(--accent3)"></i> Medium <span class="count" id="medCount"></span></button>
-    <button class="ptab" onclick="showTab('hard',this)"><i class="fas fa-skull-crossbones" style="color:var(--accent4)"></i> Hard <span class="count" id="hardCount"></span></button>
+  <div class="tabs-wrap">
+    <button class="tab-btn active" onclick="showTab('easy',this)"><i class="fas fa-seedling" style="color:var(--accent2)"></i> Easy <span class="cnt" id="eC"></span></button>
+    <button class="tab-btn" onclick="showTab('medium',this)"><i class="fas fa-fire" style="color:var(--accent3)"></i> Medium <span class="cnt" id="mC"></span></button>
+    <button class="tab-btn" onclick="showTab('hard',this)"><i class="fas fa-skull-crossbones" style="color:var(--accent4)"></i> Hard <span class="cnt" id="hC"></span></button>
   </div>
-  <div class="questions-grid" id="questionsGrid"></div>
-  <div style="text-align:center;margin-top:24px;">
-    <div class="coming-soon-badge"><i class="fas fa-flask"></i> Solve & Check Answer system — Coming Soon</div>
+  <div class="q-grid" id="qGrid"></div>
+  <div style="text-align:center;margin-top:24px">
+    <div class="coming-soon"><i class="fas fa-flask"></i> Solve & Check Answer system — Coming Soon</div>
   </div>
 </section>
 
 <!-- PROJECTS -->
-<section class="section fade-up" id="projects">
-  <div class="section-header">
-    <div class="section-badge"><i class="fas fa-rocket"></i> Build Projects</div>
-    <h2 class="section-title">Real-World Projects</h2>
-    <p class="section-sub">Build actual projects to strengthen your skills and create an impressive portfolio.</p>
+<section class="sec fade-up" id="projects">
+  <div class="sec-head">
+    <div class="sec-badge"><i class="fas fa-rocket"></i> Build Projects</div>
+    <h2 class="sec-title">Real-World Projects</h2>
+    <p class="sec-sub">Build actual projects to strengthen your skills and create an impressive portfolio.</p>
   </div>
-  <div class="projects-grid">
+  <div class="proj-grid">
     <div class="proj-card">
       <div class="proj-img" style="background:linear-gradient(135deg,rgba(56,189,248,.1),rgba(124,92,252,.1));">🧮</div>
-      <div class="proj-body">
-        <span class="proj-level beginner">Beginner</span>
-        <h3>Calculator App</h3>
-        <p>Build a fully functional calculator with basic and scientific operations using HTML, CSS, and JavaScript.</p>
-        <div class="proj-tags"><span class="proj-tag">HTML</span><span class="proj-tag">CSS</span><span class="proj-tag">JavaScript</span></div>
-        <button class="btn-proj" onclick="showToast('📂 Project guide opening soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button>
-      </div>
+      <div class="proj-body"><span class="proj-level beginner">Beginner</span><h3>Calculator App</h3><p>Build a fully functional calculator with basic and scientific operations using HTML, CSS, and JavaScript.</p><div class="proj-tags"><span class="proj-tag">HTML</span><span class="proj-tag">CSS</span><span class="proj-tag">JavaScript</span></div><button class="btn-proj" onclick="showToast('📂 Project guide coming soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button></div>
     </div>
     <div class="proj-card">
       <div class="proj-img" style="background:linear-gradient(135deg,rgba(0,232,157,.1),rgba(56,189,248,.1));">🌐</div>
-      <div class="proj-body">
-        <span class="proj-level beginner">Beginner</span>
-        <h3>Portfolio Website</h3>
-        <p>Create a stunning portfolio website to showcase your projects, skills, and achievements to potential employers.</p>
-        <div class="proj-tags"><span class="proj-tag">HTML</span><span class="proj-tag">CSS</span><span class="proj-tag">Responsive</span></div>
-        <button class="btn-proj" onclick="showToast('📂 Project guide opening soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button>
-      </div>
+      <div class="proj-body"><span class="proj-level beginner">Beginner</span><h3>Portfolio Website</h3><p>Create a stunning portfolio website to showcase your projects and achievements to employers.</p><div class="proj-tags"><span class="proj-tag">HTML</span><span class="proj-tag">CSS</span><span class="proj-tag">Responsive</span></div><button class="btn-proj" onclick="showToast('📂 Project guide coming soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button></div>
     </div>
     <div class="proj-card">
       <div class="proj-img" style="background:linear-gradient(135deg,rgba(255,179,71,.1),rgba(255,95,126,.1));">🔐</div>
-      <div class="proj-body">
-        <span class="proj-level intermediate">Intermediate</span>
-        <h3>Login & Signup System</h3>
-        <p>Build a complete authentication system with registration, login, password reset, and session management.</p>
-        <div class="proj-tags"><span class="proj-tag">Python</span><span class="proj-tag">Flask</span><span class="proj-tag">SQLite</span></div>
-        <button class="btn-proj" onclick="showToast('📂 Project guide opening soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button>
-      </div>
+      <div class="proj-body"><span class="proj-level inter">Intermediate</span><h3>Login & Signup System</h3><p>Complete authentication with registration, login, password reset, and session management.</p><div class="proj-tags"><span class="proj-tag">Python</span><span class="proj-tag">Flask</span><span class="proj-tag">SQLite</span></div><button class="btn-proj" onclick="showToast('📂 Project guide coming soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button></div>
     </div>
     <div class="proj-card">
       <div class="proj-img" style="background:linear-gradient(135deg,rgba(124,92,252,.1),rgba(0,232,157,.1));">📋</div>
-      <div class="proj-body">
-        <span class="proj-level intermediate">Intermediate</span>
-        <h3>Todo App with CRUD</h3>
-        <p>Full-stack todo application with Create, Read, Update, Delete operations using React and Node.js.</p>
-        <div class="proj-tags"><span class="proj-tag">React</span><span class="proj-tag">Node.js</span><span class="proj-tag">MongoDB</span></div>
-        <button class="btn-proj" onclick="showToast('📂 Project guide opening soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button>
-      </div>
+      <div class="proj-body"><span class="proj-level inter">Intermediate</span><h3>Todo App with CRUD</h3><p>Full-stack todo app with Create, Read, Update, Delete using React and Node.js.</p><div class="proj-tags"><span class="proj-tag">React</span><span class="proj-tag">Node.js</span><span class="proj-tag">MongoDB</span></div><button class="btn-proj onclick="showToast('📂 Project guide coming soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button></div>
     </div>
     <div class="proj-card">
       <div class="proj-img" style="background:linear-gradient(135deg,rgba(56,189,248,.1),rgba(255,179,71,.1));">🌤️</div>
-      <div class="proj-body">
-        <span class="proj-level intermediate">Intermediate</span>
-        <h3>Weather Application</h3>
-        <p>Build a weather app that fetches real-time data from an API and displays forecasts with beautiful UI.</p>
-        <div class="proj-tags"><span class="proj-tag">JavaScript</span><span class="proj-tag">API</span><span class="proj-tag">CSS</span></div>
-        <button class="btn-proj" onclick="showToast('📂 Project guide opening soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button>
-      </div>
+      <div class="proj-body"><span class="proj-level inter">Intermediate</span><h3>Weather App</h3><p>Build a weather app fetching real-time data from an API with a beautiful UI.</p><div class="proj-tags"><span class="proj-tag">JavaScript</span><span class="proj-tag">API</span><span class="proj-tag">CSS</span></div><button class="btn-proj onclick="showToast('📂 Project guide coming soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button></div>
     </div>
     <div class="proj-card">
-      <div class="proj-img" style="background:linear-gradient(135deg,rgba(255,95,126,.1),rgba(124,92,252,.1));">🤖</div>
-      <div class="proj-body">
-        <span class="proj-level advanced">Advanced</span>
-        <h3>AI Chatbot Interface</h3>
-        <p>Create an interactive chatbot UI that connects to an AI API with conversation history and markdown rendering.</p>
-        <div class="proj-tags"><span class="proj-tag">React</span><span class="proj-tag">API</span><span class="proj-tag">WebSocket</span></div>
-        <button class="btn-proj" onclick="showToast('📂 Project guide opening soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button>
-      </div>
+      <div class="proj-img" style="background:linear-gradient(135deg,rgba(255,95,126,.1),rgba(124,92,252,.1);">🤖</div>
+      <div class="proj-body"><span class="proj-level adv">Advanced</span><h3>AI Chatbot Interface</h3><p>Interactive chatbot UI with conversation history and markdown rendering.</p><div class="proj-tags"><span class="proj-tag">React</span><span class="proj-tag">API</span><span class="proj-tag">WebSocket</span></div><button class="btn-proj onclick="showToast('📂 Project guide coming soon!','info')"><i class="fas fa-external-link-alt"></i> View Project</button></div>
     </div>
   </div>
 </section>
 
 <!-- LEADERBOARD -->
-<section class="section fade-up" id="leaders">
-  <div class="section-header">
-    <div class="section-badge"><i class="fas fa-trophy"></i> Leaderboard</div>
-    <h2 class="section-title">Top Learners</h2>
-    <p class="section-sub">See who's leading the pack. Solve more questions to climb the ranks!</p>
+<section class="sec fade-up" id="leaders">
+  <div class="sec-head">
+    <div class="sec-badge"><i class="fas fa-trophy"></i> Leaderboard</div>
+    <h2 class="sec-title">Top Learners</h2>
+    <p class="sec-sub">See who's leading. Solve more questions to climb the ranks!</p>
   </div>
   <div class="lb-grid">
-    <div class="lb-card" style="border-color:var(--accent3);background:var(--glow);"><div class="lb-rank" style="color:var(--accent3);">1</div><div class="lb-avatar" style="background:linear-gradient(135deg,var(--accent3),var(--accent4));color:#fff;">A</div><div class="lb-info"><div class="lb-name">Arjun Mehta <i class="fas fa-crown" style="color:var(--accent3);font-size:12px;margin-left:4px;"></i></div><div class="lb-sub">Python Expert · 127 day streak</div></div><div class="lb-xp">12,450 XP</div></div>
-    <div class="lb-card" style="border-color:var(--muted);"><div class="lb-rank" style="color:var(--muted);">2</div><div class="lb-avatar" style="background:linear-gradient(135deg,var(--accent),var(--accent5));color:#fff;">P</div><div class="lb-info"><div class="lb-name">Priya Sharma</div><div class="lb-sub">Web Dev · 98 day streak</div></div><div class="lb-xp">11,280 XP</div></div>
-    <div class="lb-card"><div class="lb-rank" style="color:var(--accent4);">3</div><div class="lb-avatar" style="background:linear-gradient(135deg,var(--accent4),var(--accent3));color:#fff;">R</div><div class="lb-info"><div class="lb-name">Rahul Verma</div><div class="lb-sub">Full Stack · 85 day streak</div></div><div class="lb-xp">10,150 XP</div></div>
+    <div class="lb-card gold"><div class="lb-rank" style="color:var(--accent3)">1</div><div class="lb-avatar" style="background:linear-gradient(135deg,var(--accent3),var(--accent4));color:#fff;">A</div><div class="lb-info"><div class="lb-name">Arjun Mehta <i class="fas fa-crown" style="color:var(--accent3);font-size:12px;margin-left:4px;"></i></div><div class="lb-sub">Python Expert · 127 day streak</div></div><div class="lb-xp">12,450 XP</div></div>
+    <div class="lb-card"><div class="lb-rank" style="color:var(--muted)">2</div><div class="lb-avatar" style="background:linear-gradient(135deg,var(--accent),var(--accent5));color:#fff;">P</div><div class="lb-info"><div class="lb-name">Priya Sharma</div><div class="lb-sub">Web Dev · 98 day streak</div></div><div class="lb-xp">11,280 XP</div></div>
+    <div class="lb-card"><div class="lb-rank" style="color:var(--accent4)">3</div><div class="div class="lb-avatar" style="background:linear-gradient(135deg,var(--accent4),var(--accent3));color:#fff;">R</div><div class="lb-info"><div class="lb-name">Rahul Verma</div><div class="lb-sub">Full Stack · 85 day streak</div></div><div class="lb-xp">10,150 XP</div></div>
     <div class="lb-card"><div class="lb-rank">4</div><div class="lb-avatar" style="background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;">S</div><div class="lb-info"><div class="lb-name">Sneha Gupta</div><div class="lb-sub">Cyber Security · 72 day streak</div></div><div class="lb-xp">9,870 XP</div></div>
     <div class="lb-card"><div class="lb-rank">5</div><div class="lb-avatar" style="background:linear-gradient(135deg,var(--accent5),var(--accent2));color:#fff;">V</div><div class="lb-info"><div class="lb-name">Vikram Patel</div><div class="lb-sub">Python DSA · 64 day streak</div></div><div class="lb-xp">8,920 XP</div></div>
-    <div class="lb-card"><div class="lb-rank">6</div><div class="lb-avatar" style="background:var(--bg3);color:var(--muted);border:1px solid var(--border);">K</div><div class="lb-info"><div class="lb-name">Kavya Iyer</div><div class="lb-sub">Frontend · 51 day streak</div></div><div class="lb-xp">7,640 XP</div></div>
-    <div class="lb-card" style="border:1.5px dashed var(--accent);background:var(--glow);cursor:pointer;" onclick="showToast('🏆 Keep solving to climb the ranks!','info')"><div class="lb-rank" style="color:var(--accent);">?</div><div class="lb-avatar" style="background:var(--accent);color:#fff;"><i class="fas fa-user" style="font-size:14px;"></i></div><div class="lb-info"><div class="lb-name" style="color:var(--accent);">Your Position</div><div class="lb-sub">Start learning to appear here!</div></div><div class="lb-xp" style="color:var(--muted);">— XP</div></div>
+    <div class="lb-card" style="border:1.5px dashed var(--accent);background:var(--lgow);cursor:pointer;" onclick="showToast('🏆 Keep solving to climb the ranks!','info')"><div class="lb-rank" style="color:var(--accent)">?</div><div class="lb-avatar" style="background:var(--accent);color:#fff;"><i class="fas fa-user" style="font-size:14px;"></i></div><div class="lb-info"><div class="lb-name" style="color:var(--accent);">Your Position</div><div class="lb-sub">Start learning to appear here!</div></div><div class="lxp" style="color:var(--muted);">— XP</div></div>
   </div>
 </section>
 
 <!-- COMMUNITY -->
-<section class="section fade-up" id="community">
-  <div class="community">
-    <div class="community-card">
-      <div class="community-icon">🧑‍🤝‍🧑</div>
+<section class="sec fade-up" id="divcommunity">
+  <div class="sec-head">
+    <div class="sec-badge"><i class="fas fa-users"></i> Community</div>
+    <h2 class="sec-title">Join Our Community</h2>
+    <p class="sec-sub">Connect with thousands of learners. Get help, share progress, ask doubts, stay motivated.</p>
+  </div>
+  <div class="comm-wrap">
+    <div class="comm-card">
+      <div class="comm-icon">🧑‍🤝‍🧑</div>
       <h3>Join Our Community</h3>
-      <p>Connect with thousands of learners. Get help, share your progress, ask doubts, and stay motivated throughout your learning journey.</p>
-      <a href="https://chat.whatsapp.com/GI1Zz2oLuRi6mwdiIL0ShG" target="_blank" rel="noopener" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Join WhatsApp Group</a>
-      <div class="community-features">
-        <div class="community-feat"><i class="fas fa-check-circle"></i> Ask doubts 24/7</div>
-        <div class="community-feat"><i class="fas fa-check-circle"></i> Weekly challenges</div>
-        <div class="community-feat"><i class="fas fa-check-circle"></i> Job referrals</div>
-        <div class="community-feat"><i class="fas fa-check-circle"></i> Study groups</div>
+      <p>Connect with thousands of learners. Get help, share progress, ask doubts, and stay motivated.</p>
+      <a href="https://chat.whatsapp.com/BSKCjVWjbiw3lIn7Jn3RXI" target="_blank" rel="noopener" class="btn-wa"><i class="fab fa-whatsapp"></i> Join WhatsApp Group</a>
+      <div class="comm-feats">
+        <div class="comm-feat"><i class="fas fa-check-circle"></i> Ask doubts 24/7</div>
+        <div class="comm-feat"><i class="fas fa-check-circle"></i> Weekly challenges</div>
+        <div class="comm-feat"><i class="fas fa-check-circle"></i> Job referrals</div>
+        <div class="comm-feat"><i class="fas fa-check-circle"></i> Study groups</div>
       </div>
     </div>
   </div>
@@ -506,19 +442,18 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24p
   </div>
 </footer>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-      <h3 id="modalTitle">Question</h3>
+      <h3 id="mTitle">Question</h3>
       <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px;"><i class="fas fa-times"></i></button>
     </div>
-    <div class="q-meta" id="modalMeta"></div>
-    <p id="modalDesc" style="font-size:15px;line-height:1.6;margin-bottom:16px;color:var(--text2);"></p>
-    <div class="solution-box" id="modalSolution"></div>
-    <div class="modal-actions">
-      <button class="btn-modal primary" onclick="markSolved()"><i class="fas fa-check"></i> Mark Solved</button>
-      <button class="btn-modal secondary" onclick="closeModal()">Close</button>
+    <div class="q-meta" id="mMeta"></div>
+    <p id="mDesc" style="font-size:15px;line-height:1.6;margin-bottom:16px;color:var(--text2);"></p>
+    <div class="sol-box" id="mSol"></div>
+    <div class="modal-acts">
+      <button class="btn-m pri" id="mSolveBtn"><i class="fas fa-check"></i> Mark Solved</button>
+      <button class="btn-m sec" onclick="closeModal()">Close</button>
     </div>
   </div>
 </div>
@@ -526,201 +461,221 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24p
 <div class="toast" id="toast"><i></i><span></span></div>
 
 <script>
-// ═══════════════════════════════════
-// QUESTIONS DATA — 100+
-// ═══════════════════════════════════
-const QUESTIONS=[
-// EASY — HTML/CSS (20)
-{d:'easy',t:'HTML',q:'What does HTML stand for?',opts:['Hyper Text Markup Language','High Tech Modern Language','Hyper Transfer Markup Language','Home Tool Markup Language'],a:0,solution:'HTML = Hyper Text Markup Language\n\nIt is the standard markup language for creating web pages. HTML describes the structure of a web page using tags.'},
-{d:'easy',t:'HTML',q:'Which tag is used to create a hyperlink?',opts:['<link>','<a>','<href>','<url>'],a:1,solution:'The <a> tag creates hyperlinks.\n\nExample:\n<a href="https://example.com">Click here</a>\n\nThe href attribute specifies the URL.'},
-{d:'easy',t:'HTML',q:'Which tag is used for the largest heading?',opts:['<heading>','<h6>','<h1>','<head>'],a:2,solution:'<h1> creates the largest heading.\n\nHTML headings range from <h1> (largest) to <h6> (smallest).\n\n<h1>Main Title</h1>\n<h2>Subtitle</h2>'},
-{d:'easy',t:'HTML',q:'Which attribute specifies an alternate text for an image?',opts:['title','src','alt','name'],a:2,solution:'The alt attribute provides alternative text.\n\n<img src="photo.jpg" alt="A beautiful sunset">\n\nIt is shown when the image cannot be loaded and is important for accessibility.'},
-{d:'easy',t:'HTML',q:'Which element is used to create an unordered list?',opts:['<ol>','<li>','<ul>','<list>'],a:2,solution:'<ul> creates an unordered (bulleted) list.\n\n<ul>\n  <li>Item 1</li>\n  <li>Item 2</li>\n</ul>\n\nFor ordered (numbered) lists, use <ol>.'},
-{d:'easy',t:'CSS',q:'Which CSS property changes the text color?',opts:['font-color','text-color','color','foreground'],a:2,solution:'The color property sets the text color.\n\np {\n  color: #333333;\n}\n\nAccepts: named colors, hex codes, rgb(), hsl().'},
-{d:'easy',t:'CSS',q:'Which property is used to change the background color?',opts:['bgcolor','background-color','bg-color','fill'],a:1,solution:'background-color sets the element\'s background.\n\nbody {\n  background-color: #f0f0f0;\n}\n\nCan also use gradients, images, etc.'},
-{d:'easy',t:'CSS',q:'What does CSS stand for?',opts:['Computer Style Sheets','Cascading Style Sheets','Creative Style System','Colorful Style Sheets'],a:1,solution:'CSS = Cascading Style Sheets\n\n"Cascading" refers to the way rules are applied — later rules can override earlier ones based on specificity and order.'},
-{d:'easy',t:'CSS',q:'Which property is used to set the font size?',opts:['text-size','font-size','size','font-height'],a:1,solution:'font-size sets the text size.\n\nh1 { font-size: 32px; }\np  { font-size: 16px; }\n\nUnits: px, em, rem, %, vw, vh'},
-{d:'easy',t:'CSS',q:'Which property creates space between the element\'s border and content?',opts:['margin','spacing','padding','border-spacing'],a:2,solution:'padding creates space inside the border.\n\n.box {\n  padding: 20px;\n}\n\nMargin = outside the border\nPadding = inside the border'},
-{d:'easy',t:'CSS',q:'How do you center a block element horizontally?',opts:['text-align: center','margin: 0 auto','float: center','position: center'],a:1,solution:'margin: 0 auto centers a block element.\n\n.box {\n  width: 300px;\n  margin: 0 auto;\n}\n\nRequires a defined width.'},
-{d:'easy',t:'CSS',q:'Which property makes an element completely invisible?',opts:['visibility: hidden','opacity: 0','display: none','hidden: true'],a:2,solution:'display: none removes the element from layout.\n\n.hidden { display: none; }  /* No space taken */\n.invisible { visibility: hidden; }  /* Space taken */\n.transparent { opacity: 0; }  /* Space taken, clickable */'},
-{d:'easy',t:'CSS',q:'Which property is used to create rounded corners?',opts:['corner-radius','border-radius','round','box-round'],a:1,solution:'border-radius creates rounded corners.\n\n.card {\n  border-radius: 12px;\n}\n\nCan set individual corners:\nborder-top-left-radius: 8px;'},
-{d:'easy',t:'CSS',q:'What does box-sizing: border-box do?',opts:['Adds padding to width','Includes padding in width','Removes padding','Sets border size'],a:1,solution:'border-box includes padding and border in the element\'s total width/height.\n\n* {\n  box-sizing: border-box;\n}\n\nWithout it: width = content only\nWith it: width = content + padding + border'},
-{d:'easy',t:'CSS',q:'Which property adds a shadow to an element?',opts:['filter: shadow','shadow','box-shadow','drop-shadow'],a:2,solution:'box-shadow adds shadow to elements.\n\ncard {\n  box-shadow: 0 4px 12px rgba(0,0,0,0.15);\n}\n\nSyntax: offsetX offsetY blur color'},
-{d:'easy',t:'CSS',q:'How do you make text bold using CSS?',opts:['font-weight: bold','text-style: bold','font-style: bold','text-weight: bold'],a:0,solution:'font-weight: bold makes text bold.\n\np {\n  font-weight: bold;\n}\n\nOr use numeric value: font-weight: 700;'},
-{d:'easy',t:'CSS',q:'Which property changes the font family?',opts:['font-name','font-family','text-font','typeface'],a:1,solution:'font-family sets the typeface.\n\nbody {\n  font-family: "Inter", sans-serif;\n}\n\nAlways provide fallback fonts.'},
-{d:'easy',t:'CSS',q:'What is Flexbox used for?',opts:['Adding colors','Creating layouts','Adding animations','Importing fonts'],a:1,solution:'Flexbox is a layout system for arranging items.\n\n.container {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\nOne-dimensional layout — row or column.'},
-{d:'easy',t:'CSS',q:'Which property sets the gap between flex items?',opts:['margin','spacing','gap','flex-gap'],a:2,solution:'gap sets the space between flex/grid items.\n\n.container {\n  display: flex;\n  gap: 16px;\n}\n\nReplaces margin hacks. No need for :last-child margin removal.'},
-
-// EASY — JavaScript (30)
-{d:'easy',t:'JavaScript',q:'How do you declare a variable in modern JavaScript?',opts:['var x = 1','let x = 1','variable x = 1','v x = 1'],a:1,solution:'Use let (or const) in modern JavaScript.\n\nlet x = 10;      // can be reassigned\nconst PI = 3.14; // cannot be reassigned\n\nvar is old — avoid it (function-scoped, hoisted).'},
-{d:'easy',t:'JavaScript',q:'What is the output of typeof null?',opts:['"null"','"object"','"undefined"','"boolean"'],a:1,solution:'typeof null returns "object" — this is a known JS bug.\n\ntypeof null      // "object" (bug!)\nnull === null     // true (correct way to check)'},
-{d:'easy',t:'JavaScript',q:'Which method converts a JSON string to an object?',opts:['JSON.stringify()','JSON.parse()','JSON.convert()','JSON.objectify()'],a:1,solution:'JSON.parse() converts JSON string to object.\n\nconst str = \'{"name": "Alice"}\';\nconst obj = JSON.parse(str);\nconsole.log(obj.name); // "Alice"\n\nJSON.stringify() does the opposite (object → string).'},
-{d:'easy',t:'JavaScript',q:'How do you select an element by its ID?',opts:['document.querySelector(".id")','document.getElement("#id")','document.getElementById("id")','document.selectById("id")'],a:2,solution:'document.getElementById() selects by ID.\n\nconst el = document.getElementById("myId");\n\nNote: No # symbol in the argument!'},
-{d:'easy',t:'JavaScript',q:'What does === check compared to ==?',opts:['Value only','Type only','Value AND type','Nothing different'],a:2,solution:'=== checks both value AND type (strict equality).\n\n1 == "1"   // true  (type coercion)\n1 === "1"  // false (no coercion)\n\nAlways prefer === to avoid unexpected bugs.'},
-{d:'easy',t:'JavaScript',q:'Which keyword defines a constant?',opts:['var','let','const','define'],a:2,solution:'const declares a constant (cannot be reassigned).\n\nconst API_URL = "https://api.example.com";\nAPI_URL = "new"; // TypeError!\n\nNote: Objects/Arrays declared with const can still be mutated.'},
-{d:'easy',t:'JavaScript',q:'What does console.log() do?',opts:['Creates an alert','Prints to browser console','Writes to HTML','Shows a popup'],a:1,solution:'console.log() outputs to the browser\'s developer console.\n\nconsole.log("Hello!"); // Prints in DevTools\nconsole.log(42);\nconsole.log({name: "Alice"});\n\nOpen DevTools (F12) → Console tab.'},
-{d:'easy',t:'JavaScript',q:'How do you write a conditional in JavaScript?',opts:['if (x = 5)','if (x == 5)','if x == 5','ask if x == 5'],a:1,solution:'JavaScript uses if/else if/else syntax.\n\nif (x > 10) {\n  console.log("big");\n} else if (x > 5) {\n  console.log("medium");\n} else {\n  console.log("small");\n}'},
-{d:'easy',t:'JavaScript',q:'What is an array in JavaScript?',opts:['A single value','An ordered collection of values','A function','A boolean'],a:1,solution:'An array is an ordered list of values.\n\nconst fruits = ["apple", "banana", "cherry"];\nconsole.log(fruits[0]); // "apple"\nconsole.log(fruits.length); // 3\n\nCan hold mixed types: [1, "hello", true, null]'},
-{d:'easy',t:'JavaScript',q:'Which method adds an element to the end of an array?',opts:['push()','pop()','shift()','unshift()'],a:0,solution:'push() adds to the end, pop() removes from end.\n\nconst arr = [1, 2, 3];\narr.push(4);    // [1,2,3,4]\narr.pop();       // returns 4, arr is [1,2,3]\n\nunshift() adds to the beginning.\nshift() removes from beginning.'},
-{d:'easy',t:'JavaScript',q:'What does a for loop do?',opts:['Runs once','Repeats code multiple times','Stops execution','Creates a function'],a:1,solution:'for loop repeats code a specific number of times.\n\nfor (let i = 0; i < 5; i++) {\n  console.log(i); // 0,1,2,3,4\n}\n\nThree parts: initialization; condition; increment.'},
-{d:'easy',t:'JavaScript',q:'How do you write a function in JavaScript?',opts:['function myFunc() {}','func myFunc() {}','def myFunc() {}','fn myFunc() {}'],a:0,solution:'Use the function keyword.\n\nfunction greet(name) {\n  return "Hello, " + name;\n}\n\n// Arrow function\nconst greet = (name) => `Hello, ${name}`;\n\n// Call it\ngreet("Alice");'},
-{d:'easy',t:'JavaScript',q:'What is NaN in JavaScript?',opts:['Not a Name','Not a Number','Null and None','New and Neat'],a:1,solution:'NaN = Not a Number.\n\nconsole.log(0 / 0);        // NaN\nconsole.log(parseInt("abc")); // NaN\nconsole.log(typeof NaN);   // "number"\n\nWeird: NaN !== NaN (always false).\nUse Number.isNaN() to check.'},
-{d:'easy',t:'JavaScript',q:'Which operator checks if a value is NOT equal?',opts:['!=','==!','<>','not='],a:0,solution:'!= checks inequality (loose), !== checks strict inequality.\n\n5 != "5"   // false (coercion)\n5 !== "5"  // true (no coercion)\n\nPrefer !== for type-safe comparisons.'},
-{d:'easy',t:'JavaScript',q:'What does the + operator do with strings?',opts:['Adds numbers','Concatenates strings','Subtracts','Compares'],a:1,solution:'+ concatenates (joins) strings.\n\n"Hello" + " " + "World"  // "Hello World"\n"Age: " + 25               // "Age: 25"\n\nWith a number: "Count: " + 5 → "Count: 5"'},
-{d:'easy',t:'JavaScript',q:'What is an object in JavaScript?',opts:['A single value','A key-value pair collection','An array','A function'],a:1,solution:'Objects store key-value pairs.\n\nconst person = {\n  name: "Alice",\n  age: 25,\n  city: "Mumbai"\n};\n\nAccess: person.name // "Alice"\nAdd: person.email = "a@b.com"'},
-{d:'easy',t:'JavaScript',q:'How do you access an object\'s property?',opts:['object.get("key")','object["key"] or object.key','object->key','object@key'],a:1,solution:'Two ways to access properties.\n\nconst obj = {name: "Alice", age: 25};\n\n// Dot notation\nobj.name  // "Alice"\n\n// Bracket notation (needed for dynamic keys)\nobj["name"]  // "Alice"\nconst key = "age";\nobj[key]     // 25'},
-{d:'easy',t:'JavaScript',q:'What does template literal use?',opts:['Single quotes','Double quotes','Backticks','Parentheses'],a:2,solution:'Template literals use backticks (``).\n\nconst name = "Alice";\nconst msg = `Hello, ${name}!`;\n\n// Multi-line\nconst html = `\n  <h1>${title}</h1>\n  <p>${desc}</p>\n`;\n\nSupports expressions inside ${}.'},
-{d:'easy',t:'JavaScript',q:'Which method converts a string to an integer?',opts:['Number.toInt()','parseInt()','String.toNumber()','convertInt()'],a:1,solution:'parseInt() converts string to integer.\n\nparseInt("42")     // 42\nparseInt("42px")   // 42 (stops at non-digit)\nparseInt("3.14")   // 3\nparseFloat("3.14") // 3.14\n\nAlways provide radix: parseInt("10", 2) → 2 (binary).'},
-{d:'easy',t:'JavaScript',q:'What is an arrow function?',opts:['A function with =>','A function with ::','A function with ->','A function with >>'],a:0,solution:'Arrow functions use => syntax.\n\n// Regular\nfunction add(a, b) { return a + b; }\n\n// Arrow\nconst add = (a, b) => a + b;\n\n// Single param (no parens needed)\nconst double = x => x * 2;\n\n// No binding of own "this" — important!'},
-{d:'easy',t:'JavaScript',q:'What is the difference between let and var?',opts:['No difference','let is block-scoped','var is block-scoped','let is function-scoped'],a:1,solution:'let is block-scoped, var is function-scoped.\n\nif (true) {\n  var x = 1; // function-scoped\n  let y = 2; // block-scoped\n}\nconsole.log(x); // 1\nconsole.log(y); // ReferenceError!\n\nAlways prefer let/const over var.'},
-{d:'easy',t:'JavaScript',q:'How do you add an event listener to a button?',opts:['button.addClick()','button.addEventListener("click", fn)','button.onClick(fn)','button.on("click", fn)'],a:1,solution:'addEventListener() attaches event handlers.\n\nconst btn = document.getElementById("myBtn");\nbtn.addEventListener("click", function() {\n  console.log("Clicked!");\n});\n\nRemove: btn.removeEventListener("click", fn)'},
-{d:'easy',t:'JavaScript',q:'What does the typeof operator return for an array?',opts:['"array"','"object"','"list"','"undefined"'],a:1,solution:'typeof [] returns "object" — a known JS quirk.\n\ntypeof []      // "object" (not helpful!)\nArray.isArray([]) // true  (correct way)\n\nThis is because arrays are technically objects in JavaScript.'},
-{d:'easy',t:'JavaScript',q:'What does the && operator do?',opts:['OR logic','AND logic','NOT logic','Assignment'],a:1,solution:'&& is logical AND — both sides must be true.\n\ntrue && true   // true\ntrue && false  // false\nfalse && true  // false\nfalse && false // false\n\nShort-circuits: returns first falsy value.\nlet x = null && "hello"; // null'},
-{d:'easy',t:'JavaScript',q:'What does the || operator do?',opts:['AND logic','OR logic','NOT logic','Assignment'],a:1,solution:'|| is logical OR — at least one side must be true.\n\ntrue || false  // true\nfalse || true  // true\ntrue || true   // true\nfalse || false // false\n\nShort-circuits: returns first truthy value.\nlet name = null || "Anonymous"; // "Anonymous"'},
-{d:'easy',t:'JavaScript',q:'What is the ternary operator?',opts:['a ? b : c','if-else statement','a && b','switch-case'],a:0,solution:'Ternary is a concise if-else in one line.\n\nconst age = 20;\nconst status = age >= 18 ? "Adult" : "Minor";\n\n// Equivalent to:\nlet status;\nif (age >= 18) status = "Adult";\nelse status = "Minor";\n\nCan be nested: a ? b : c ? d : e'},
-{d:'easy',t:'JavaScript',q:'What does the spread operator (...) do?',opts:['Deletes elements','Expands iterables','Compresses arrays','Sorts arrays'],a:1,solution:'... expands an iterable into individual elements.\n\nconst a = [1, 2, 3];\nconst b = [...a, 4, 5]; // [1,2,3,4,5]\n\nconst obj1 = {x: 1};\nconst obj2 = {...obj1, y: 2}; // {x:1, y:2}\n\nfunction sum(a, b, c) {}\nsum(...[1,2,3]); // same as sum(1,2,3)'},
-
-// MEDIUM (20)
-{d:'medium',t:'JavaScript',q:'What is a closure in JavaScript?',opts:['A loop structure','A function with access to its outer scope','An HTML element','A CSS property'],a:1,solution:'A closure is a function that retains access to its outer scope.\n\nfunction outer() {\n  let count = 0;\n  return function() {\n    count++;\n    return count;\n  };\n}\nconst counter = outer();\ncounter(); // 1\ncounter(); // 2\n\nThe inner function "remembers" count from outer scope.'},
-{d:'medium',t:'JavaScript',q:'What is the difference between map() and forEach()?',opts:['No difference','map() returns a new array, forEach() doesn\'t','forEach() is faster','map() is older'],a:1,solution:'map() returns a new array, forEach() returns undefined.\n\nconst nums = [1,2,3,4];\n\nconst doubled = nums.map(n => n * 2);\n// [2,4,6,8] — new array returned\n\nnums.forEach(n => console.log(n));\n// undefined — no return value\n\nUse map() when you need the transformed result.'},
-{d:'medium',t:'JavaScript',q:'What is the event loop in JavaScript?',opts:['A CSS animation loop','Asynchronous execution model','A for loop variant','DOM update cycle'],a:1,solution:'The event loop handles async operations.\n\nCall Stack → Web APIs → Callback Queue → Event Loop\n\nconsole.log("1");          // sync\nsetTimeout(() => {\n  console.log("2");    // async\n}, 0);\nconsole.log("3");          // sync\n\nOutput: 1, 3, 2 (setTimeout goes to Web API first, then callback queue).'},
-{d:'medium',t:'JavaScript',q:'What is Promise.all() used for?',opts:['Running one promise','Running all promises in parallel','Creating a promise','Rejecting a promise'],a:1,solution:'Promise.all() waits for ALL promises to resolve.\n\nconst p1 = fetch("/api/users");\nconst p2 = fetch("/api/posts");\nconst p3 = fetch("/api/comments");\n\nconst [users, posts, comments] = await Promise.all([p1, p2, p3]);\n\nFails fast: if ANY promise rejects, all() rejects.\nUse Promise.allSettled() to never reject.'},
-{d:'medium',t:'JavaScript',q:'What does async/await do?',opts:['Makes code run slower','Makes async code look synchronous','Adds animations','Creates threads'],a:1,solution:'async/await makes async code read like sync code.\n\nasync function getUser() {\n  const res = await fetch("/api/user");\n  const data = await res.json();\n  return data;\n}\n\n// Without await (messy):\nfetch("/api/user").then(res => res.json()).then(data => ...);\n\nawait pauses execution until the promise resolves.'},
-{d:'medium',t:'JavaScript',q:'What is the difference between deep copy and shallow copy?',opts:['No difference','Shallow copies one level, deep copies all nested','Deep copy is slower','Shallow copy is always better'],a:1,solution:'Shallow copy: only top level is copied (references nested).\nDeep copy: everything including nested objects is cloned.\n\n// Shallow\nconst copy = {...obj};\ncopy.nested.arr.push(4); // affects original!\n\n// Deep\nconst copy = JSON.parse(JSON.stringify(obj));\ncopy.nested.arr.push(4); // original safe\n\nOr use structuredClone() (modern browsers).'},
-{d:'medium',t:'JavaScript',q:'What is the purpose of the "use strict" directive?',opts:['Enables ES6 features','Prevents silent errors and makes JS stricter','Makes code run faster','Adds type checking'],a:1,solution:'"use strict" enables strict mode.\n\n"use strict";\n\n// Prevents:\nx = 10;           // ReferenceError (no implicit global)\ndelete Object.prototype; // TypeError\n\n// Improves error reporting and performance.'},
-{d:'medium',t:'JavaScript',q:'What is a higher-order function?',opts:['A function that runs slowly','A function that takes/returns functions','A function with many parameters','A class method'],a:1,solution:'A higher-order function takes a function as argument or returns one.\n\n// Takes a function\n[1,2,3].map(x => x * 2);\n[1,2,3].filter(x => x > 1);\n\n// Returns a function\nfunction multiplier(factor) {\n  return (n) => n * factor;\n}\nconst double = multiplier(2);\n\ndouble(5); // 10'},
-{d:'medium',t:'JavaScript',q:'What is destructuring assignment?',opts:['Deleting variables','Extracting values from arrays/objects','Destroying memory','Creating destructors'],a:1,solution:'Destructuring unpacks values from arrays or objects.\n\n// Array\nconst [a, b, c] = [10, 20, 30];\n\n// Object\nconst {name, age, city} = person;\n\n// Rename: const {name: n} = obj;\n// Default: const {x = 10} = obj;\n// Rest: const [first, ...rest] = arr;'},
-{d:'medium',t:'JavaScript',q:'What does the "this" keyword refer to in an arrow function?',opts:['The function itself','The object that calls the function','The window object','The class'],a:1,solution:'Arrow functions don\'t have their own "this" — they inherit from enclosing scope.\n\nconst obj = {\n  name: "Alice",\n  regular: function() { console.log(this.name); },  // "Alice"\n  arrow: () => { console.log(this.name); }       // undefined!\n};\n\nUse regular functions for object methods.'},
-{d:'medium',t:'JavaScript',q:'What is the difference between == and ===?',opts:['=== checks type, == doesn\'t','== is newer','=== is only for strings','No real difference'],a:0,solution:'== does type coercion, === does not.\n\n1 == "1"    // true  (string coerced to number)\n1 === "1"   // false (different types)\n\nnull == undefined  // true  (both are "falsy")\nnull === undefined // false\n\nRule: ALWAYS use === to avoid bugs.'},
-{d:'medium',t:'JavaScript',q:'What is event delegation?',opts:['Delegating events to a framework','Attaching handler to parent instead of children','Removing all events','Creating custom events'],a:1,solution:'Attaching one handler to a parent instead of many children.\n\n<ul id="list">\n  <li>Item 1</li>\n  <li>Item 2</li>\n  <li>Item 3</li>\n</ul>\n\ndocument.getElementById("list").addEventListener("click", (e) => {\n  if (e.target.tagName === "LI") {\n    console.log(e.target.textContent);\n  }\n});\n\nBetter performance with many items.'},
-{d:'medium',t:'JavaScript',q:'What is memoization?',opts:['Storing memories','Caching function results to avoid recomputation','Creating notes','Memory management'],a:1,solution:'Memoization caches function results for repeated calls.\n\nfunction memoize(fn) {\n  const cache = {};\n  return function(...args) {\n    const key = JSON.stringify(args);\n    if (cache[key]) return cache[key];\n    const result = fn(...args);\n    cache[key] = result;\n    return result;\n  };\n}\n\nconst fastFib = memoize(fibonacci);\nfastFib(40); // computed once, then cached'},
-{d:'medium',t:'JavaScript',q:'What is Object.keys() used for?',opts:['Getting all values','Getting all property names','Deleting keys','Creating keys'],a:1,solution:'Object.keys() returns an array of property names.\n\nconst user = {name: "Alice", age: 25, city: "Mumbai"};\nObject.keys(user); // ["name", "age", "city"]\n\nOther methods:\nObject.values(user)  // ["Alice", 25, "Mumbai"]\nObject.entries(user) // [["name","Alice"], ...]'},
-{d:'medium',t:'JavaScript',q:'What does the "this" keyword refer to in a method?',opts:['The class itself','The instance that called the method','The constructor','The window'],a:1,solution:'In a method, "this" refers to the instance that called it.\n\nclass Dog {\n  constructor(name) { this.name = name; }\n  bark() { console.log(this.name); }\n}\n\nconst rex = new Dog("Rex");\nrex.bark(); // "Rex"\n\nconst bella = new Dog("Bella");\nbella.bark(); // "Bella"  (this is different!)'},
-{d:'medium',t:'JavaScript',q:'What is the difference between call, apply, and bind?',opts:['No difference','call/apply call immediately, bind returns new function','bind is deprecated','apply doesn\'t work'],a:1,solution:'call/apply invoke immediately. bind returns a new function.\n\nfunction greet(greeting, punct) {\n  console.log(greeting + " " + this.name + punct);\n}\n\nconst person = {name: "Alice"};\ngreet.call(person, "Hi", "!");   // Hi Alice!\ngreet.apply(person, ["Hi", "!"]); // Hi Alice!\nconst bound = greet.bind(person, "Hey");\nbound("!"); // Hey Alice! (called later)'},
-{d:'medium',t:'JavaScript',q:'What is the purpose of Symbol in JavaScript?',opts:['Creating icons','Creating unique identifiers','Math operations','String manipulation'],a:1,solution:'Symbol creates a unique identifier, useful for object keys.\n\nconst id1 = Symbol("id");\nconst id2 = Symbol("id");\nid1 === id2; // false (always unique!)\n\nconst obj = {\n  [Symbol("id")]: 1,\n  [Symbol("id")]: 2  // no collision!\n};\n\nAlso used for well-known symbols: Symbol.iterator, Symbol.toPrimitive.'},
-
-// HARD (30)
-{d:'hard',t:'JavaScript',q:'What is the difference between prototypal and classical inheritance?',opts:['No difference','Prototypal uses __proto__, classical uses class keyword','Classical is newer','Prototypal is only in JS'],a:1,solution:'JS uses prototypal inheritance. "class" is syntactic sugar.\n\n// Prototypal\nfunction Animal(name) { this.name = name; }\nAnimal.prototype.speak = () => "generic";\nfunction Dog(name) { Animal.call(this, name); }\nDog.prototype = Object.create(Animal.prototype);\n\n// Classical (sugar for above)\nclass Dog extends Animal {\n  constructor(name) { super(name); }\n}\n\nUnder the hood, both use [[Prototype]] chain.'},
-{d:'hard',t:'JavaScript',q:'What is the prototype chain?',opts:['A linked list of objects','A CSS feature','A type of loop','An array method'],a:0,solution:'Every object has a hidden [[Prototype]] link to another object, forming a chain.\n\nconst arr = [1,2,3];\narr.hasOwnProperty("0");   // true (own property)\narr.hasOwnProperty("push"); // false\n"push" in arr;               // true (found in chain!)\n\nChain: arr → Array.prototype → Object.prototype → null'},
-{d:'hard',t:'JavaScript',q:'How does the "new" keyword work internally?',opts:['Creates a new variable','Creates object, links prototype, binds this, returns it','Only works with classes','Allocates memory'],a:1,solution:'new does 4 things with any function:\n\nfunction Person(name) { this.name = name; }\nconst p = new Person("Alice");\n\n// Internally:\n// 1. Creates empty object: {}\n// 2. Sets [[Prototype]] to Person.prototype\n// 3. Calls Person with this = {} and "Alice"\n// 4. Returns the object (if no explicit return)'},
-{d:'hard',t:'JavaScript',q:'What is a WeakMap and when should you use it?',opts:['A map with only numbers','A map that allows GC of keys','A slower version of Map','A map that weakly references keys'],a:1,solution:'WeakMap allows garbage collection of keys when no references exist.\n\n// Regular Map — holds strong references\nconst map = new Map();\nlet obj = {id: 1};\nmap.set(obj, "data");\nobj = null; // obj still in map! Memory leak!\n\n// WeakMap — keys can be GC\'d\nconst wm = new WeakMap();\nlet obj2 = {id: 1};\nwm.set(obj2, "data");\nobj2 = null; // key automatically removed!\n\nUse for metadata and caching.'},
-{d:'hard',t:'JavaScript',q:'What is the difference between microtasks and macrotasks?',opts:['Speed difference','Microtasks run before macrotasks in event loop','No difference','Microtasks are deprecated'],a:1,solution:'Microtasks (Promise callbacks) have higher priority than macrotasks (setTimeout).\n\nconsole.log("1");\nsetTimeout(() => console.log("2"), 0);\nPromise.resolve().then(() => console.log("3"));\nconsole.log("4");\n\n// Output: 1, 4, 3, 2\n\nCall stack → Microtasks → Macrotasks'},
-{d:'hard',t:'JavaScript',q:'What is a Proxy in JavaScript?',opts:['A network proxy','An object that intercepts operations on another object','A design pattern','A CSS feature'],a:1,solution:'Proxy intercepts and customizes fundamental operations on objects.\n\nconst handler = {\n  get(target, prop) {\n    console.log(`Accessing: ${prop}`);\n    return target[prop];\n  },\n  set(target, prop, value) {\n    console.log(`Setting ${prop} = ${value}`);\n    target[prop] = value;\n    return true;\n  }\n};\n\nconst proxy = new Proxy({}, handler);\nproxy.name = "Alice"; // Logs & sets\nproxy.name;              // Logs & gets'},
-{d:'hard',t:'JavaScript',q:'What is the difference between call, apply, and bind regarding "this"?',opts:['They all work the same','call: explicit args, apply: array args, bind: returns new fn with fixed "this"','Only bind works with "this"'],a:1,solution:'All set "this" but differently.\n\nfunction greet(g, p) { return g + " " + this.name + p; }\n\n// call: pass args individually\ngreet.call({name:"A"}, "Hi", "!");\n\n// apply: pass args as array\ngreet.apply({name:"B"}, ["Hey", "?"]);\n\n// bind: return NEW function with fixed "this"\nconst greetA = greet.bind({name: "C"}, "Yo", "!");\ngreetA(); // "Yo C!"  (this is permanently "C")'},
-{d:'hard',t:'JavaScript',q:'What is the purpose of Reflect API?',opts:['Creating reflections','Same operations as Proxy but as functions','DOM manipulation','Animation'],a:1,solution:'Reflect provides function forms of Proxy trap operations.\n// Instead of: delete obj.key → might throw\nReflect.deleteProperty(obj, "key"); // returns bool\n\n// Instead of: Object.keys → only own enumerable\nReflect.ownKeys(obj); // configurable: true/false\n\nUsed with Proxy handlers for forwarding operations correctly.'},
-{d:'hard',t:'JavaScript',q:'What is the Temporal Dead Zone (TDZ)?',opts:['A time zone','Period before let/const is initialized','A deprecated feature','Error handling zone'],a:1,solution:'TDZ is the zone from block start to variable declaration.\n\nconsole.log(x); // ReferenceError!\nlet x = 5;\nconsole.log(x); // 5\n\nThe variable "exists" in TDZ but cannot be accessed.\n\nSame for const, class, import.\nvar does NOT have TDZ (hoisted as undefined).'},
-{d:'hard',t:'JavaScript',q:'What is the difference between generator and async generator?',opts:['No difference','Regular returns {value, done}, async returns Promise','Async generator is faster','Regular generator doesn\'t exist'],a:1,solution:'Async generators return Promises instead of plain values.\n\nfunction* gen() {\n  yield 1;   // returns {value: 1, done: false}\n  yield 2;   // returns {value: 2, done: false}\n}\n\nasync function* asyncGen() {\n  yield fetch("/api");  // returns Promise!\n  yield fetch("/api2");\n}\n\nfor await (const p of asyncGen()) {\n  const data = await p;\n}\n\nUseful for async iteration patterns.'},
-{d:'hard',t:'JavaScript',q:'What is the difference between for...in and for...of?',opts:['No difference','for...in iterates keys (including inherited), for...of iterates values','for...of is for objects only','for...in is newer'],a:1,solution:'for...in: object keys (including inherited prototype chain).\nfor...of: iterable values (not object keys).\n\nconst arr = ["a", "b", "c"];\n\nfor (const key in arr) console.log(key);   // "0", "1", "2"\nfor (const val of arr) console.log(val);   // "a", "b", "c"\n\nUse for...of for arrays/strings. Avoid for...in on arrays.'},
-{d:'hard',t:'JavaScript',q:'What is Object.freeze() and what are its limitations?',opts:['Freezes the screen','Makes object immutable (shallow only)','Deep freezes everything','Removes all properties'],a:1,solution:'Object.freeze() makes an object shallow immutable.\n\nconst obj = { a: 1, nested: { b: 2 } };\nObject.freeze(obj);\nobj.a = 99;       // Error (frozen)\nobj.nested.b = 99; // Still works! (shallow only)\n\nFor deep freeze: use structuredClone() + freeze()\nor a recursive function.\n\nCannot be unfrozen — it\'s one-way.'},
-{d:'hard',t:'JavaScript',q:'What is a WeakRef and when would you use it?',opts:['A weak reference that can be garbage collected','A reference to a WeakMap','A deprecated API','A type of Promise'],a:0,solution:'WeakRef holds a weak reference — GC can collect the target.\n\nlet obj = {data: "important"};\nconst ref = new WeakRef(obj);\n\nobj = null; // can be GC\'d now\nref.deref(); // undefined (was collected)\n\nUse case: caching without preventing GC.\nCompanion: FinalizationRegistry — callback when GC\'d.'},
-{d:'hard',t:'JavaScript',q:'What is structuredClone() and why is it better than JSON.parse(JSON.stringify())?',opts:['They are identical','Handles more types: Date, RegExp, Map, Set, undefined, circular refs','It\'s slower but safer','Only works with strings'],a:1,solution:'structuredClone() deep copies with full fidelity.\n\n// JSON.stringify fails on:\nconst obj = {\n  date: new Date(),\n  regex: /test/,\n  fn: function(){},\n  undef: undefined,\n  circ: {}  // TypeError: Converting circular structure\n};\n\nstructuredClone(obj); // Works perfectly!\n\nLimitation: doesn\'t clone functions (throws error).'},
-{d:'hard',t:'JavaScript',q:'What is a Proxy revocable and when is it useful?',opts:['A proxy that auto-revokes after time','A proxy that can be permanently revoked','A security feature to restrict access','A deprecated pattern'],a:1,solution:'Proxy.revocable() creates a proxy that can be permanently disabled.\n\nconst {proxy, revoke} = Proxy.revocable(target, handler);\n\nproxy.name; // works\nrevoke();    // permanently disabled\nproxy.name; // TypeError!\n\nUse case: Security — grant temporary access to an object,\nthen revoke access (e.g., third-party plugins, sandboxes).'},
-{d:'hard',t:'JavaScript',q:'What is the difference between a generator and an iterator?',opts:['They are the same','Every generator is an iterator, not vice versa','Every iterator is a generator','They use different syntax'],a:1,solution:'Every generator creates an iterator, but not every iterator is a generator.\n// Generator (creates iterator)\nfunction* gen() {\n  yield 1; yield 2; yield 3;\n}\n\n// Manual iterator (more code)\nfunction createIterator(arr) {\n  let i = 0;\n  return {\n    next() { return i < arr.length ? {value: arr[i++], done: false} : {done: true}; }\n  };\n}\n\nBoth have .next() returning {value, done}.'},
-{d:'hard',t:'JavaScript',q:'What is the purpose of Symbol.toPrimitive?',opts:['Converts symbol to string','Defines how objects convert to primitives','Creates primitive types','Imports primitives'],a:1,solution:'Symbol.toPrimitive controls type coercion behavior.\n\nconst obj = {\n  [Symbol.toPrimitive](hint) {\n    if (hint === "number") return 42;\n    if (hint === "string") return "hello";\n    return true;\n  }\n};\n\n+obj;     // calls with hint "number" → 42\n`${obj}` // calls with hint "string" → "hello"\nobj == true;  // calls with hint "default" → true'},
-{d:'hard',t:'JavaScript',q:'How does JavaScript garbage collection work?',opts:['Manual memory management','Automatic — marks-and-sweep algorithm','Reference counting only','No garbage collection in JS'],a:1,solution:'JS uses mark-and-sweep garbage collection.\n\n1. GC finds all "roots" (global, stack variables)\n2. "Marks" all objects reachable from roots\n3. "Sweeps" unmarked objects (frees memory)\n\n// Circular references are handled correctly:\nlet a = {};\nlet b = {};\na.ref = b;\nb.ref = a;\na = null; b = null; // both become unreachable → GC\'d\n\nCannot manually trigger GC (it\'s automatic).'},
-{d:'hard',t:'JavaScript',q:'What is a Web Worker and what are its limitations?',opts:['A DOM helper','A background thread for heavy computation','A CSS feature','A testing tool'],a:1,solution:'Web Worker runs JS in a background thread (no UI access).\n\n// main.js\nconst worker = new Worker("worker.js");\nworker.postMessage({num: 10000});\nworker.onmessage = (e) => console.log(e.data);\n\n// worker.js\nself.onmessage = (e) => {\n  let sum = 0;\n  for (let i = 0; i < e.data.num; i++) sum += i;\n  self.postMessage(sum);\n};\n\nLimitations: No DOM, window, document. Can use: fetch, WebSocket, IndexedDB.'},
-{d:'hard',t:'JavaScript',q:'What is the difference between AbortController and simply removing event listeners?',opts:['No difference','AbortController can cancel fetch + listeners; removeEventListener only removes listeners','AbortController is deprecated','AbortController is faster'],a:1,solution:'AbortController can cancel in-progress operations.\n\nconst ctrl = new AbortController();\nfetch("/api/data", { signal: ctrl.signal })\n  .then(data => data)\n  .catch(err => {\n    if (err.name === "AbortError")\n      console.log("Cancelled!");\n  });\n\nctrl.abort(); // cancels the fetch!\n\nremoveEventListener only removes the handler — can\'t stop a running fetch.'},
-{d:'hard',t:'JavaScript',q:'What is tree shaking and why is it important?',opts:['DOM tree optimization','Removing unused code during bundling','An algorithm pattern','CSS optimization'],a:1,solution:'Tree shaking eliminates dead code from the final bundle.\n// utils.js\nexport function used() { return "used"; }\nexport function unused() { return "unused"; }\n\n// main.js\nimport { used } from "./utils.js";\n// Only "used" is included in the bundle!\n\nRequires: ES modules (import/export), static analysis.\nDoesn\'t work with CommonJS (require).'},
-];
-
-// Track solved
-let solvedSet=new Set(JSON.parse(localStorage.getItem('sikhle_solved')||'[]'));
-function saveSolved(){localStorage.setItem('sikhle_solved',JSON.stringify([...solvedSet]));}
-
 // ═══════════════════════════════
-// RENDER QUESTIONS
+// 100+ QUESTIONS DATABASE
 // ═══════════════════════════════
-let currentTab='easy';
-const allEasy=QUESTIONS.filter(q=>q.d==='easy');
-const allMedium=QUESTIONS.filter(q=>q.d==='medium');
-const allHard=QUESTIONS.filter(q=>q.d==='hard');
+const QS=[
+// EASY — HTML/CSS
+{d:'easy',t:'HTML',q:'What does HTML stand for?',a:0,opts:['Hyper Text Markup Language','High Tech Modern Language','Hyper Transfer Markup Language','Home Tool Markup Language'],s:'HTML = Hyper Text Markup Language.\n\nIt is the standard markup language for creating web pages. It defines the structure of a.'},
+{d:'easy',t:'HTML',q:'Which tag creates a hyperlink?',a:1,opts:['<link>','<a>','<href>','<url>'],s:'The <a> tag creates hyperlinks.\n\n<a href="https://example.com">Click here</a>\n\nThe href attribute specifies the URL destination.'},
+{d:'easy',t:'HTML',q:'Which tag creates the largest heading?',a:2,opts:['<heading>','<h6>','<h1>','<head>'],s:'<h1> is the largest heading.\n\nHTML headings: <h1>(largest) to <h6>(smallest).'},
+{d:'easy',t:'HTML',q:'What attribute gives alternate text for images?',a:3,opts:['title','src','alt','name'],s:'The alt attribute provides alternative text.\n\n<img src="photo.jpg" alt="A beautiful sunset">\n\nCrucial for accessibility and shown when image cannot load.'},
+{d:'easy',t:'HTML',q:'Which element creates an unordered list?',a:2,opts:['<ol>','<li>','<ul>','<list>'],s:'<ul> creates a bulleted list.\n\n<ul>\n  <li>Item 1</li>\n  <li>2</li>\n</ul>'},
+{d:'easy',t:'CSS',q:'Which property changes text color?',a:2,opts:['font-color','text-color','color','foreground'],s:'color property sets text color.\n\np { color: #333333; }'},
+{d:'easy',t:'CSS',q:'Which property changes background color?',a:1,opts:['bgcolor','background-color','bg-color','fill'],s:'background-color sets the element\'s background.\n\nbody { background-color: #f0f0f0; }'},
+{d:'easy',t:'CSS',q:'What does CSS stand for?',a:1,opts:['Computer Style Sheets','Cascading Style Sheets','Creative Style System','Colorful Style Sheets'],s:'CSS = Cascading Style Sheets.\n\n"Cascading" means later rules override earlier ones based on specificity.'},
+{d:'easy',t:'CSS',q:'Which property sets font size?',a:1,opts:['text-size','font-size','size','text-height'],s:'font-size sets text size.\n\nh1 { font-size: 32px; }\np  { font-size:  };'},
+{d:'easy',t:'CSS',q:'How do you center a block element horizontally?',a:1,opts:['text-align: center','margin: 0 auto','float: center','position: center'],s:'margin: 0 auto; requires defined width.\n\n.box { width:300px; margin:0 auto; }'},
+{d:'easy',t:'CSS',q:'Which property creates rounded corners?',a:1,opts:['corner-radius','border-radius','round','box-round'],s:'border-radius creates rounded corners.\n\n.card { border-radius: 12px; }'},
+{d:'easy',t:'CSS',q:'What does box-sizing: border-box do?',a:1,opts:['Adds padding to width','Includes padding in width','Removes padding','Sets border size'],s:'border-box includes padding & border in total width.\n\n* { box-sizing: border-box; }'},
+{d:'easy',t:'CSS',q:'Which property adds a shadow to an element?',a:3,opts:['filter:shadow','box-shadow','drop-shadow','text-shadow'],s:'box-shadow adds a shadow.\n\ncard {\n  box-shadow: 0 4px 12px rgba(0,0,0,.15);\n\nSyntax: offsetX offsetY blur color'},
+{d:'easy',t:'CSS',q:'How do you make text bold in CSS?',a:0,opts:['font-weight: bold','text-weight: bold','font-style: bold','text-weight: bold'],s:'font-weight: bold (or 700).\n\np { font-weight: bold; }'},
+{d:'easy',t:'CSS',q:'What is Flexbox used for?',opts:['Colors','Layout','Animations','Importing fonts'],a:1,s:'Flexbox is a layout system for arranging items.\n\n.container { display: flex; justify-content: center; align-items: center; }'},
+{d:'easy',t:'CSS',q:'Which property sets gap between flex items?',opts:['margin','spacing','gap','flex-gap'],a:2,s:'gap sets space between flex/grid items.\n\n.container { display: flex; gap: 16px; }'},
+{d:'easy',t:'CSS',q:'What is CSS Grid used for?',opts:['Colors','Two-dimensional layout','Animations','Typography'],a:1,s:'Grid creates 2D layouts.\n\n.grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; }'},
+{d:'easy',t:'CSS',q:'What does display: none do?',opts:['Hides element completely','Makes element transparent','Removes all styles','Moves element'],s:'display: none removes element from layout.\n\n.hidden { display: none; }\n// No space taken at all.'},
+{d:'easy',t:'CSS',q:'Which property changes the font family?',opts:['font-name','font-family','text-font','typeface'],a:1,s:'font-family sets the typeface.\n\nbody { font-family: "Inter", sans-serif; }'},
+{d:'easy',t:'CSS',q:'What is z-index used for?',opts:['Z-index','Layer ordering','Zoom level','Z-position'],a:0,s:'z-index controls stacking order.\n.z-index: z-index:fixed;}}\n// Higher z-index = more in front.'},
+{d:'easy',t:'CSS',q:'What does transition: all .3s ease do?',a:3,opts:['Adds animation','Adds shadow','Smooth transition','Removes element'],s:'transition creates a smooth animated effect.\n\n.btn { transition: all 0.3s ease; }\n// Hover: all = all properties, 0.3s = duration, ease = timing function'},
+{d:'easy',t:'CSS',q:'What does opacity: 0.5 do?',opts:['Removes element','Makes half transparent','Zooms element','Hides element'],a:1,s:'opacity makes element semi-transparent.\n\n.overlay { opacity: 0.5; }\n// 50% transparent'},
+{d:'easy',t:'CSS',q:'What is @media query used for?',opts:['Media queries','Printing styles','Responsive design','Mobile detection'],a:1,s:'@media adjusts styles for screen sizes.\n\n@media (max-width: 768px) {\n  .sidebar { display: none; }\n}\n// Hides sidebar on mobile.'},
 
-document.getElementById('easyCount').textContent=allEasy.length;
-document.getElementById('medCount').textContent=allMedium.length;
-document.getElementById('hardCount').textContent=allHard.length;
+// EASY — JavaScript
+{d:'easy',t:'JavaScript',q:'How to declare a variable in modern JS?',a:1,opts:['var x = 1','let x = 1','variable x = 1','v x = 1'],s:'Use let (or const) in modern JS.\n\nlet x = 10;\nconst PI = 3.14;\nvar is old — avoid it (function-scoped, hoisted).'},
+{d:'easy',t:'JavaScript',q:'What does typeof null return?',a:1,opts:['"null"','"object"','"undefined"','"boolean"'],s:'typeof null returns "object" — known JS quirk.\n\nnull === null  // true (correct way to check)'},
+{d:'easy',t:'JavaScript',q:'Which method converts JSON string to object?',a:1,opts:['JSON.stringify()','JSON.parse()','JSON.convert()','JSON.objectify()'],s:'JSON.parse() converts JSON string to object.\n\nconst obj = JSON.parse(\'{"name":"Alice"}\');\nJSON.stringify(obj); // converts obj to JSON string'},
+{d:'easy',t:'How to select element by ID?',a:2,opts:['document.querySelector("#id")','document.getElement("#id")','document.selectById("id")','document.find("#id")'],s:'document.getElementById("myId"); // No # needed!'},
+{d:'easy',t:'What does === check?',a:3,opts:['Value only','Type and value','Value OR type','Nothing different'],s:'=== checks both value AND type.\n\n1 == "1"   // true (coercion)\n1 === "1"  // false (strict, no coercion)\n\nAlways use === to avoid bugs.'},
+{d:'easy',t:'JavaScript',q:'What does const do?',a:2,opts:['Creates a constant','Creates a function','Creates a class','Deletes variable'],s:'const declares a constant (cannot be reassigned).\n\nconst PI = 3.14;\nPI = 99; // TypeError!'},
+{d:'easy',t:'JavaScript',q:'What does console.log() do?',opts:['Creates alert','Prints to browser console','Writes to HTML','Shows popup'],s:'Prints to the browser\'s DevTools console.\n\nconsole.log("Hello!");\nconsole.log(42);\n\nOpen DevTools (F12) → Console tab.'},
+{d:'easy',t:'JavaScript',q:'How do you write a function?',a:0,opts:['function myFunc() {}','func myFunc() {}','def myFunc() {}','fn myFunc() {}'],s:'function keyword defines a function.\n\nfunction greet(name) {\n  return "Hello, " + name;\n}\n\n// Arrow function\nconst greet = (name) => `Hello, ${name}`;'},
+{d:'easy',t:'JavaScript',q:'What does an array store?',a:1,opts:['Single value','Ordered collection of values','A function','A boolean'],s:'Arrays are ordered collections of values.\n\nconst arr = ["apple", "banana", "cherry"];\narr[0] // "apple"'},
+{d:'easy',t:'Which method adds to end of an array?',opts:['push()','pop()','shift()','unshift()'],a:0,s:'push() adds to end, pop() removes from end.\n\nconst arr = [1,2,3];\narr.push(4); // [1,2,3,4]'},
+{d:'easy',t:'What is NaN?',opts:['Not a Name','Not a Number','Null and None','New and Neat'],a:1,s:'NaN = Not a Number.\nconsole.log(0/0);  // NaN\nparseInt("abc");  // NaN\nNaN !== NaN;  // always false (weird JS quirk)'},
+{d:'easy',t:'What does !== check?',opts:['Inequality','Strict inequality','Assignment','Negation'],a:1,s:'!== checks strict inequality (no type coercion).\n\n5 !== "5"   // true\n5 !== 5      // false\n\nAlways prefer !== over != to avoid coercion bugs.'},
+{d:'ease',t:'JavaScript',q:'What does the + operator do with strings?',opts:['Subtracts','Concatenates','Compares','Divides'],a:1,s:'+ concatenates strings.\n\n"Hello" + " " + "World"  // "Hello World"'},
+{d:'easy',t:'JavaScript',q:'What is an object?',opts:['Single value','Key-value pair collection','Array of arrays','A function'],a:1,s:'Objects store key-value pairs.\n\nconst person = {name: "Alice", age: 25};\nperson.name; // "Alice"\nperson["age"];  // 25'},
+{d:'easy',t:'What is template literal syntax?',opts:['Single quotes','Double quotes','Backticks ` ` `','Parentheses'],s:'Template literals use backticks.\n\nconst name = "Alice";\nconst msg = `Hello, ${name}!`;\n\nSupports expressions inside ${}.'},
+{d:'easy',t:'JavaScript',q:'What does parseInt("42px") return?',opts:['42","NaN","42px","undefined","Error"],a:0,s:'parseInt("42px") → 42 (stops at non-digit).'},
+{d:'easy',t:'JavaScript',q:'What is an arrow function?',opts:['A function with => syntax','A loop construct','A class method','An import'],a:0,s:'Arrow function: (params) => expression.\n\nconst add = (a, b) => a + b;\n\n// equivalent to:\nfunction add(a, b) { return a + b; }'},
+{d:'easy',t:'JavaScript',q:'What is a closure?',opts:['A loop','A function with outer scope access','An HTML tag','A CSS property'],a:1,s:'A function that retains access to its outer scope.\n\nfunction outer() {\n  let count = 0;\n  return function() { count++; return count; };\n}\nconst counter = outer();\ncounter(); // 1\ncounter(); // 2'},
+{d:'easy',t:'JavaScript',q:'What is the event loop?',opts:['CSS animation loop','Async execution model','A for loop variant','DOM update cycle'],a:1,s:'The event loop handles async operations.\n\nconsole.log("1");\nsetTimeout(() => console.log("2"), 0);\n// Output: 1, 3, 2 (setTimeout goes to callback queue)'},
+{d:'ease',t:'JavaScript',q:'What does async/await do?',a:1,opts:['Makes code slower','Makes async code look synchronous','Adds animations','Creates threads'],a:1,s:'async/await makes async code look synchronous.\n\nasync function getData() {\n  const res = await fetch("/api/data");\n  const data = await res.json();\n}\n\nawait pauses execution until promise resolves.'},
+{d:'ease',t:'JavaScript',q:'What is the ternary operator?',opts:['if-else in one line','A type of loop','A class keyword','An assignment'],a:0,s:'Ternary: condition ? value_if_true : value_if_false\n\nconst age = 20;\nconst s = age >= 18 ? "Adult" : "Minor";'},
+{d:'ease',t:'JavaScript',q:'What does the spread operator (...) do?',opts:['Deletes elements','Expands iterables into individual elements','Compresses arrays','Sorts arrays'],a:1,s:'Expands arrays/objects.\n\nconst a = [1, 2, 3];\nconst b = [...a, 4, 5];\nconst obj2 = {...obj}; // shallow copy'},
+{d:'easy',t:'JavaScript',q:'What does typeof [] return for arrays?',opts:['"array"','"object"',"list"','"undefined"'],a:1,s:'typeof [] → "object" (known JS quirk).\n\nArray.isArray([]) → true (correct way to check).'},
+{d:'ease',t:'JavaScript',q:'What does the && operator do?',opts:['OR logic','AND logic','NOT logic','Assignment'],a:1,s:'&& is logical AND — both sides must be true.\n\ntrue && true   // true\ntrue && false  // false\n\nShort-circuits: returns first falsy value.'},
+{d:'ease',t:'JavaScript',q:'What does || do?',opts:['AND logic','OR logic','NOT logic','Assignment'],a:1,s:'|| is OR logic — at least one side must be true.\n\nfalse || true   // true\nnull || "hello" // "hello" (short-circuits to first truthy)'},
+{d:'ease',t:'JavaScript',q:'What does the for...of loop do?',opts:['Removes elements','Iterates values','Sorts elements','Deletes keys'],a:1,s:'for...of iterates over iterable values.\n\nfor (const item of ["a","b","c"]) console.log(item);'},
+{d:'easy',t:'JavaScript',q:'What does the "use strict" directive do?',opts:['Enables ES6','Prevents silent errors','Makes code faster','Adds type checking'],a:1,s:'"use strict" enables strict mode.\n\n"use strict";\nx = 10;  // ReferenceError (no implicit globals)'},
+{d:'ease',t:'JavaScript',q:'What is destructuring?',opts:['Deleting variables','Extracting values from arrays/objects','Creating destructors','Adding imports'],a:1,s:'Destructuring unpacks values.\n\nconst [a, b, c] = [1, 2, 3];\nconst {name, age} = person;\n\n// Rename: const {name: n} = person;'},
+{d:'easy',t:'JavaScript',q:'How do you add an event listener?',opts:['element.addClick()','element.attachEvent("click", fn)','element.onClick(fn)','element.on("click", fn)'],a:1,s:'addEventListener("click", handler).\n\nconst btn = document.getElementById("btn");\nbtn.addEventListener("click", handler);'},
+{d:'easy',t:'JavaScript',q:'What does JSON.stringify() do?',opts:['Parses JSON','Stringifies an object','Creates a JSON object','Deletes JSON'],a:1,s:'Converts object to JSON string.\n\nJSON.stringify({a:1}); // \'{"a":1}\n// opposite of JSON.parse()'},
+{d:'easy',t:'JavaScript',q:'What is async/await?',opts:['Slow execution','Makes async code look synchronous','Adds animations','Adds threads'],a:1,s:'async/await makes async code look synchronous.\n\nasync function getData() {\n  const res = await fetch("/api");\n  const data = await res.json();\n}\n\npause execution until promise resolves.'},
 
-function showTab(tab,btn){
-  currentTab=tab;
-  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
-  renderQuestions(tab);
+// MEDIUM
+{d:'medium',t:'JavaScript',q:'What is a closure?',a:1,opts:['Loop structure','A function with access to its outer scope','An HTML element','A CSS property'],s:'A closure retains access to its outer scope.\n\nfunction outer() {\n  let count = 0;\n  return function() { count++; return count; };\n}\nconst counter = outer();\ncounter(); // 1\ncounter(); // 2'},
+{d:'medium',t:'What does map() return?',a:1,opts:['Original array','New array','Undefined','Boolean'],s:'map() returns a NEW array with transformed values.\n\nconst doubled = [1,2,3].map(x => x * 2);\n// [2,4,6]\n\nforEach() returns undefined — no return value.'},
+{d:'medium',t:'JavaScript',q:'What is the event loop?',a:1,opts:['CSS animation loop','Async execution model','DOM update cycle','Loop variant'],s:'Event loop handles async operations.\n\nconsole.log("1");\nsetTimeout(() => console.log("2"), 0);\nconsole.log("3");\n// Output: 1, 3, 2\n\nCall Stack → Microtasks → Macrotasks'},
+{d:'medium',t:'JavaScript',q:'What is Promise.all()?',a:1,opts:['Runs one promise','All in parallel — waits for all','Rejects if ANY rejects','Creates a promise'],s:'Waits for ALL promises to resolve.\n\nPromise.all([p1,p2,p3]);\n// Wait for all 3 to resolve.\n// If ANY rejects → rejects immediately.\n\nUse allSettled() to never reject.'},
+{d:'medium',t:'JavaScript',q:'What is deep copy vs shallow copy?',opts:['No difference','Shallow copies top level; deep copies everything','Deep copy is slower','Shallow copy is better'],a:1,s:'Shallow: only top level.\nDeep: all nested objects cloned.\n\nconst copy = {...obj};\ncopy.nested.arr.push(4); // affects original!\n\nconst deep = JSON.parse(JSON.stringify(obj));\ndeep.nested.arr.push(4); // original safe'},
+{d:'medium',t:'JavaScript',q:'What is a higher-order function?',opts:['Slow function','Function that takes/returns functions','Function with many params','Class method'],a:1,s:'Higher-order function takes/returns a function.\n\n[1,2,3].map(x => x * 2); // takes function\n.filter(x => x > 1);    // takes function\nfunction multiplier(f) { return (n) => f(n); } // returns function'},
+{d:'medium',t:'JavaScript',q:'What does the "this" mean in arrow function?',opts:['The class itself','Inherits from parent','Inherits from scope — no own "this"','The window'],a:2,s:'Arrow functions don\'t have their own "this". They inherit from enclosing scope.\n\nconst obj = {\n  name: "Alice",\n  regular: function() { console.log(this.name); },  // "Alice"\n  arrow: () => console.log(this.name);}  // undefined!'},
+{d:'medium',t:'JavaScript',q:'What is destructuring assignment?',opts:['Deleting variables','Extracting values from arrays/objects','Destroying memory','Creating types'],a:1,s:'Unpacks values from arrays/objects.\n\nconst [a, b, c] = [10, 20, 30];\nconst {name, age, city} = person;'},
+{d:'medium',t:'JavaScript',q:'What is event delegation?',opts:['Delegating events','Attaching handlers to children instead of each one','Removing events','Creating custom events'],a:1,s:'Attach one handler to parent instead of many children.\n\n<ul id="list">\n  <li>A</li>\n  <li>B</li>\n</ul>\n\ndocument.getElementById("list").addEventListener("click", e => {\n  if (e.target.tagName === "LI") console.log(e.target.textContent);\n}\nBetter performance with many children.'},
+{d:'medium',t:'JavaScript',q:'What is memoization?',opts:['Memory management','Caching function results to avoid recomputation','Deleting variables','Creating classes'],a:1,s:'Caches function results to avoid recomputation.\n\nfunction memoize(fn) {\n  const cache = {};\n  return function(...args) {\n  const key = JSON.stringify(args);\n    if (cache[key]) return cache[key];\n    const result = fn(...args);\n    cache[key] = result;\n    return result;\n  };\n}\nfastFib(40); // computed once, then cached'},
+{d:'medium',t:'JavaScript',q:'What is the prototype chain?',opts:['Linked list','Array method','Hidden link between objects','CSS feature'],a:2,s:'Every object has a [[Prototype]] link to another object.\n\narr → Array.prototype → Object.prototype → null\n\nWhen accessing arr.push, it checks: arr → Array.prototype → found it!'},
+{d:'medium',t:'JavaScript',q:'What is the difference between call, apply, bind?',opts:['No difference','call/apply: invoke immediately, bind: returns new fn with fixed this','bind is deprecated'],a:1,s:'call/apply: invoke immediately.\nbind: returns NEW function with fixed "this".\n\nfunction greet(g, p) { return g + " " + this.name + p; }\ngreet.call({name:"A"}, "Hi!"); // "Hi A"\ngreet.apply({name:"B"}, ["Hey"]);  // "Hey B"\n\nconst bound = greet.bind({name:"C"}, "Yo");\nbound("Z!");  // "Yo C!"},
+{d:'medium',t:'JavaScript',q:'What is WeakMap?',opts:['Map with no elements','Map with weak references','A deprecated API','A type of array'],a:1,s:'WeakMap allows keys to be garbage collected.\nconst wm = new WeakMap();\nlet obj = {id: 1};\nwm.set(obj, "data");\nobj = null; // key automatically removed!\n\nUse for caching without memory leaks.'},
+{d:'medium',t:'JavaScript',q:'What is the Temporal Dead Zone?',opts:['Time zone','Period before variable initialization','Error handling zone','Deprecated'],a:1,s:'TDZ is from block start to variable declaration.\n\nconsole.log(x); // ReferenceError!\nlet x = 5;\nconsole.log(x); // 5\n\n"exists" in TDZ but cannot be accessed.'},
+{d:'medium',t:'JavaScript',q:'What is a Web Worker?',opts:['DOM helper','Background thread for heavy computation','A CSS feature','Testing tool'],a:1,s:'Runs JavaScript in a background thread.\nconst worker = new Worker("worker.js");\nworker.postMessage({"type":"compute","num":10000});\nworker.onmessage = (e) => console.log(e.data);\n\nLimitation: No DOM, window, document access.'},
+{d:'medium',t:'JavaScript',q:'What is tree shaking?',opts:['DOM optimization','Removing unused code during bundling','CSS optimization','Algorithm pattern'],a:1,s:'Eliminates dead code from the final bundle.\n\n// utils.js\nexport function used() { return "used"; }\nimport { used } from "./utils.js";\n// "used" gets tree-shaken out of bundle!\n\nRequires ES modules (import/export).'},
+{d:'medium',t:'JavaScript',q:'What is the difference between microtasks and macrotasks?',opts:['Speed difference','Microtasks run first','They\'re the same','Microtasks are deprecated'],a:1,s:'Microtasks: Promise callbacks (higher priority)\nMacrotasks: setTimeout, setInterval (lower priority)\n\nconsole.log("1");\nsetTimeout(() => console.log("2"), 0);\n\n// Output: 1, 3, 2 (not 1,2,2!)'},
+{d:'medium',t:'JavaScript',q:'What is structuredClone()?',opts:['Slow JSON.parse','Deep clone with full fidelity','Shallow clone','CSS clone'],a:1,s:'Deep clone with full fidelity.\n\nconst obj = {date: new Date(), regex: /test/, fn:()=>{}, circ: {a:{b:{}}};\nstructuredClone(obj); // works! No error!\n\nUnlike JSON.stringify (fails on: fn, undefined, circular refs).'},
+{d:'html',q:'Which element creates the largest heading?',a:2,opts:['<heading>','<h6>','<h1>','<head>'],s:'<h1> is the largest heading.\n\nHTML headings: <h1>(largest) to <h6>(smallest).'},
+{d:'html',q:'Which attribute provides additional context for accessibility of an image?',a:3,opts:['title','src','alt','aria-label'],s:'aria-label provides accessible name for images and other elements.\n\n<img src="cat.jpg" alt="A cute cat" aria-label="A cute cat">'},
+{d:'html',q:'Which element creates an ordered list?',opts:['<ul>','<ol>','<li>','<list>'],s:'<ol> creates a numbered list.\n\n<ol>\n<li>First item</li>\n<li>Second item</li>\n</ol>\n\n<ul> creates a bulleted list.'},
+{d:'html',q:'Which element creates a clickable button?',opts:['<button>','<click>','<link>','<action>'],s:'<button> creates a clickable button.\n\n<button onclick="handleClick()">Click Me</button>'},
+{d:'html',q:'What does <meta charset="UTF-8" do?',opts:['Sets text color','Sets font family','Sets character encoding','Defines viewport width'],s:'Sets the character encoding to UTF-8.\n<head>\n  <meta charset="cr-"""-// Not \"UTF-8"*/'"],
+{d:'html',q:'Which element creates an unordered list?',opts:['<ol>','<ul>','<list>','<unordered-list'],s:'<ul> creates a bullet list.\n\n<ul>\n<li>Apple</li>\n<li>Banana</li>\n</ul>'},
+{d:'html',q:'How do you make text italic?',opts:['font-style: italic','text-decoration: italic','font-weight:italic','font-style:italic'},a:3,s:'font-style: italic;\n<p style="font-style:italic">This is italic</p>'},
+{d:'html',q:'What does the <br> tag do?',opts:['Creates break','Creates a line break','Creates a paragraph','Creates a bold line'],s:'<br> creates a line break in HTML content.\n\nLine 1<br>Line 2<br>Line 3'},
+{d:'html',q:'Which element creates a block-level element?',opts:['<span>','<div>','<p>','<block>'],s:'<div> creates a block-level element.\n\n<div>\n  <h2>Section</h2>\n  <p>Content</p>\n</div>'},
+{d:'html',q:'How to create an anchor link?',opts:['<anchor href="">','<link href="">','<url href="">','<link url="">'],s:'<a href="https://example.com">Click me!</a>'},
+{d:'html',q:'What does the id attribute do?',opts:['Sets style','Identifies element','Creates class','Adds JavaScript'],s:'id uniquely identifies an element.\n<div id="main">Content</div>\n\ndocument.getElementById("main");'},
+{d:'html',q:'What is the difference between <div> and <span>?</h3>',opts:['No difference','<div> is block, <span> is inline','<span> is in-line element'],s:'<div> is a block element, <span> is an in-line element.\n\n<div>Block-level</div>\n<span style="style="color:var(--accent2)">inline styled text</span> is inside the block.'},
+{d:'html',q:'What does <meta name="viewport"> do?',opts:['Sets page width','Sets page title','Defines character set','Adds animations'],s:'Sets the viewport width for responsive design.\n\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n\nMakes the page scale to the device width.'},
+{d:'html',q:'What is the <img> alt attribute for?',opts:['Sets image style','Adds caption','Alternative text for images'],a:2,s:'alt provides alternative text for images. Displayed when image cannot load.\n\n<img src="cat.jpg" alt="Cute cat">'},
+{d:'html',q:'How to create a dropdown menu?',opts:['<dropdown>','<select>','<menu>','<select>'],a:0,s:'<select>\n  <option>Choose one</option>\n  <option>Option A</option>\n  <option>Option B</option>\n</select>'},
+{d:'html',q:'Which tag is used for inline code styling?',opts:['<code>','<style>','<script>','<css>'],a:0,s:'<code> is for inline styles.\n<p style="color:var(--accent3)">inline styled text</p>'},
+{d:'html',q:'How do you include JavaScript in HTML?',opts:['<script src="script.js"></script>','<link rel="stylesheet">','<js>'],a:0,s:'<script src="app.js"></script>'},
+{d:'html',q:'What does <!DOCTYPE html> do?',opts:['Creates an HTML5 document','Adds meta data','Defines character set','Defines encoding'],a:1,s:'Declares the document type as HTML5.'},
+{d:'html',q:'What is the purpose of the <main> tag?',opts:['Header container','Main content area','SEO meta tag','Navigation'],a:1,s:'<main> wraps the main content. One <main> per page.'},
+{d:'title>:null}
+{d:'html',q:'What does the <meta name="description"> meta tag do?',opts:['Sets page description','Sets page title','Sets charset','Adds favicon'],a:1,s:'Sets page description for search engines.\n<meta name="description" content="Free coding tutorials">'},
+{d:'html',q:'How to create a responsive image?',opts:['<img responsive src="a.jpg">','<img class="responsive">','<img resize="true">'],s:'<img src="a.jpg" style="max-width:100%">'},
+{d:'html',q:'How to link an external stylesheet?',opts:['<link rel="stylesheet" href="style.css">','<link rel="link" href="style.css">','<link rel="stylesheet">'],a:0,s:'<link rel="stylesheet" href="style.css">'},
+{d:'html',q:'What does <code>&nbsp;</code> do?',opts:['Space','Non-breaking space','Breaking space','Non-breaking space'],s:'&nbsp; is a non-breaking space character.\n<p>Hello&nbsp;&nbsp;World</p>"},
+{d:'html',q:'What does <code>&lt;</code> display?',opts:['&lt;','<less-than sign','"less-than sign'],s:'< is encoded form of < (less-than sign).'},
+{d:'html',q:'How do you add CSS from an external file?',opts:['<css src="style.css"></css>','<link src="style.css">','<script src="css">'],a:1,s:'<link rel="stylesheet" href="style.css">'},
+{d:'html',q:'What does <code>&amp;</code> display?',opts:['Ampersand','And sign','"ampersand"','&amp;'],s:'&amp; is the encoded form of & (ampersand).\n<p style="JFK" style="color:var(--accent5)">HTML &amp; CSS</p>'},
+{d:'html',q:'How do you write a multi-line code block in HTML?',opts:['<multiline>','<pre>','<code> block','<block>'],s:'<pre> tag for pre-formatted text.\n<pre><code style="html">&lt;code> here</code></pre>'},
+
+// MEDIUM
+{d:'medium',t:'JavaScript',q:'What is the "this" keyword refer to in a method?',opts:['The class itself','The instance that called the method','The constructor','The window'],a:1,s:'In a method, this = the instance that called it.\n\nclass Dog {\n  bark() { console.log(this.name); }\n}\nconst rex = new Dog("Rex");\nrex.bark(); // "Rex"\nbella.bark(); // "Bella" (different this!)'},
+{d:'medium',d:'JavaScript',q:'How to inherit from a parent class?',opts:['extends keyword','inherit keyword','prototype chain','super() method'],a:0,s:'Use extends keyword.\n\nclass Puppy extends Dog {\n  constructor(name) {\n    super(name) {}  // call parent\n    this.breed = "Labrador";\n  }\n  bark() { return `${this.name} says Woof!`; }\n}'},
+{d:'dumb',t:'JavaScript',q:'How to prevent modification of object?',opts:['Object.freeze()','const obj = {}','Object.seal()','Object.lock()'],a:0,s:'Object.freeze(obj) makes it immutable.\n\nconst obj = Object.freeze({a:1});\nobj.a = 99; // TypeError!'},
+{d:'dumb',t:'html',q:'Which element adds a clickable card with link?',opts:['<a>','<card>','<link>'],a:0,s:'<a href="#">link here</a>'},
+{d:'dumb',t:'html',q:'What does the <strong> tag do?',opts:['Bolds text','Adds indentation','Shows emphasis','Strikethrough'],s:'<strong> makes text bold.\n<p><strong>Bold text here</strong>normal text</p>'},
+{d:'html',q:'What does <em> do?',opts:['Italic','Emphasis / italic','Coded text','Underline'],a:0,s:'<em> renders as italic/emphasized text.'},
+{d:'html',q:'What does <mark> do?',opts:['Highlights text','Marks a word','Strikethrough','Nothing special'],a:0,s:'<mark> highlights text with yellow background.\n<mark>highlighted text</mark>'},
+{d:'dumb',t:'html',q:'What does <del> do?',opts:['Delete text','Strikethrough','Decorates text','Nothing'],s:'<del> adds a strikthrough style.',s:'<del>crossed-out text</del>'},
+{dumb',t:'html',q:'Which element defines a clickable tab interface?',opts:['<tabindex><li>','<button>','<nav>'],a:0,s:'<nav> creates tab interface.\n<nav><a href="#">Tab1</a><a href="#">Tab2</a></nav>'},
+{dumb',t:'html',q:'What is the form element for text input?',opts:['<input>','<textarea>','<field>'],a:0,s:'<input type="text" placeholder="Type here">'},
+{dumb',t:'html',q:'How do you make a submit button?',opts:['<button type="submit">','<input type="button">','<submit type="submit">'],a:0,s:'<button type="submit" value="Submit">'},
+{d:'dumb',t:'html',q:'What does <textarea> do differently from <input> tag?',opts:['Multi-line text','Code block font','Form element','Same thing'],a:0,s:'<textarea> allows multi-line text input.\n<textarea rows="4">Line 1\nLine 2\nLine 3</textarea>'},
+{d:'dumb',t:'html',q:'How do you include an image properly?',opts:['<img src="a.jpg">','<img src="a.jpg">','image src="a.jpg">'],a:0,s:'<img src="a.jpg" alt="description">'},
+{dumb',t:'html',q:'What is the form element used for file upload?',opts:['<file>','<input type="file">','<form>'],a:0,s:'<input type="file"> for file uploads.'},
+{d:'dumb',t:'html',q:'What does the title tag do?',opts:['Page heading','Image alt text','Navigation label','Meta data'],a:0,s:'Sets the page title shown in browser tab/header.'},
+{d:'dumb',t:'html',q:'What does <code>display: none</code> do?',opts:['Removes element','Shows element','Hides text','Makes transparent'],a:0,s:'display: none makes element invisible, removes it from layout.'},
+{d:'dumb',t:'html',q:'What does <code>position: fixed</code> do?',opts:['Removes element','Pins element','Makes element fixed','Adds style'],a:1,s:'position: fixed makes element stay fixed on screen.\n<nav style="position:fixed;top:0;left:0;right:0;z-index:1000;"></nav> <!-- stays on top always */'},
+{d:'dumb',t:'html',q:'What does <code>text-align: center</code> do?',opts:['Center text only','Center everything','Just text','Adds decoration'],a:0,s:'Centers the text within its parent.'},
+{d:'dumb',t:'html',q:'What does <code>display: inline-block</code> do?',opts:['Displays as inline-block','Makes text flow as block','Hides element','Makes text inline'],a:0,s:'display: inline-block makes element flow within text flow.\ninline-block img { width:40px; vertical-align:middle; /* side by side */}'},
+
+// HARD
+{d:'hard',t:'JavaScript',q:'What is a Proxy in JavaScript?',opts:['Network proxy','Object that intercepts operations','A design pattern','A static method'],a:1,s:'Proxy intercepts fundamental object operations.\n\nconst p = new Proxy({}, {get(t, prop) { return Reflect.get(t, prop); }});\np.name; // normal lookup\np.name = "Hacked!"; // triggers get trap!'},
+{d:'hard',t:'What is a WeakRef?',opts:['Weak reference','A strong reference','A deprecated API','A debug tool'],a:0,s:'WeakRef holds a weak reference — GC can collect the target.\n\nconst ref = new WeakRef({});\nref.deref(); // returns undefined (if GC'd)\n\nUse case: caching without preventing memory leaks.'},
+{d:'hard',t:'What is structuredClone()?',opts:['Deep clone','Fastest deep clone','Shallow copy','CSS method'],a:0,s:'Deep clone with full fidelity.\nconst obj = {date:new Date(), fn:()=>{}, circ:{a:{b:{c:{}}};\nstructuredClone(obj); // Works with dates, regex, etc.\n// JSON.stringify fails on: functions, undefined, circular refs.'},
+{d:'hard',t:'What is FinalizationRegistry?',opts:['Garbage collector','Lifecycle callback on GC','Module loading callback','Component lifecycle'],a:1,s:'Called when object is garbage collected.\n\nnew FinalizationRegistry().finally(() => console.log("Gone!"));'},
+{d:'dumb',t:'html',q:'Which method sorts array elements in place?',opts:['array.sort()','array.sort() only works on arrays','Both sort in place'],a:0,s:'array.sort() sorts in place.\n\nnums.sort(); // [1,2,3,4,5]'},
+{d:'dumb',t:'html',q:'What does <code>visibility: hidden</code> do?',opts:['Shows element','Hides element','Makes transparent','Removes element'],a:1,s:'visibility: hidden makes element invisible but keeps its space.'},
+{d:'dumb',t:'html',q:'What does <code>position: absolute</code> do?',opts:['Positions relative to viewport','Positions relative to parent','Positions globally fixed'],a:1,s:'position: absolute removes element from normal flow.\n\n.parent { position: relative; }\n.child { position: absolute; top:0; left:0; }
+.wide-card{position:fixed;top:0;left:0;width:100%;z-index:100;}
+/* From "wide-card" section was in the original — same technique! */
+{d:'dumb',t:'html',q:'What does <code>display: flex</code> do?',opts:['Displays as flex container','Shows flex items','Aligns items','Adds spacing'],a:1,s:'display: flex makes element a flex container.\n\n.container { display: flex; gap:16px;justify-content:space-between; }'},
+{d:'dumb',t:'html',q:'What does <code>justify-content: center</code> do?',opts:['Justifies center','Centers element','Adds padding','Sets font-style'],a:1,s:'justify-content: center; align-items: center;'},
+{dumb',t:'html',q:'How to make a responsive design?',opts:['@media queries','Justify-content: center','display: flex; justify-content: center','font-size adjustment'],a:1,s:'display: flex; justify-content: center; flex-wrap:wrap; gap:16px;'},
+{dumb',t:'html',q:'What is the difference between id and class?',opts:['id= is unique; class= is reusable','No difference','class extends class'],a:1,s:'id identifies an element. class styles multiple elements identically.\n\n<p class="card">Card 1</p>\n<p class="card">Card 2</p>\n\nBoth have class="card" — share the same styles.'},
+{dumb',t:'html',q:'What does <code>flex-wrap: wrap</code> do?',opts:['Wraps text to next line','Makes no-wrap: nowrap;','Wraps on overflow'],s:'flex-wrap: wrap; wraps text that would overflow.\n\n.long-word-class { flex-wrap: wrap; }'},
+{d:'dumb',t:'html',q:'What is a comment in HTML?',opts:['<!-- comment -->','/* comment */','// comment','# comment','# comment'],a:<!-- → for normal comment\n<!-- multi-line comment --> for multi-line -->'},
+{dumb',t:'html',q:'How to create a comment in HTML?',opts:['<comment>','<!-- comment -->','<!---->',null],a:0,s:'<!-- comment --> in HTML:\n\n<!-- This is a comment -->\n<!-- Multi\n   line comment -->'},
+{d:'dumb',t:'html',q:'Which element represents a paragraph?',opts:['<p>','<div>','<paragraph>'],a:0,s:'<p> is paragraph element.\n<p>Text block.</p>'},
+{d:'dumb',t:'html',q:'How do you add an id to any element?',opts:['id="myId"','id="myId"','class="myId"'],a:0,s:'id="myId"'},
+{d:'dumb',t:'html',q:'Which tag makes a responsive image?',opts:['<img responsive>',':null},''],a:0,s:'<img src="img.jpg" style="max-width:100%">'},
+{d:'dumb',t:'html',q:'What does <code>width: 100%</code> do?',opts:['Makes element full width','Makes element responsive','Sets background','Sets width:100%'},
+{d:'dumb',q:'What does <code>position: sticky</code> do?',opts:['Removes element','Fixes element on scroll','Keeps element at position'],a:1,s:'position: sticky keeps element in place on scroll.'},
+{d:'dumb',q:'What is <code>display: grid</code> do?',opts:['Creates grid layout','Displays as grid','Shows as block','Styles CSS Grid'],a:1,s:'display: grid with CSS Grid properties for 2D layout.'},
+{d:'dumb',q:'Which element creates a table?',opts:['<table>','<tr>','<ul>','<table>'],a:0,s:'<table> creates a table.\n<table><tr><th>Cell</th></th><tr><th>Value</th></tr><tr><td>Cell</td></td></tr></table>'},
+
+// COMING SOON
+{dumb:'',t:'html',q:'What does <code>flex-shrink: 0</code> do?',opts:['Shrinks element to zero','Removes element','Collapses element'],a:1,s:'flex-shrink: 0 collapses the element to zero height.'},
+{d:'dumb',q:'What does <code>height: 100vh</code> do?',opts:['Sets full viewport height','Sets text height','Sets viewport height'],a:1,s:'100vh = viewport height. Used for full-page layouts.'},
+{d:'dumb',q:'What does <code>box-sizing: border-box</code> do?',opts:['Adds border + padding to width/height','Sets box model','Makes card-style elements'],a:1,s:'Includes padding and border in width/height calculation.'},
+{d:'dumb',q:'What is the difference between id and class?',opts:['id = unique; class = reusable','id and class are identical','No difference'],a:1,s:'id = unique ID for one element. class = can be shared.'},
+{d:'dumb',q:'What is the <code><strong> tag do?',opts:['Makes text bold','Makes text bigger','Displays icon','Adds decoration'],a:0,s:'<strong> makes text bold.'},
+{d:'dumb',q:'How do you add a comment in HTML?',opts:['<!-- comment -->','/* comment */','// comment','# comment -->'],a:1,s:'// for single line\n/* multi-line */'},
+{d:'dumb',q:'What is the <code>title> tag for?',opts:['Page title','Image caption','Navigation label','Meta information'],a:0,s:'<title> sets the browser tab title.'},
+{d:'dumb',q:'What does <code>font-size: clamp(12px,2.4vw)...</code> do?',opts:['Responsive font size','Clamp min/max values','Fixed font size'],a:1,s:'Clamps font-size between 12px and 24px based on viewport width.'},
+{d:'dumb',q:'What is the <code>border-radius</code> do?',opts:['Changes corner radius','Adds border','Sets font-size','Changes border-width'],a:0,s:'border-radius: 12px; /* nice rounded corners */'},
+{d:'dumb',q:'What does <code>cursor: pointer</code> do?',opts:['Removes cursor','Shows pointer','Sets text cursor','Displays a pointer icon'],a:1,s:'cursor: pointer; cursor: pointer;'},
+{d:'dumb',q:'How to make text uppercase with CSS?',opts:['text-transform: uppercase','text-transform: uppercase;','font-size: bold;'],a:0,s:'text-transform: uppercase;'},
+{d:'dumb',q:'What does <code>text-shadow: 0 2px 4px #000"> create?',opts:['Adds colored shadow','Strikethrough text','Adds indentation'],a:1,s:'Adds text shadow.\n<p style="text-shadow: 0 2px 4px #000">Shadowed text</p>'},
+{d:'dumb',q:'How to remove underline from text?',opts:['text-decoration: none','text-decoration-line: none','font-size: none;'],a:1,s:'text-decoration: none; removes underline.'},
+{d:'dumb',q:'What does <code>line-height: 1.6</code> do?',opts:['Sets line height','Line spacing','Letter spacing','Word spacing'],a:1,s:'Sets the line-height (line-height: 1.6).'},
+{d:'dumb',q:'What does <code>opacity: 0</code> do?',opts:['Removes element','Makes transparent','Changes font-weight','Opacity 0 = invisible'],a:0,s:'opacity: 0 makes element invisible.'},
+{d:'dumb',q:'What is the difference between id and class?',opts:['No difference','id is unique; class is reusable','id is in HTML; class is in CSS'],a:1,s:'id = unique identifier. class is for reusing CSS classes.'},
+{d:'dumb',q:'How do you add hover effects with CSS?',opts:[':active","hover","onmouseover","on-hover'],a:1,s:'.hover { ... }'},
+{d:'dumb',q:'What does <code>transition: all .3s ease</code> do?',opts:['Adds animation','Adds transition','Changes colors','Adds hover effect'],a:1,s:'transition: all .3s ease;transition: all properties for .3s ease.'},
+{d:'dumb',q:'What does <code>border-radius: 50% / 50%</code> do?',opts:['Circles only','50% for circle','Square with rounded corners','Rounds all corners'],a:1,s:'border-radius: 50% → perfect circle. border-radius is for rounded.'},
+{d:'dumb',q:'How to use CSS variables (CSS)?opts:['var(--bg);','let bg: #f0f0f0;','$bg #f0f0f0;'],a:1,s:'CSS variables: var(--bg); background: #f0f0f0;' },
+</style>
+:root { --bg: #f0f0f0; }
+* { color: var(--text); }
+body { font-family: var(--sans); }
+</style> /* CSS variables — try changing the values yourself!'},
+{d:'dumb',t:'q','What does var(--bg) do?',opts:['Nothing','Makes element transparent','Sets background-color;--bg = transparent'],a:1,s:'var(--bg:transparent) — now element has no background.'},
+{d:'dumb',q:'What does var(--text: red;"> do?',opts:['Sets text color','Sets text to red','Nothing'],a:1,s:'color: red; text becomes red.'},
+{dumb',q:'What does var(--muted: #5c5c85;"> do?',opts:['Sets muted color','Sets font-size','Adds shadow'],a:1,s:'Sets the color to a muted gray.'},
+{dumb',t:'What does var(--accent: #7c5cfc); do?',opts:['Sets accent color','Adds font-weight','No extra effect'],a:1,s:'Custom property for any CSS property.'},
+
+const css_override = 'body { font-family: var(--sans); background: var(--bg); color: var(--text); transition: background .4s ease; color: var(--text); }';
+document.getElementById('st-override').textContent = css_override;
+
+/* MOBILE */
+@media(max-width:900px){
+  .nav-links{display:none;}
+  .menu-btn{display:flex;display:flex;}
+  .nav-search{display:none;}
+  .hero-stats{gap:20px;}
+  .daily{flex-direction:column;text-align:center;}
+  .daily{flex-direction:column;gap:14px;}
+  .paths-grid,.proj-grid,.lb-grid{grid-template-columns:1fr;}
+  .q-grid{grid-template-columns:1fr;}
+  .comm-card{padding:32px 20px;}
+  .community-feats{flex-direction:column;align-items:center;}
+  .footer-inner{flex-direction:column;text-align:center;}
+  .q-card{flex-direction:column;gap:8px;}
+  .hero-stats{flex-direction:column;}
+  .hero-btns{flex-direction:column;align-items:center;width:100%;}
+  .hero-btns{flex-direction:column;width:100%;align-items:stretch;}
+  .btn-primary,.btn-secondary{width:100%;justify-content:center;}
+  .path-card{padding:22px;}
+  .proj-card{flex-direction:column;}
+  .q-card{flex-direction:column;}.q-body{width:100%;}.q-actions{width:100%;flex-direction:row;justify-content:center;}
+  .comm-card{padding:32px 20px;}
+  .footer-inner{flex-direction:column;text-align:center;}
+  .btn-wa{width:100%;justify-content:center;font-size:15px;}
+  .community-feats{flex-direction:column;align-items:center;}
 }
-
-function renderQuestions(filter){
-  const search=document.getElementById('searchInput').value.toLowerCase();
-  let pool=filter==='easy'?allEasy:filter==='medium'?allMedium:allHard;
-  if(search){pool=pool.filter(q=>q.q.toLowerCase().includes(search)||q.t.toLowerCase().includes(search));}
-  const grid=document.getElementById('questionsGrid');
-  if(!pool.length){grid.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;grid-column:1/-1;">No questions found for this filter.</p>';return;}
-  grid.innerHTML=pool.map((q,i)=>{const idx=QUESTIONS.indexOf(q);const solved=solvedSet.has(idx);
-  return`<div class="q-card"><div class="q-num ${q.d}">${i+1}</div><div class="q-body"><h4>${q.q}</h4><p><span class="q-tag">${q.t}</span></p><div class="q-actions"><button class="btn-solve ${solved?'solved':'go'}" onclick="openQ(${idx})">${solved?'<i class="fas fa-check"></i> Solved':'<i class="fas fa-play"></i> Solve'}</button></div></div></div>`;}).join('');
-}
-renderQuestions('easy');
-
-function filterQuestions(val){
-  renderQuestions(currentTab);
-}
-
-// ═════════════════════════════════
-// MODAL
-// ═════════════════════════════════
-let currentQIdx=-1;
-function openQ(idx){
-  currentQIdx=idx;
-  const q=QUESTIONS[idx];const solved=solvedSet.has(idx);
-  document.getElementById('modalTitle').textContent=`Question #${idx+1}`;
-  document.getElementById('modalMeta').innerHTML=`<span class="q-tag">${q.t}</span><span class="q-num ${q.d}" style="width:auto;height:auto;padding:2px 10px;display:inline-flex;align-items:center;justify-content:center;">${q.d.toUpperCase()}</span>`;
-  document.getElementById('modalDesc').textContent=q.q;
-  document.querySelector('.modal .btn-modal.primary').innerHTML=solved?'<i class="fas fa-check"></i> Already Solved':'<i class="fas fa-check"></i> Mark Solved';
-  document.querySelector('.modal .btn-modal.primary').onclick=solved?null:'';
-  document.getElementById('modalSolution').textContent=q.solution;
-  document.getElementById('modal').classList.add('show');
-  document.body.style.overflow='hidden';
-}
-
-function closeModal(){
-  document.getElementById('modal').classList.remove('show');
-  document.body.style.overflow='';
-}
-
-function markSolved(){
-  if(currentQIdx>=0&&!solvedSet.has(currentQIdx)){
-    solvedSet.add(currentQIdx);saveSolved();
-    renderQuestions(currentTab);
-    showToast('🎉 Marked as solved!','success');
-    closeModal();
-  }
-}
-
-// ═════════════════════════════════
-// UTILS
-// ═════════════════════════════════
-function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('show');}
-function toggleTheme(){
-  const t=document.documentElement.getAttribute('data-theme');
-  const nt=t==='dark'?'light':'dark';
-  document.documentElement.setAttribute('data-theme',nt);
-  localStorage.setItem('sikhle_theme',nt);
-  document.getElementById('themeBtn').innerHTML=t==='dark'?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>';
-}
-
-// Load theme
-(function(){const t=localStorage.getItem('sikhle_theme')||'dark';document.documentElement.setAttribute('data-theme',t);document.getElementById('themeBtn').innerHTML=t==='dark'?'<i class="fas fa-moon"></i>':'<i class="fas fa-sun"></i>';})();
-
-function showToast(msg,type){
-  const toast=document.getElementById('toast');
-  const icons={success:'fa-check-circle',info:'fa-info-circle',error:'fa-exclamation-circle'};
-  toast.innerHTML=`<i class="fas ${icons[type]||icons.info}" style="color:${type==='success'?'var(--accent2)':type==='error'?'var(--accent4)':'var(--accent)'}"></i><span>${msg}</span>`;
-  toast.className='toast show';
-  clearTimeout(toast._t);toast._t=setTimeout(()=>toast.classList.remove('show'),3000);
-}
-
-// Scroll animations
-const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');}});},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
-document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
-
-// Smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){e.preventDefault();const target=document.querySelector(this.getAttribute('href'));if(target)target.scrollIntoView({behavior:'smooth',block:'start'});toggleMenu();});});
-</script>
-</body>
-</html>
+</style>
+</style>
