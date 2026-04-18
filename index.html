@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PySeekho — Master Python Interactively</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0f1a;--bg2:#141626;--bg3:#1c1f35;--card:#1e2138;--border:#2d3158;--accent:#7c6af7;--accent2:#5ee7b5;--accent3:#f7c76a;--accent4:#f76a8a;--text:#e8eaf6;--muted:#8b8fad;--correct:#5ee7b5;--wrong:#f76a8a;--mono:'Space Mono',monospace;--sans:'Nunito',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--bg2);}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px;}
+
+/* ANIMATED BACKGROUND */
+.bg-particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+.particle{position:absolute;border-radius:50%;background:var(--accent);opacity:.15;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{transform:translateY(100vh) scale(0);opacity:0;}10%{opacity:.15;}90%{opacity:.15;}100%{transform:translateY(-10vh) scale(1);opacity:0;}}
+
+nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);}
+.logo{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--accent);letter-spacing:-1px;}
+.logo span{color:var(--accent2);}
+.nav-links{display:flex;gap:6px;flex-wrap:wrap;}
+.nav-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:600;transition:all .2s;white-space:nowrap;}
+.nav-btn:hover,.nav-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+.app{display:flex;height:calc(100vh - 60px);position:relative;z-index:1;}
+.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;}
+.sidebar-header{padding:16px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid var(--border);}
+.topic-item{padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;border-left:3px solid transparent;transition:all .15s;font-size:14px;font-weight:600;}
+.topic-item:hover{background:var(--bg3);color:var(--accent);}
+.topic-item.active{border-left-color:var(--accent);background:var(--bg3);color:var(--accent);}
+.topic-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.topic-progress{font-size:11px;color:var(--muted);margin-left:auto;}
+.content{flex:1;overflow-y:auto;padding:0;}
+
+#view-dashboard{padding:28px;}
+.dash-hero{background:linear-gradient(135deg,var(--bg3) 0%,#1a1d3a 100%);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:24px;position:relative;overflow:hidden;}
+.dash-hero::before{content:'<Py/>';position:absolute;right:24px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:64px;font-weight:700;color:var(--accent);opacity:.06;}
+.dash-hero h1{font-size:24px;font-weight:900;margin-bottom:6px;}
+.dash-hero h1 span{color:var(--accent2);}
+.dash-hero p{color:var(--muted);font-size:15px;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;transition:transform .2s;}
+.stat-card:hover{transform:translateY(-2px);}
+.stat-num{font-family:var(--mono);font-size:28px;font-weight:700;margin-bottom:4px;}
+.stat-label{font-size:12px;color:var(--muted);font-weight:600;}
+.topics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+.topic-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.topic-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.topic-card-icon{font-size:28px;margin-bottom:10px;}
+.topic-card h3{font-size:15px;font-weight:800;margin-bottom:4px;}
+.topic-card p{font-size:12px;color:var(--muted);}
+.topic-bar{height:4px;background:var(--bg3);border-radius:2px;margin-top:12px;overflow:hidden;}
+.topic-bar-fill{height:100%;border-radius:2px;transition:width .5s ease;}
+.topic-card-qs{font-size:11px;color:var(--muted);margin-top:6px;}
+
+/* LEARN VIEW */
+#view-learn{padding:0;}
+.learn-header{padding:20px 28px;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.learn-back{background:transparent;border:1px solid var(--border);color:var(--muted);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.learn-back:hover{border-color:var(--accent);color:var(--accent);}
+.learn-title{font-size:18px;font-weight:800;}
+.learn-progress-bar{flex:1;min-width:100px;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.learn-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .3s;}
+.learn-counter{font-size:13px;color:var(--muted);font-family:var(--mono);}
+
+.question-area{padding:28px;max-width:700px;}
+.q-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);padding:4px 12px;border-radius:20px;font-size:12px;color:var(--muted);margin-bottom:18px;font-weight:600;}
+.q-text{font-size:20px;font-weight:800;line-height:1.4;margin-bottom:24px;}
+.options{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+.option{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:14px 18px;cursor:pointer;font-size:15px;font-weight:600;transition:all .2s;text-align:left;color:var(--text);display:flex;align-items:center;gap:12px;}
+.option:hover:not(:disabled){border-color:var(--accent);background:rgba(124,106,247,.08);}
+.option.correct{border-color:var(--correct);background:rgba(94,231,181,.1);color:var(--correct);}
+.option.wrong{border-color:var(--wrong);background:rgba(247,106,138,.1);color:var(--wrong);}
+.option:disabled{cursor:default;}
+.opt-letter{width:28px;height:28px;border-radius:6px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;flex-shrink:0;}
+.option.correct .opt-letter{background:var(--correct);color:#0d1a12;}
+.option.wrong .opt-letter{background:var(--wrong);color:#1a0d10;}
+.explanation{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:20px;font-size:14px;line-height:1.6;display:none;}
+.explanation.show{display:block;animation:fadeIn .3s ease;}
+.expl-title{font-size:12px;font-weight:700;color:var(--accent2);margin-bottom:6px;letter-spacing:1px;text-transform:uppercase;}
+.expl-code{font-family:var(--mono);background:var(--bg2);padding:8px 12px;border-radius:6px;font-size:12px;margin-top:8px;color:var(--accent3);border-left:3px solid var(--accent);}
+.q-actions{display:flex;gap:10px;}
+.btn-next{background:var(--accent);border:none;color:#fff;padding:12px 28px;border-radius:10px;font-family:var(--sans);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-next:hover{background:#6a59e0;transform:translateY(-1px);}
+.btn-skip{background:transparent;border:1px solid var(--border);color:var(--muted);padding:12px 20px;border-radius:10px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-skip:hover{border-color:var(--muted);}
+
+.result-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;max-width:480px;margin:40px auto;}
+.result-emoji{font-size:56px;margin-bottom:16px;}
+.result-score{font-family:var(--mono);font-size:48px;font-weight:700;color:var(--accent2);margin-bottom:8px;}
+.result-msg{font-size:16px;color:var(--muted);margin-bottom:24px;}
+.result-breakdown{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+.rb-item{background:var(--bg3);border-radius:10px;padding:14px;}
+.rb-num{font-family:var(--mono);font-size:22px;font-weight:700;margin-bottom:2px;}
+.rb-label{font-size:12px;color:var(--muted);}
+.btn-retry{background:var(--accent);border:none;color:#fff;padding:12px 28px;border-radius:10px;font-family:var(--sans);font-size:15px;font-weight:700;cursor:pointer;margin-right:10px;transition:all .2s;}
+.btn-retry:hover{transform:translateY(-1px);}
+.btn-dash{background:transparent;border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:10px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-dash:hover{border-color:var(--muted);}
+
+.code-block{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:var(--mono);font-size:14px;line-height:1.8;margin-bottom:20px;position:relative;}
+.code-blank{background:transparent;border:none;border-bottom:2px solid var(--accent);color:var(--accent2);font-family:var(--mono);font-size:14px;width:120px;text-align:center;outline:none;padding:0 4px;}
+.code-blank.correct{border-color:var(--correct);color:var(--correct);}
+.code-blank.wrong{border-color:var(--wrong);color:var(--wrong);}
+.check-btn{background:var(--accent2);border:none;color:#0d1a12;padding:10px 24px;border-radius:8px;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer;margin-right:10px;transition:all .2s;}
+.check-btn:hover{transform:translateY(-1px);}
+
+.flash-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:40px;text-align:center;cursor:pointer;min-height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:all .3s;position:relative;overflow:hidden;max-width:600px;margin:20px 0;user-select:none;}
+.flash-card:hover{border-color:var(--accent);}
+.flash-front{font-size:20px;font-weight:800;}
+.flash-back{font-size:15px;color:var(--accent2);line-height:1.7;display:none;}
+.flash-hint{font-size:11px;color:var(--muted);margin-top:16px;}
+.flash-card.flipped .flash-front{display:none;}
+.flash-card.flipped .flash-back{display:block;}
+.flash-card.flipped{background:rgba(94,231,181,.05);border-color:var(--accent2);}
+.flash-nav{display:flex;gap:12px;align-items:center;margin-top:10px;}
+.flash-btn{background:var(--card);border:1px solid var(--border);color:var(--text);width:40px;height:40px;border-radius:10px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.flash-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 28px;background:var(--bg2);overflow-x:auto;}
+.tab{padding:12px 18px;cursor:pointer;font-size:14px;font-weight:700;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;white-space:nowrap;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab-content{display:none;padding:28px;}
+.tab-content.active{display:block;}
+
+.lb-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:8px;transition:all .2s;}
+.lb-item:hover{transform:translateX(4px);}
+.lb-rank{font-family:var(--mono);font-size:16px;font-weight:700;width:32px;text-align:center;}
+.lb-name{font-weight:700;flex:1;}
+.lb-score{font-family:var(--mono);color:var(--accent2);font-weight:700;}
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}
+.badge-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;transition:all .2s;}
+.badge-item:hover{transform:translateY(-2px);}
+.badge-icon{font-size:32px;margin-bottom:8px;}
+.badge-name{font-size:12px;font-weight:700;margin-bottom:4px;}
+.badge-desc{font-size:11px;color:var(--muted);}
+.badge-item.locked{opacity:.35;filter:grayscale(1);}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 20px;font-size:14px;font-weight:600;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{border-color:var(--correct);color:var(--correct);}
+.toast.error{border-color:var(--wrong);color:var(--wrong);}
+.toast.info{border-color:var(--accent);color:var(--accent);}
+
+.hidden{display:none!important;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+.typing-dots span{animation:pulse 1.2s infinite;display:inline-block;}
+.typing-dots span:nth-child(2){animation-delay:.2s;}
+.typing-dots span:nth-child(3){animation-delay:.4s;}
+
+/* ASK VIEW */
+.ask-container{max-width:700px;padding:28px;}
+.ask-input-wrap{display:flex;gap:10px;margin-bottom:20px;align-items:flex-end;}
+.ask-textarea{flex:1;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-family:var(--sans);font-size:15px;color:var(--text);resize:vertical;min-height:60px;max-height:200px;outline:none;transition:border-color .2s;}
+.ask-textarea:focus{border-color:var(--accent);}
+.ask-textarea::placeholder{color:var(--muted);}
+.ask-submit{background:var(--accent);border:none;color:#fff;padding:14px 24px;border-radius:12px;font-family:var(--sans);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;height:60px;white-space:nowrap;}
+.ask-submit:hover{background:#6a59e0;transform:translateY(-1px);}
+.ask-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.chat-history{display:flex;flex-direction:column;gap:16px;}
+.chat-msg{display:flex;gap:12px;animation:fadeIn .3s ease;}
+.chat-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.chat-user .chat-avatar{background:var(--accent);color:#fff;}
+.chat-bot .chat-avatar{background:var(--accent2);color:#0d1a12;}
+.chat-bubble{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;flex:1;line-height:1.6;font-size:14px;}
+.chat-user .chat-bubble{border-color:var(--accent);background:rgba(124,106,247,.06);}
+.chat-bot .chat-bubble{border-color:rgba(94,231,181,.2);background:rgba(94,231,181,.04);}
+.chat-bubble code{font-family:var(--mono);background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:13px;color:var(--accent3);}
+.chat-bubble pre{background:var(--bg2);padding:12px 16px;border-radius:8px;margin:8px 0;font-family:var(--mono);font-size:13px;overflow-x:auto;border-left:3px solid var(--accent2);color:var(--accent3);line-height:1.6;}
+.chat-bubble .error-tag{display:inline-block;background:rgba(247,106,138,.15);color:var(--wrong);padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:8px;}
+.chat-bubble .correct-tag{display:inline-block;background:rgba(94,231,181,.15);color:var(--correct);padding:2px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:8px;}
+.ask-hints{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.ask-hint{background:var(--bg3);border:1px solid var(--border);padding:6px 14px;border-radius:20px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .2s;}
+.ask-hint:hover{border-color:var(--accent);color:var(--accent);}
+
+/* FUTURE ROADMAP */
+.roadmap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.roadmap-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;gap:14px;align-items:flex-start;transition:all .2s;}
+.roadmap-item:hover{border-color:var(--accent);transform:translateY(-1px);}
+.roadmap-icon{font-size:24px;flex-shrink:0;margin-top:2px;}
+.roadmap-text h4{font-size:14px;font-weight:800;margin-bottom:4px;}
+.roadmap-text p{font-size:12px;color:var(--muted);line-height:1.5;}
+.roadmap-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:6px;display:inline-block;}
+.status-soon{background:rgba(94,231,181,.15);color:var(--correct);}
+.status-later{background:rgba(247,199,106,.15);color:var(--accent3);}
+.status-planned{background:rgba(139,143,173,.15);color:var(--muted);}
+
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .nav-links{gap:4px;}
+  .nav-btn{padding:5px 10px;font-size:12px;}
+  .ask-input-wrap{flex-direction:column;}
+  .ask-submit{height:44px;width:100%;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-particles" id="particles"></div>
+
+<nav>
+  <div class="logo">Py<span>Seekho</span></div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="showView('dashboard')">Dashboard</button>
+    <button class="nav-btn" onclick="showView('learn')">Quiz</button>
+    <button class="nav-btn" onclick="showView('practice')">Practice</button>
+    <button class="nav-btn" onclick="showView('flashcards')">Flashcards</button>
+    <button class="nav-btn" onclick="showView('ask')">Ask Anything</button>
+    <button class="nav-btn" onclick="showView('roadmap')">Roadmap</button>
+    <button class="nav-btn" onclick="showView('leaderboard')">Leaderboard</button>
+  </div>
+</nav>
+
+<div class="app">
+<div class="sidebar">
+  <div class="sidebar-header">Topics</div>
+  <div id="sidebar-topics"></div>
+</div>
+<div class="content" id="main-content">
+
+<div id="view-dashboard">
+  <div class="dash-hero">
+    <h1>Master Python <span>Interactively</span></h1>
+    <p>Learn by doing — quiz yourself, practice code, ask anything, track progress.</p>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-num" id="stat-total" style="color:var(--accent)">0</div><div class="stat-label">Questions Solved</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-correct" style="color:var(--accent2)">0</div><div class="stat-label">Correct Answers</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-streak" style="color:var(--accent3)">0</div><div class="stat-label">Day Streak</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-acc" style="color:var(--accent4)">0%</div><div class="stat-label">Accuracy</div></div>
+  </div>
+  <h2 style="margin-bottom:16px;font-size:18px;">Topics</h2>
+  <div class="topics-grid" id="topics-grid"></div>
+</div>
+
+<div id="view-learn" class="hidden">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('mcq',this)">MCQ Quiz</div>
+    <div class="tab" onclick="switchTab('truefalse',this)">True / False</div>
+  </div>
+  <div id="tab-mcq" class="tab-content active">
+    <div class="learn-header">
+      <button class="learn-back" onclick="showView('dashboard')">&#8592;</button>
+      <div class="learn-title" id="quiz-title">Quiz</div>
+      <div class="learn-progress-bar"><div class="learn-progress-fill" id="quiz-prog" style="width:0%"></div></div>
+      <div class="learn-counter" id="quiz-counter">0/0</div>
+    </div>
+    <div class="question-area" id="mcq-area"></div>
+  </div>
+  <div id="tab-truefalse" class="tab-content">
+    <div class="learn-header">
+      <button class="learn-back" onclick="showView('dashboard')">&#8592;</button>
+      <div class="learn-title">True or False?</div>
+    </div>
+    <div class="question-area" id="tf-area"></div>
+  </div>
+</div>
+
+<div id="view-practice" class="hidden">
+  <div class="learn-header">
+    <button class="learn-back" onclick="showView('dashboard')">&#8592;</button>
+    <div class="learn-title">Code Practice — Fill the Blanks</div>
+  </div>
+  <div style="padding:28px;max-width:700px;" id="practice-area"></div>
+</div>
+
+<div id="view-flashcards" class="hidden">
+  <div class="learn-header">
+    <button class="learn-back" onclick="showView('dashboard')">&#8592;</button>
+    <div class="learn-title">Flashcards</div>
+    <div class="learn-counter" id="flash-counter">0/0</div>
+  </div>
+  <div style="padding:28px;max-width:700px;" id="flash-area"></div>
+</div>
+
+<div id="view-ask" class="hidden">
+  <div class="learn-header">
+    <button class="learn-back" onclick="showView('dashboard')">&#8592;</button>
+    <div class="learn-title">Ask Anything About Python</div>
+  </div>
+  <div class="ask-container">
+    <p style="color:var(--muted);font-size:14px;margin-bottom:16px;">Type any question, code snippet, or concept. The AI tutor will explain it, verify it, and help you understand how it works.</p>
+    <div class="ask-hints">
+      <span class="ask-hint" onclick="useHint('What does len() do in Python?')">What does len() do?</span>
+      <span class="ask-hint" onclick="useHint('Explain for loop in Python')">for loop explanation</span>
+      <span class="ask-hint" onclick="useHint('print(type(10.5))')">print(type(10.5))</span>
+      <span class="ask-hint" onclick="useHint('How to read a file in Python?')">Read a file</span>
+      <span class="ask-hint" onclick="useHint('What is the difference between list and tuple?')">list vs tuple</span>
+      <span class="ask-hint" onclick="useHint('x = [1,2,3]; x.append(4); print(x)')">append example</span>
+    </div>
+    <div class="ask-input-wrap">
+      <textarea class="ask-textarea" id="ask-input" placeholder="Ask a question or paste code..." rows="2"></textarea>
+      <button class="ask-submit" id="ask-btn" onclick="submitQuestion()">Ask</button>
+    </div>
+    <div class="chat-history" id="chat-history"></div>
+  </div>
+</div>
+
+<div id="view-roadmap" class="hidden">
+  <div style="padding:28px;">
+    <h2 style="margin-bottom:8px;font-size:22px;">Future Roadmap</h2>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:24px;">Features we are building to make PySeekho the best Python learning platform.</p>
+    <div class="roadmap-grid" id="roadmap-grid"></div>
+  </div>
+</div>
+
+<div id="view-leaderboard" class="hidden">
+  <div style="padding:28px;">
+    <h2 style="margin-bottom:20px;font-size:22px;">Leaderboard</h2>
+    <div id="lb-list"></div>
+    <h2 style="margin:28px 0 16px;font-size:22px;">Badges</h2>
+    <div class="badge-grid" id="badge-grid"></div>
+  </div>
+</div>
+
+</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// PARTICLES BACKGROUND
+// ═══════════════════════════════════════════════════════
+(function(){const c=document.getElementById('particles');for(let i=0;i<30;i++){const p=document.createElement('div');p.className='particle';const s=Math.random()*4+2;p.style.width=s+'px';p.style.height=s+'px';p.style.left=Math.random()*100+'%';p.style.animationDuration=(Math.random()*15+10)+'s';p.style.animationDelay=(Math.random()*10)+'s';c.appendChild(p);}})();
+
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+const TOPICS=[
+  {id:'basics',name:'Basics',icon:'\u26A1',color:'#7c6af7',qs:[]},
+  {id:'strings',name:'Strings',icon:'\uD83D\uDCDD',color:'#f7c76a',qs:[]},
+  {id:'lists',name:'Lists',icon:'\uD83D\uDCCB',color:'#f76a8a',qs:[]},
+  {id:'loops',name:'Loops',icon:'\uD83D\uDD04',color:'#5ee7b5',qs:[]},
+  {id:'functions',name:'Functions',icon:'\u2699\uFE0F',color:'#7eb8f7',qs:[]},
+  {id:'dicts',name:'Dictionaries',icon:'\uD83D\uDCDA',color:'#f7a06a',qs:[]},
+  {id:'oops',name:'OOP',icon:'\uD83C\uDFD7\uFE0F',color:'#c76af7',qs:[]},
+  {id:'exceptions',name:'Exceptions',icon:'\uD83D\uDEE1\uFE0F',color:'#f76a6a',qs:[]},
+];
+
+const ALL_QUESTIONS=[
+  // BASICS
+  {topic:'basics',q:"What type of language is Python?",opts:["Compiled","Interpreted","Machine Level","Assembly"],ans:1,exp:"Python is an interpreted language. The code is executed line by line by the Python interpreter without needing a separate compilation step.",code:"python script.py  # runs directly"},
+  {topic:'basics',q:"Which data type is used to store whole numbers?",opts:["str","bool","int","char"],ans:2,exp:"int stands for integer and stores whole numbers like 10, -5, 0, 100.",code:"age = 25\ntype(age)  # <class 'int'>"},
+  {topic:'basics',q:"How do you write a single-line comment in Python?",opts:["// comment","/* comment */","# comment","-- comment"],ans:2,exp:"The hash symbol # is used to start a single-line comment in Python.",code:"# This is a comment\nprint('hello')  # inline comment"},
+  {topic:'basics',q:"What is the output of: print('2' + '3')?",opts:["5","23","Error","None"],ans:1,exp:"Both '2' and '3' are strings, so the + operator performs string concatenation, not addition.",code:"print('2' + '3')  # '23'"},
+  {topic:'basics',q:"What does type(3.14) return?",opts:["int","str","float","number"],ans:2,exp:"3.14 has a decimal point, so Python classifies it as a float (floating-point number).",code:"type(3.14)  # <class 'float'>"},
+  {topic:'basics',q:"What does 'None' represent in Python?",opts:["Zero","False","No value","Empty string"],ans:2,exp:"None is Python's null value. It means the variable has no value assigned to it.",code:"x = None\nprint(x)  # None"},
+  {topic:'basics',q:"What is the result of 10 % 3?",opts:["3","1","0.33","7"],ans:1,exp:"The % (modulo) operator returns the remainder. 10 divided by 3 is 3 with remainder 1.",code:"10 % 3  # 1 (remainder)"},
+  {topic:'basics',q:"What does bool('') return?",opts:["True","False","Error","None"],ans:1,exp:"An empty string is a falsy value in Python, so bool('') returns False.",code:"bool('')   # False\nbool('hi') # True"},
+  {topic:'basics',q:"What is the result of 2 ** 10?",opts:["20","100","1024","512"],ans:2,exp:"** is the exponentiation operator. 2 raised to the power of 10 equals 1024.",code:"2 ** 10  # 1024"},
+  {topic:'basics',q:"What happens when you run int('abc')?",opts:["Returns 0","Returns 'abc'","Raises ValueError","Returns None"],ans:2,exp:"int() cannot convert a non-numeric string to an integer, so it raises a ValueError.",code:"int('abc')  # ValueError!"},
+  {topic:'basics',q:"Which operator is used for assignment?",opts:["==","!=",">>=","="],ans:3,exp:"A single = is the assignment operator. == is the equality comparison operator.",code:"x = 10   # assignment\nx == 10  # comparison -> True"},
+  {topic:'basics',q:"What does input() always return?",opts:["int","float","str","bool"],ans:2,exp:"input() always returns a string, regardless of what the user types. Use int() or float() to convert.",code:"x = input()  # always str\ny = int(input())  # converted to int"},
+  {topic:'basics',q:"How does the 'and' operator work?",opts:["Adds two values","Both conditions must be True","At least one must be True","Negates a value"],ans:1,exp:"'and' returns True only if BOTH operands are True. Otherwise it returns False.",code:"True and True   # True\nTrue and False  # False"},
+  {topic:'basics',q:"What does 'not True' evaluate to?",opts:["True","False","None","Error"],ans:1,exp:"The 'not' operator reverses the boolean value. not True equals False.",code:"not True   # False\nnot False  # True"},
+  // STRINGS
+  {topic:'strings',q:"What does 'hello'[1] return?",opts:["h","e","l","o"],ans:1,exp:"String indexing starts at 0. 'hello'[0]='h', [1]='e', [2]='l', etc.",code:"s = 'hello'\ns[0]  # 'h'\ns[1]  # 'e'"},
+  {topic:'strings',q:"What does 'Python'[-1] return?",opts:["P","y","n","o"],ans:2,exp:"Negative indices count from the end. -1 is the last character: 'n'.",code:"'Python'[-1]  # 'n'\n'Python'[-2]  # 'o'"},
+  {topic:'strings',q:"What does len('hello world') return?",opts:["10","11","5","12"],ans:1,exp:"'hello world' has 11 characters including the space between the words.",code:"len('hello world')  # 11"},
+  {topic:'strings',q:"What does 'Hello World'.lower() return?",opts:["HELLO WORLD","hello world","Hello world","hELLO wORLD"],ans:1,exp:".lower() converts all characters in the string to lowercase.",code:"'Hello World'.lower()  # 'hello world'"},
+  {topic:'strings',q:"What does 'a,b,c'.split(',') return?",opts:["'a b c'","['a','b','c']","('a','b','c')","Error"],ans:1,exp:".split() divides a string into a list based on the specified separator.",code:"'a,b,c'.split(',')  # ['a','b','c']"},
+  {topic:'strings',q:"What does 'hello world'.replace('world','Python') return?",opts:["hello Python","hello world","Python hello","Error"],ans:0,exp:".replace(old, new) replaces all occurrences of the old substring with the new one.",code:"'hello world'.replace('world','Python')\n# 'hello Python'"},
+  {topic:'strings',q:"What does '  hello  '.strip() return?",opts:["'  hello  '","'hello'","'hello  '","Error"],ans:1,exp:".strip() removes leading and trailing whitespace characters from a string.",code:"'  hello  '.strip()  # 'hello'"},
+  {topic:'strings',q:"How do you embed a variable inside an f-string?",opts:["{var}","$(var)","#var","[var]"],ans:0,exp:"In f-strings, variables and expressions are placed inside curly braces {}.",code:"name = 'Alice'\nf'Hello, {name}!'  # 'Hello, Alice!'"},
+  {topic:'strings',q:"What does 'hello'[1:3] return?",opts:["hel","el","ell","he"],ans:1,exp:"Slicing [1:3] takes characters from index 1 up to (but not including) index 3.",code:"'hello'[1:3]  # 'el'\n# index:  01234"},
+  {topic:'strings',q:"What does '-'.join(['a','b','c']) return?",opts:["a-b-c","['a-b-c']","-a-b-c-","abc"],ans:0,exp:".join() concatenates all elements of an iterable using the string as a separator.",code:"'-'.join(['a','b','c'])  # 'a-b-c'"},
+  // LISTS
+  {topic:'lists',q:"After fruits.append('mango'), what is the list?",opts:["['apple','banana']","['mango','apple','banana']","['apple','banana','mango']","Error"],ans:2,exp:".append() adds the element to the end of the list.",code:"fruits = ['apple','banana']\nfruits.append('mango')\n# ['apple','banana','mango']"},
+  {topic:'lists',q:"What does [1,2,3,4,5][2:4] return?",opts:["[2,3]","[3,4]","[2,3,4]","[3,4,5]"],ans:1,exp:"Slicing [2:4] takes elements at index 2 and 3 (index 4 is excluded).",code:"[1,2,3,4,5][2:4]  # [3,4]"},
+  {topic:'lists',q:"After nums.sort(), what happens to [3,1,4,1,5]?",opts:["Stays same","Reverses","[1,1,3,4,5]","Error"],ans:2,exp:".sort() sorts the list in ascending order (smallest to largest) in place.",code:"nums = [3,1,4,1,5]\nnums.sort()\n# [1,1,3,4,5]"},
+  {topic:'lists',q:"What does len([1,[2,3],4]) return?",opts:["4","3","2","5"],ans:1,exp:"len() counts top-level elements. [2,3] is one element, so total is 3.",code:"len([1,[2,3],4])  # 3"},
+  {topic:'lists',q:"After nums.pop() on [1,2,3], what remains?",opts:["[1,2,3]","[2,3]","[1,2]","[1,3]"],ans:2,exp:".pop() with no argument removes and returns the last element.",code:"nums = [1,2,3]\nnums.pop()  # returns 3\n# nums is now [1,2]"},
+  {topic:'lists',q:"What is the main difference between list and tuple?",opts:["No difference","Tuple is faster","Tuple is immutable","Lists are only for numbers"],ans:2,exp:"Tuples are immutable (cannot be changed after creation). Lists are mutable.",code:"t = (1,2,3)  # tuple - cannot change\nl = [1,2,3]  # list - can change"},
+  {topic:'lists',q:"What does [x**2 for x in range(4)] return?",opts:["[1,4,9,16]","[0,1,4,9]","[0,1,2,3]","[1,2,3,4]"],ans:1,exp:"List comprehension: range(4) gives 0,1,2,3. Squaring each gives 0,1,4,9.",code:"[x**2 for x in range(4)]\n# [0, 1, 4, 9]"},
+  {topic:'lists',q:"What happens to duplicates in a set?",opts:["Kept all","Automatically removed","Causes error","Become None"],ans:1,exp:"Sets automatically remove duplicate values because sets only store unique elements.",code:"s = {1,2,2,3,3,3}\nprint(s)  # {1, 2, 3}"},
+  // LOOPS
+  {topic:'loops',q:"What does 'for i in range(3): print(i)' print?",opts:["1 2 3","0 1 2","0 1 2 3","1 2"],ans:1,exp:"range(3) generates 0, 1, 2. The loop prints each value.",code:"for i in range(3):\n    print(i)\n# Output: 0, 1, 2"},
+  {topic:'loops',q:"What does 'break' do in a loop?",opts:["Skips current iteration","Stops the loop entirely","Restarts the loop","Nothing"],ans:1,exp:"break immediately exits the loop. No more iterations run after break.",code:"for i in range(5):\n    if i == 3: break\n    print(i)  # 0, 1, 2"},
+  {topic:'loops',q:"What does 'continue' do in a loop?",opts:["Stops the loop","Skips current iteration","Restarts the loop","Raises error"],ans:1,exp:"continue skips the rest of the current iteration and moves to the next one.",code:"for i in range(5):\n    if i == 2: continue\n    print(i)  # 0, 1, 3, 4"},
+  {topic:'loops',q:"What values does range(2, 8, 2) generate?",opts:["[2,4,6,8]","[2,4,6]","[2,3,4,5,6,7]","[0,2,4,6]"],ans:1,exp:"range(start=2, stop=8, step=2) generates 2, 4, 6. The stop value 8 is excluded.",code:"list(range(2, 8, 2))  # [2, 4, 6]"},
+  {topic:'loops',q:"When does 'while True' loop stop?",opts:["Never (infinite)","After 1 iteration","After 10 iterations","Automatically"],ans:0,exp:"while True is an infinite loop. It only stops if a break statement is executed.",code:"while True:\n    x = input()\n    if x == 'q': break"},
+  {topic:'loops',q:"What does enumerate(['a','b','c']) return?",opts:["['a','b','c']","[(0,'a'),(1,'b'),(2,'c')]","[0,1,2]","Error"],ans:1,exp:"enumerate() adds an index to each item, returning pairs of (index, value).",code:"for i, v in enumerate(['a','b']):\n    print(i, v)\n# 0 a  |  1 b"},
+  // FUNCTIONS
+  {topic:'functions',q:"What is the 'def' keyword used for?",opts:["Creating variables","Defining functions","Creating classes","Importing modules"],ans:1,exp:"def is used to define a function in Python.",code:"def greet(name):\n    return 'Hello ' + name"},
+  {topic:'functions',q:"What does a function without 'return' give back?",opts:["0","''","None","Error"],ans:2,exp:"If no return statement is reached, a function implicitly returns None.",code:"def foo():\n    pass\nprint(foo())  # None"},
+  {topic:'functions',q:"What is 'lambda x: x*2'?",opts:["Normal function","Anonymous function","A class","A loop"],ans:1,exp:"lambda creates a small anonymous (nameless) function in a single line.",code:"double = lambda x: x * 2\ndouble(5)  # 10"},
+  {topic:'functions',q:"What does *args allow in a function?",opts:["One argument only","Keyword arguments","Any number of positional arguments","Causes error"],ans:2,exp:"*args lets a function accept any number of positional arguments, packed as a tuple.",code:"def sum_all(*nums):\n    return sum(nums)\nsum_all(1,2,3)  # 6"},
+  {topic:'functions',q:"When is a default parameter used?",opts:["Always","When no argument is passed","Only for integers","On error"],ans:1,exp:"Default parameter values are used when the caller does not provide that argument.",code:"def greet(name='World'):\n    print('Hello', name)\ngreet()  # Hello World"},
+  {topic:'functions',q:"What is a recursive function?",opts:["One that calls itself","One that uses a loop","One that returns nothing","One that runs very fast"],ans:0,exp:"A recursive function calls itself within its own definition to solve smaller subproblems.",code:"def fact(n):\n    return 1 if n==0 else n*fact(n-1)\nfact(5)  # 120"},
+  // DICTS
+  {topic:'dicts',q:"After d['b'] = 2 on {'a':1}, what is d?",opts:["{'a':1}","{'b':2}","{'a':1,'b':2}","Error"],ans:2,exp:"Assigning a value to a new key adds that key-value pair to the dictionary.",code:"d = {'a': 1}\nd['b'] = 2\n# {'a': 1, 'b': 2}"},
+  {topic:'dicts',q:"What does d.get('y') return if 'y' is not in d?",opts:["KeyError","0","None","'y'"],ans:2,exp:".get() returns None if the key is not found, instead of raising KeyError.",code:"d = {'x': 10}\nd.get('y')    # None\nd.get('y', 0)  # 0 (default value)"},
+  {topic:'dicts',q:"What does d.keys() return?",opts:["List of values","List of keys","List of items","Length"],ans:1,exp:".keys() returns a view object containing all the keys of the dictionary.",code:"d = {'a': 1, 'b': 2}\nlist(d.keys())  # ['a', 'b']"},
+  {topic:'dicts',q:"What does 'name' in {'name':'Ali','age':25} evaluate to?",opts:["True","False","Error","'Ali'"],ans:0,exp:"The 'in' operator checks if a key exists in the dictionary (not values).",code:"'name' in {'name': 'Ali'}  # True\n'Ali' in {'name': 'Ali'}  # False"},
+  {topic:'dicts',q:"What does d.items() return?",opts:["Only keys","Only values","Key-value pairs as tuples","Number of items"],ans:2,exp:".items() returns a view of (key, value) tuples for every entry in the dictionary.",code:"for k, v in d.items():\n    print(k, v)"},
+  // OOP
+  {topic:'oops',q:"Which keyword defines a class in Python?",opts:["def","class","object","new"],ans:1,exp:"The 'class' keyword is used to define a new class in Python.",code:"class Dog:\n    def __init__(self, name):\n        self.name = name"},
+  {topic:'oops',q:"When is __init__ automatically called?",opts:["When class is defined","When an object is created","When a function is called","On import"],ans:1,exp:"__init__ is the constructor. It runs automatically when you create a new instance.",code:"d = Dog('Rex')  # __init__ is called now"},
+  {topic:'oops',q:"What does 'self' refer to?",opts:["The class itself","The current instance","The parent class","The module"],ans:1,exp:"self refers to the current object instance. It lets you access instance attributes and methods.",code:"class Dog:\n    def bark(self):\n        print(self.name + ' says: Woof!')"},
+  {topic:'oops',q:"How do you inherit from a parent class?",opts:["class Child(Parent):","class Child extends Parent:","class Child : Parent","inherit Child from Parent"],ans:0,exp:"In Python, the parent class is placed in parentheses after the child class name.",code:"class Puppy(Dog):\n    pass  # inherits all Dog methods"},
+  {topic:'oops',q:"What does super() do?",opts:["Creates an object","Calls parent class methods","Deletes a class","Runs a loop"],ans:1,exp:"super() gives access to methods of the parent class, commonly used to call __init__.",code:"class Puppy(Dog):\n    def __init__(self, name, age):\n        super().__init__(name)\n        self.age = age"},
+  // EXCEPTIONS
+  {topic:'exceptions',q:"Why use try-except?",opts:["For loops","To handle errors gracefully","To define functions","To create classes"],ans:1,exp:"try-except catches and handles exceptions so your program doesn't crash unexpectedly.",code:"try:\n    x = int('abc')\nexcept ValueError:\n    print('Invalid input!')"},
+  {topic:'exceptions',q:"When does the 'finally' block run?",opts:["Only on error","Only on success","Always","Never"],ans:2,exp:"finally always executes whether an exception occurred or not. Useful for cleanup.",code:"try:\n    # code\nexcept:\n    # handle error\nfinally:\n    print('Always runs!')"},
+  {topic:'exceptions',q:"What does 'raise' do?",opts:["Catches exceptions","Manually throws an exception","Ignores errors","Prints output"],ans:1,exp:"raise allows you to manually trigger an exception with a custom message.",code:"def divide(a, b):\n    if b == 0:\n        raise ValueError('Cannot divide by zero!')\n    return a / b"},
+  {topic:'exceptions',q:"When does FileNotFoundError occur?",opts:["No internet","File does not exist","Memory full","Wrong Python version"],ans:1,exp:"FileNotFoundError is raised when you try to open a file that doesn't exist at the given path.",code:"with open('missing.txt') as f:\n    pass  # FileNotFoundError!"},
+];
+
+ALL_QUESTIONS.forEach(q=>{const t=TOPICS.find(t=>t.id===q.topic);if(t)t.qs.push(q);});
+
+const PRACTICE_Qs=[
+  {q:"Store 10 in a variable and print it",pre:"",blank:"x",post:"\nprint(x)",hint:"x = 10",ans:["x = 10","x=10"]},
+  {q:"Print 'Hello World'",pre:"",blank:"print",post:"('Hello World')",hint:"print function",ans:["print"]},
+  {q:"Add 'mango' to the list",pre:"fruits = ['apple','banana']\nfruits.",blank:"append",post:"('mango')",hint:".append() method",ans:["append"]},
+  {q:"Convert string to uppercase",pre:"s = 'hello'\nresult = s.",blank:"upper",post:"()",hint:".upper() method",ans:["upper"]},
+  {q:"Get the length of a list",pre:"nums = [1,2,3,4,5]\nn = ",blank:"len",post:"(nums)",hint:"len() function",ans:["len"]},
+  {q:"Write a for loop from 0 to 4",pre:"",blank:"for i in range",post:"(5):\n    print(i)",hint:"for i in range(...)",ans:["for i in range","for i in range "]},
+  {q:"Define a function called 'greet'",pre:"",blank:"def",post:" greet():\n    print('Hello!')",hint:"def keyword",ans:["def"]},
+  {q:"Get value of key 'age' from dict",pre:"person = {'name':'Ali','age':25}\nage = person",blank:"['age']",post:"",hint:"Square brackets with key",ans:["['age']","[\"age\"]"]},
+];
+
+// ═══════════════════════════════════════════════════════
+// ASK ENGINE — Local Knowledge Base
+// ═══════════════════════════════════════════════════════
+const KB=[
+  {keys:['len','length','size','count characters','count items'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br><code>len()</code> returns the number of items in an object.<br><br><pre># For strings - counts characters\nlen('hello')       # 5\nlen('hello world') # 11\n\n# For lists - counts elements\nlen([1,2,3,4])     # 4\n\n# For dictionaries - counts keys\nlen({'a':1,'b':2}) # 2</pre><br>It works with any iterable: strings, lists, tuples, dicts, sets, etc."},
+  {keys:['for loop','for loop in python','iteration','iterate'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br>A <code>for</code> loop iterates over a sequence (list, string, range, etc.).<br><br><pre># Loop through a list\nfruits = ['apple','banana','mango']\nfor fruit in fruits:\n    print(fruit)\n\n# Loop with range\nfor i in range(5):\n    print(i)  # 0,1,2,3,4\n\n# Loop with index using enumerate\nfor i, val in enumerate(['a','b']):\n    print(i, val)  # 0 a | 1 b</pre><br>Use <code>range(start, stop, step)</code> to control the sequence."},
+  {keys:['type','type()','data type','check type'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br><code>type()</code> returns the data type of any object.<br><br><pre>type(10)      # <class 'int'>\ntype(3.14)    # <class 'float'>\ntype('hello') # <class 'str'>\ntype(True)    # <class 'bool'>\ntype([1,2])   # <class 'list'>\ntype((1,2))   # <class 'tuple'>\ntype({'a':1}) # <class 'dict'>\ntype({1,2})   # <class 'set'></pre><br>You can also use <code>isinstance(x, int)</code> to check types."},
+  {keys:['read file','file reading','open file','file handling'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br>Use <code>open()</code> with <code>with</code> statement to read files safely.<br><br><pre># Read entire file\nwith open('data.txt', 'r') as f:\n    content = f.read()\n    print(content)\n\n# Read line by line\nwith open('data.txt', 'r') as f:\n    for line in f:\n        print(line.strip())\n\n# Read into a list of lines\nwith open('data.txt', 'r') as f:\n    lines = f.readlines()\n    # each line includes \\n character</pre><br>The <code>with</code> block auto-closes the file, even if an error occurs."},
+  {keys:['list vs tuple','difference list tuple','list tuple difference'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br>Both store collections, but the key difference is <strong>mutability</strong>.<br><br><pre># LIST - mutable (can change)\nmy_list = [1, 2, 3]\nmy_list[0] = 99     # OK\nmy_list.append(4)   # OK\n\n# TUPLE - immutable (cannot change)\nmy_tuple = (1, 2, 3)\nmy_tuple[0] = 99    # ERROR!\nmy_tuple.append(4)  # ERROR!</pre><br><strong>When to use tuple:</strong> Data that shouldn't change (coordinates, config, dictionary keys).<br><strong>When to use list:</strong> Data that will change (shopping cart, log entries)."},
+  {keys:['append','list append','add to list'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br><code>append()</code> adds a single element to the <strong>end</strong> of a list.<br><br><pre>fruits = ['apple', 'banana']\nfruits.append('mango')\nprint(fruits)  # ['apple', 'banana', 'mango']\n\n# append adds ONE item (even if it's a list)\nfruits.append(['x','y'])\n# ['apple','banana','mango',['x','y']]\n\n# For multiple items, use extend()\nfruits.extend(['grape','kiwi'])\n# ['apple','banana','mango',['x','y'],'grape','kiwi']</pre><br>Remember: <code>append</code> = one item, <code>extend</code> = multiple items, <code>insert(i, x)</code> = at specific position."},
+  {keys:['while loop','while'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br>A <code>while</code> loop runs as long as its condition is True.<br><br><pre># Basic while loop\ncount = 0\nwhile count < 5:\n    print(count)\n    count += 1  # 0,1,2,3,4\n\n# Infinite loop (needs break)\nwhile True:\n    user_input = input('Type q to quit: ')\n    if user_input == 'q':\n        break\n\n# while with else\nx = 5\nwhile x > 0:\n    x -= 1\nelse:\n    print('Loop completed!')</pre><br>Be careful: always ensure the loop condition eventually becomes False, or use <code>break</code>."},
+  {keys:['dictionary','dict','key value','key-value pair'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br>Dictionaries store data as <strong>key-value pairs</strong>. Keys must be unique and immutable.<br><br><pre># Creating a dictionary\nperson = {\n    'name': 'Alice',\n    'age': 25,\n    'city': 'NYC'\n}\n\n# Access values\nperson['name']          # 'Alice'\nperson.get('age')       # 25\nperson.get('phone', 'N/A')  # 'N/A' (default)\n\n# Modify\nperson['age'] = 26\nperson['email'] = 'a@b.com'  # add new\n\n# Useful methods\nperson.keys()    # all keys\nperson.values()  # all values\nperson.items()   # all (key, value) pairs\ndel person['city']  # delete a key</pre>"},
+  {keys:['class','object oriented','oop','object','instance'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br>A <code>class</code> is a blueprint. An <code>object</code> is an instance of a class.<br><br><pre>class Dog:\n    # Constructor - runs on creation\n    def __init__(self, name, breed):\n        self.name = name\n        self.breed = breed\n    \n    # Method\n    def bark(self):\n        return f'{self.name} says Woof!'\n\n# Create objects (instances)\ndog1 = Dog('Rex', 'German Shepherd')\ndog2 = Dog('Bella', 'Labrador')\n\nprint(dog1.bark())  # Rex says Woof!\nprint(dog2.name)    # Bella</pre><br><code>self</code> refers to the current instance. Each object has its own data."},
+  {keys:['inheritance','parent class','child class','super'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br>Inheritance lets a child class reuse code from a parent class.<br><br><pre>class Animal:\n    def __init__(self, name):\n        self.name = name\n    def speak(self):\n        return 'Some sound'\n\nclass Cat(Animal):\n    def speak(self):\n        return f'{self.name} says Meow!'\n\nclass Dog(Animal):\n    def __init__(self, name, breed):\n        super().__init__(name)  # call parent\n        self.breed = breed\n\nc = Cat('Whiskers')\nprint(c.name)    # Whiskers (from Animal)\nprint(c.speak()) # Whiskers says Meow! (overridden)</pre><br><code>super()</code> calls the parent class's methods."},
+  {keys:['try except','exception','error handling','catch error'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br><code>try-except</code> catches errors so your program doesn't crash.<br><br><pre># Basic try-except\ntry:\n    x = int('hello')\nexcept ValueError:\n    print('Not a valid number!')\n\n# Catch specific errors\ntry:\n    result = 10 / 0\nexcept ZeroDivisionError as e:\n    print(f'Error: {e}')\n\n# Multiple except blocks\ntry:\n    x = int('abc')\nexcept ValueError:\n    print('Value error')\nexcept TypeError:\n    print('Type error')\nexcept Exception as e:\n    print(f'Other: {e}')\nfinally:\n    print('This always runs')</pre>"},
+  {keys:['lambda','anonymous function','lambda function'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br><code>lambda</code> creates a small anonymous function in one line.<br><br><pre># Basic lambda\ndouble = lambda x: x * 2\nprint(double(5))  # 10\n\n# With multiple arguments\nadd = lambda a, b: a + b\nprint(add(3, 4))  # 7\n\n# Common use: sorting\nstudents = [('Alice', 85), ('Bob', 92), ('Eve', 78)]\nstudents.sort(key=lambda s: s[1], reverse=True)\n# [('Bob',92), ('Alice',85), ('Eve',78)]\n\n# With filter/map\nnums = [1,2,3,4,5]\nevens = list(filter(lambda x: x%2==0, nums))  # [2,4]\nsquares = list(map(lambda x: x**2, nums))     # [1,4,9,16,25]</pre>"},
+  {keys:['string format','f-string','format string','f string'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br>f-strings (Python 3.6+) are the cleanest way to format strings.<br><br><pre>name = 'Alice'\nage = 25\n\n# f-string (recommended)\nprint(f'My name is {name} and I am {age}')\n\n# Expressions inside {}\nprint(f'2 + 2 = {2+2}')  # 2 + 2 = 4\nprint(f'Next year: {age+1}')\n\n# Formatting\npi = 3.14159\nprint(f'Pi: {pi:.2f}')  # Pi: 3.14\nprint(f'{1000000:,}')    # 1,000,000\n\n# Old methods (still work)\nprint('Hello {}'.format(name))\nprint('Hello %s' % name)</pre>"},
+  {keys:['list comprehension','list comp','comprehension'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br>List comprehension creates lists in a single, readable line.<br><br><pre># Basic: [expression for item in iterable]\nsquares = [x**2 for x in range(6)]\n# [0, 1, 4, 9, 16, 25]\n\n# With condition\nevens = [x for x in range(20) if x % 2 == 0]\n# [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]\n\n# With if-else\nlabels = ['even' if x%2==0 else 'odd' for x in range(5)]\n# ['even', 'odd', 'even', 'odd', 'even']\n\n# Nested comprehension\nmatrix = [[i*3+j for j in range(3)] for i in range(3)]\n# [[0,1,2],[3,4,5],[6,7,8]]\n\n# Dict comprehension\nsq_dict = {x: x**2 for x in range(5)}\n# {0:0, 1:1, 2:4, 3:9, 4:16}</pre>"},
+  {keys:['slice','slicing','substring','slice string','slice list'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br>Slicing extracts a portion using <code>[start:stop:step]</code>.<br><br><pre>s = 'Python'\n# [start:stop] - stop is EXCLUDED\ns[0:3]   # 'Pyt'\ns[2:5]   # 'tho'\n\n# Omitting start or stop\ns[:3]    # 'Pyt'  (from beginning)\ns[3:]    # 'hon'  (to end)\ns[:]     # 'Python' (full copy)\n\n# Negative indices\ns[-3:]   # 'hon'\ns[:-2]   # 'Pyth'\n\n# Step\ns[::2]   # 'Pto'  (every 2nd char)\ns[::-1]  # 'nohtyP' (reversed!)\n\n# Works for lists too\nnums = [0,1,2,3,4,5]\nnums[1:4]  # [1,2,3]</pre>"},
+  {keys:['print','output','display','console output'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br><code>print()</code> outputs text to the console.<br><br><pre># Basic\nprint('Hello World')\n\n# Multiple arguments (space-separated)\nprint('Name:', 'Alice', 'Age:', 25)\n# Name: Alice Age: 25\n\n# Custom separator\nprint('A', 'B', 'C', sep='-')  # A-B-C\n\n# Custom ending (default is newline)\nprint('Loading', end='...')\nprint('Done')  # Loading...Done\n\n# f-strings for formatting\nx = 42\nprint(f'The answer is {x}')\n\n# print() always returns None\nresult = print('hi')  # prints 'hi'\nprint(result)          # None</pre>"},
+  {keys:['input','user input','read input','get input'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br><code>input()</code> reads a line from user input as a <strong>string</strong>.<br><br><pre># Basic input\nname = input('Enter your name: ')\nprint(f'Hello, {name}!')\n\n# input() returns STRING always!\nage = input('Enter age: ')  # '25' (string!)\n\n# Convert to number\nage = int(input('Enter age: '))\nheight = float(input('Enter height: '))\n\n# Safe conversion with try-except\ntry:\n    age = int(input('Enter age: '))\nexcept ValueError:\n    print('Please enter a valid number!')\n\n# Multiple values (split)\ndata = input('Enter 3 numbers: ').split()\n# if user types '1 2 3', data = ['1','2','3']</pre>"},
+  {keys:['variable','assign','assignment','declare variable'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br>Python variables are created by assignment. No declaration keyword needed.<br><br><pre># Basic assignment\nx = 10\nname = 'Alice'\npi = 3.14\nis_active = True\n\n# Multiple assignment\na, b, c = 1, 2, 3\nx = y = z = 0  # all get 0\n\n# Swapping (Python way!)\na, b = b, a\n\n# Dynamic typing (type can change)\nx = 10      # int\nx = 'hello' # now str\nx = [1,2]   # now list\n\n# Naming rules\nmy_var = 1    # snake_case (standard)\n_private = 2  # convention: private\n# 2var = 3     # ERROR: can't start with number</pre>"},
+  {keys:['if else','conditional','condition','if statement','elif'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br><code>if-elif-else</code> controls program flow based on conditions.<br><br><pre># Basic if\nage = 18\nif age >= 18:\n    print('Adult')\n\n# if-else\nif age >= 18:\n    print('Adult')\nelse:\n    print('Minor')\n\n# if-elif-else\nscore = 85\nif score >= 90:\n    grade = 'A'\nelif score >= 80:\n    grade = 'B'\nelif score >= 70:\n    grade = 'C'\nelse:\n    grade = 'F'\n\n# One-liner (ternary)\nstatus = 'Adult' if age >= 18 else 'Minor'\n\n# Comparison operators: ==, !=, >, <, >=, <=\n# Logical operators: and, or, not</pre>"},
+  {keys:['split','split string','string split'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br><code>.split()</code> splits a string into a list of substrings.<br><br><pre># Split by space (default)\n'hello world foo'.split()\n# ['hello', 'world', 'foo']\n\n# Split by specific separator\n'a,b,c,d'.split(',')\n# ['a', 'b', 'c', 'd']\n\n# Split with maxsplit\n'a-b-c-d'.split('-', 2)\n# ['a', 'b', 'c-d']\n\n# Split lines\n'text\\nmore text\\nend'.splitlines()\n# ['text', 'more text', 'end']\n\n# Common pattern: parsing input\nuser_input = 'Alice,25,NYC'\nname, age, city = user_input.split(',')\n# name='Alice', age='25', city='NYC'</pre>"},
+  {keys:['join','join string','join list'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br><code>.join()</code> combines a list of strings into one string.<br><br><pre># Join with comma\nwords = ['Hello', 'World', 'Python']\nresult = ', '.join(words)\n# 'Hello, World, Python'\n\n# Join with newline\nlines = ['Line 1', 'Line 2', 'Line 3']\nprint('\\n'.join(lines))\n# Line 1\n# Line 2\n# Line 3\n\n# Join with dash\n'-'.join(['2024','01','15'])\n# '2024-01-15'\n\n# Empty string join (concatenate)\n''.join(['a','b','c'])  # 'abc'\n\n# IMPORTANT: elements must be strings!\n# [1,2,3].join(',')  # ERROR!\n','.join(str(x) for x in [1,2,3])  # '1,2,3'</pre>"},
+  {keys:['range','range function','number sequence'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br><code>range()</code> generates a sequence of numbers (not a list — it's lazy).<br><br><pre># range(stop) - 0 to stop-1\nlist(range(5))       # [0,1,2,3,4]\n\n# range(start, stop)\nlist(range(2, 8))    # [2,3,4,5,6,7]\n\n# range(start, stop, step)\nlist(range(0, 20, 3))  # [0,3,6,9,12,15,18]\nlist(range(10, 0, -1)) # [10,9,8,7,6,5,4,3,2,1]\n\n# In for loops\nfor i in range(5):\n    print(i)  # 0,1,2,3,4\n\n# Lazy evaluation (memory efficient)\nrange(1000000)  # takes almost no memory!\nlist(range(1000000))  # takes lots of memory!</pre>"},
+  {keys:['sort','sorted','order','ascending','descending'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br><code>.sort()</code> sorts in place. <code>sorted()</code> returns a new sorted list.<br><br><pre># .sort() - modifies original list\nnums = [3,1,4,1,5,9]\nnums.sort()           # [1,1,3,4,5,9]\nnums.sort(reverse=True)  # [9,5,4,3,1,1]\n\n# sorted() - returns new list\nnums = [3,1,4,1,5]\nnew_nums = sorted(nums)  # nums unchanged\n\n# Sort by key\nstudents = [('Alice',85), ('Bob',92), ('Eve',78)]\nstudents.sort(key=lambda s: s[1])  # by score\n\n# Strings sort alphabetically\nwords = ['banana','apple','cherry']\nwords.sort()  # ['apple','banana','cherry']\n\n# Note: .sort() only works on lists\n# sorted() works on any iterable</pre>"},
+  {keys:['set','set operations','union','intersection','unique'],resp:"<span class='correct-tag'>CORRECT CONCEPT</span><br><br>Sets store <strong>unique</strong> elements and support mathematical operations.<br><br><pre># Creating sets\ns = {1, 2, 3, 2, 1}  # {1, 2, 3} (duplicates removed)\ns = set([1,2,3,3])   # {1, 2, 3}\n\n# Operations\na = {1,2,3,4}\nb = {3,4,5,6}\na | b     # union: {1,2,3,4,5,6}\na & b     # intersection: {3,4}\na - b     # difference: {1,2}\na ^ b     # symmetric diff: {1,2,5,6}\n\n# Methods\ns.add(5)\ns.remove(3)  # KeyError if not found\ns.discard(3)  # no error if not found\n\n# Check membership (O(1) fast!)\n3 in {1,2,3}  # True</pre>"},
+];
+
+// WRONG QUESTIONS DETECTION
+const WRONG_PATTERNS=[
+  {pattern:/print\s*\(\s*len\s*\(\s*['"][^'"]+['"]\s*\)\s*\)\s*doesn?\s*'?t?\s*(show|return|print|give)/i,
+   wrong:"Actually, <code>print(len('hello'))</code> DOES print the length. It will output <code>5</code>. The len() function calculates the length and print() displays it. Perhaps you're confusing it with something else?",
+   fix:"print(len('hello'))  # Output: 5"},
+  {pattern:/int\s*\(\s*['"][a-zA-Z]+['"]\s*\)\s*(works|is valid|returns|gives)/i,
+   wrong:"That's <strong>incorrect</strong>. <code>int('abc')</code> does NOT work — it raises a <code>ValueError</code> because 'abc' cannot be converted to an integer. int() only works with numeric strings like '123'.",
+   fix:"int('123')  # 123 (works!)\nint('abc')  # ValueError!"},
+  {pattern:/list\s*(is|are)\s*(immutable|unchangeable|cannot change|can'?t change)/i,
+   wrong:"That's <strong>incorrect</strong>. Lists are <strong>mutable</strong> — you CAN change them after creation. You're probably thinking of <strong>tuples</strong>, which are immutable.",
+   fix:"my_list = [1,2,3]\nmy_list[0] = 99  # Works! Lists are mutable\n\nmy_tuple = (1,2,3)\nmy_tuple[0] = 99  # ERROR! Tuples are immutable"},
+  {pattern:/tuple\s*(is|are)\s*(mutable|changeable|can change)/i,
+   wrong:"That's <strong>incorrect</strong>. Tuples are <strong>immutable</strong> — once created, you CANNOT change their elements. Lists are the mutable ones.",
+   fix:"t = (1,2,3)\nt[0] = 99  # TypeError! Cannot modify tuple"},
+  {pattern:/(=|==)\s*(is|are)\s*(the same|same thing|identical|equal)/i,
+   wrong:"That's <strong>incorrect</strong>. <code>=</code> is assignment (storing a value). <code>==</code> is comparison (checking equality). They are completely different operators.",
+   fix:"x = 10    # ASSIGNMENT: x now holds 10\nx == 10   # COMPARISON: checks if x equals 10 -> True\nx == 5    # COMPARISON: checks if x equals 5 -> False"},
+  {pattern:/input\s*\(\s*\)\s*(returns|gives)\s*(an?\s*)?(int|integer|number|float)/i,
+   wrong:"That's <strong>incorrect</strong>. <code>input()</code> <strong>always</strong> returns a <strong>string</strong>, no matter what the user types. You must explicitly convert it with <code>int()</code> or <code>float()</code>.",
+   fix:"x = input()      # Returns string, e.g. '25'\nx = int(input())  # Now it's an integer: 25"},
+  {pattern:/(python|it)\s*(is|are)\s*(a\s*)?compiled\s*(language)?/i,
+   wrong:"That's <strong>incorrect</strong>. Python is an <strong>interpreted</strong> language. Code is executed line by line by the Python interpreter. It does compile to bytecode internally (.pyc files), but it's fundamentally an interpreted language.",
+   fix:"# Python is interpreted:\npython script.py  # runs directly\n\n# C is compiled:\ngcc program.c -o program  # must compile first"},
+  {pattern:/#\s*(is|does not|doesn'?t)\s*(not\s*)?(work|comment|do anything)/i,
+   wrong:"That's <strong>incorrect</strong>. The <code>#</code> symbol IS how you write comments in Python. Everything after # on that line is ignored by Python.",
+   fix:"# This is a valid comment\nx = 10  # This is an inline comment\nprint(x)  # Output: 10"},
+  {pattern:/(while|for)\s+loop\s+(is|does)\s+(stop|end|finish)\s+(automatically|on its own|itself)/i,
+   wrong:"That's <strong>partially incorrect</strong>. Loops stop when their condition becomes False (while) or the iterable is exhausted (for). But <code>while True</code> will run forever unless you use <code>break</code>.",
+   fix:"# for loop stops when iterable is done\nfor i in range(3):  # stops after 0,1,2\n    print(i)\n\n# while True never stops automatically\nwhile True:\n    if condition:\n        break  # MUST use break"},
+  {pattern:/none\s*(is|means|equals)\s*(0|zero|empty|false|'')/i,
+   wrong:"That's <strong>incorrect</strong>. <code>None</code> is NOT the same as 0, False, or empty string. None is a unique type representing 'no value'. Each is different.",
+   fix:"type(None)   # <class 'NoneType'>\ntype(0)      # <class 'int'>\ntype(False)  # <class 'bool'>\ntype('')     # <class 'str'>\n\n# All are falsy but not equal:\nNone == 0    # False\nNone == False # False\nNone == ''   # False"},
+];
+
+function processQuestion(input){
+  const q=input.trim().toLowerCase();
+  
+  // Check for wrong patterns first
+  for(const wp of WRONG_PATTERNS){
+    if(wp.pattern.test(q)){
+      return `<span class="error-tag">INCORRECT STATEMENT</span><br><br>${wp.wrong}<br><br><pre>${wp.fix}</pre>`;
+    }
+  }
+  
+  // Check if it looks like code — try to evaluate mentally
+  const codeResult=evaluateCode(input.trim());
+  if(codeResult!==null) return codeResult;
+  
+  // Search knowledge base
+  let bestMatch=null;
+  let bestScore=0;
+  for(const entry of KB){
+    let score=0;
+    for(const key of entry.keys){
+      if(q.includes(key.toLowerCase())){
+        score+=key.length; // longer matches = better
+      }
+    }
+    if(score>bestScore){bestScore=score;bestMatch=entry;}
+  }
+  if(bestMatch&&bestScore>=2) return bestMatch.resp;
+  
+  // Default response
+  return `<span class="correct-tag">GOOD QUESTION</span><br><br>I don't have a specific entry for that in my local knowledge base, but here are some tips:<br><br><pre># Try breaking your question into parts\n# Example: Instead of "how does python work"\n# Ask about specific concepts:\n#   - "What is a variable?"\n#   - "How does for loop work?"\n#   - "What does len() do?"\n#   - "How to read a file?"</pre><br>Try asking about specific Python concepts, functions, or paste code and I'll explain what it does!`;
+}
+
+function evaluateCode(input){
+  // Detect print statements and predict output
+  const printMatch=input.match(/print\s*\(\s*(.+?)\s*\)$/im);
+  if(printMatch){
+    const expr=printMatch[1].trim();
+    let result=null;
+    
+    // String concatenation
+    if(/^['"][^'"]+['"]\s*\+\s*['"][^'"]+['"]$/.test(expr)){
+      const parts=expr.match(/['"]([^'"]+)['"]/g);
+      if(parts){
+        result=parts.map(p=>p.slice(1,-1)).join('');
+      }
+    }
+    // len()
+    else if(/^len\s*\(\s*['"]([^'"]+)['"]\s*\)$/.test(expr)){
+      const s=expr.match(/['"]([^'"]+)['"]/);
+      if(s) result=s[1].length;
+    }
+    // type()
+    else if(/^type\s*\(\s*(.+?)\s*\)$/.test(expr)){
+      const inner=expr.match(/type\s*\(\s*(.+?)\s*\)/)[1].trim();
+      if(/^['"]/.test(inner)) result="<class 'str'>";
+      else if(/^\d+$/.test(inner)) result="<class 'int'>";
+      else if(/^\d+\.\d+$/.test(inner)) result="<class 'float'>";
+      else if(inner==='True'||inner==='False') result="<class 'bool'>";
+    }
+    // Simple arithmetic
+    else if(/^[\d\s\+\-\*\/\%\(\)]+$/.test(expr)&&!/\w/.test(expr.replace(/\d/g,'').replace(/[\s\+\-\*\/\%\(\)]/g,''))){
+      try{result=eval(expr);}catch(e){}
+    }
+    // range to list
+    else if(/^list\s*\(\s*range\s*\(.+\)\s*\)$/.test(expr)){
+      const args=expr.match(/range\s*\((.+)\)/)[1].split(',').map(s=>parseInt(s.trim()));
+      let start=0,stop=args[0],step=1;
+      if(args.length===2){start=args[0];stop=args[1];}
+      if(args.length===3){start=args[0];stop=args[1];step=args[2];}
+      const arr=[];
+      if(step>0){for(let i=start;i<stop;i+=step)arr.push(i);}
+      else if(step<0){for(let i=start;i>stop;i+=step)arr.push(i);}
+      result='['+arr.join(', ')+']';
+    }
+    // Boolean
+    else if(expr==='True') result='True';
+    else if(expr==='False') result='False';
+    else if(expr==='None') result='None';
+    
+    if(result!==null){
+      return `<span class="correct-tag">CODE ANALYSIS</span><br><br>Your code:<pre>${escapeHtml(input.trim())}</pre><br>Predicted output:<pre>${result}</pre><br>This is what Python would output when running this line.`;
+    }
+  }
+  
+  // Check if it's a variable assignment
+  const assignMatch=input.match(/^(\w+)\s*=\s*(.+)$/m);
+  if(assignMatch&&!input.includes('def ')&&!input.includes('class ')){
+    const varName=assignMatch[1];
+    const value=assignMatch[2].trim();
+    let vtype='unknown';
+    if(/^['"]/.test(value)) vtype='str';
+    else if(/^\d+$/.test(value)) vtype='int';
+    else if(/^\d+\.\d+$/.test(value)) vtype='float';
+    else if(value==='True'||value==='False') vtype='bool';
+    else if(value==='None') vtype='NoneType';
+    else if(value.startsWith('[')) vtype='list';
+    else if(value.startsWith('(')) vtype='tuple';
+    else if(value.startsWith('{')&&value.includes(':')) vtype='dict';
+    else if(value.startsWith('{')) vtype='set';
+    else if(value.startsWith('lambda')) vtype='function';
+    else if(/range\(/.test(value)) vtype='range';
+    
+    if(vtype!=='unknown'){
+      return `<span class="correct-tag">CODE ANALYSIS</span><br><br>Your code:<pre>${escapeHtml(input.trim())}</pre><br>This assigns <code>${escapeHtml(value)}</code> to variable <code>${varName}</code>.<br>The type would be: <code>&lt;class '${vtype}'&gt;</code><br><br>Example verification:<pre>${varName} = ${value}\nprint(type(${varName}))  # &lt;class '${vtype}'&gt;</pre>`;
+    }
+  }
+  
+  return null;
+}
+
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let state=JSON.parse(localStorage.getItem('pyseekho2')||'{}');
+if(!state.solved) state={solved:0,correct:0,streak:0,lastDate:'',topicScores:{},badges:[],askCount:0};
+function saveState(){localStorage.setItem('pyseekho2',JSON.stringify(state));}
+
+let currentView='dashboard';
+let quizState={questions:[],idx:0,score:0,answered:false,topic:null};
+let tfState={questions:[],idx:0,score:0};
+let flashState={questions:[],idx:0,flipped:false};
+let practiceState={idx:0};
+
+// ═══════════════════════════════════════════════════════
+// VIEWS
+// ═══════════════════════════════════════════════════════
+function showView(v){
+  document.querySelectorAll('#main-content > div').forEach(d=>d.classList.add('hidden'));
+  document.getElementById('view-'+v).classList.remove('hidden');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const btns=document.querySelectorAll('.nav-btn');
+  const viewMap=['dashboard','learn','practice','flashcards','ask','roadmap','leaderboard'];
+  const idx=viewMap.indexOf(v);
+  if(idx>=0&&btns[idx]) btns[idx].classList.add('active');
+  currentView=v;
+  if(v==='dashboard') renderDashboard();
+  if(v==='learn') initQuiz(null);
+  if(v==='practice') initPractice();
+  if(v==='flashcards') initFlash(null);
+  if(v==='leaderboard') renderLeaderboard();
+}
+
+// ═══════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════
+function renderDashboard(){
+  const acc=state.solved>0?Math.round(state.correct/state.solved*100):0;
+  document.getElementById('stat-total').textContent=state.solved;
+  document.getElementById('stat-correct').textContent=state.correct;
+  document.getElementById('stat-streak').textContent=state.streak;
+  document.getElementById('stat-acc').textContent=acc+'%';
+  
+  const sb=document.getElementById('sidebar-topics');
+  sb.innerHTML='';
+  TOPICS.forEach(t=>{
+    const done=(state.topicScores[t.id]||{}).done||0;
+    const total=t.qs.length;
+    const pct=total>0?Math.round(done/total*100):0;
+    const div=document.createElement('div');
+    div.className='topic-item';
+    div.innerHTML=`<div class="topic-dot" style="background:${t.color}"></div>${t.icon} ${t.name}<span class="topic-progress">${pct}%</span>`;
+    div.onclick=()=>startTopicQuiz(t.id);
+    sb.appendChild(div);
+  });
+  
+  const grid=document.getElementById('topics-grid');
+  grid.innerHTML='';
+  TOPICS.forEach(t=>{
+    const done=(state.topicScores[t.id]||{}).done||0;
+    const total=t.qs.length;
+    const pct=total>0?Math.round(done/total*100):0;
+    const card=document.createElement('div');
+    card.className='topic-card';
+    card.innerHTML=`<div class="topic-card-icon">${t.icon}</div><h3>${t.name}</h3><p>${total} questions</p><div class="topic-bar"><div class="topic-bar-fill" style="width:${pct}%;background:${t.color}"></div></div><div class="topic-card-qs">${done}/${total} solved</div>`;
+    card.onclick=()=>startTopicQuiz(t.id);
+    grid.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════════════════════
+function startTopicQuiz(topicId){
+  const t=TOPICS.find(t=>t.id===topicId);
+  showView('learn');
+  initQuiz(topicId);
+  document.getElementById('quiz-title').textContent=t?t.icon+' '+t.name:'All Topics';
+}
+function initQuiz(topicId){
+  let qs=topicId?TOPICS.find(t=>t.id===topicId).qs:ALL_QUESTIONS;
+  qs=shuffle([...qs]).slice(0,Math.min(qs.length,15));
+  quizState={questions:qs,idx:0,score:0,answered:false,topic:topicId};
+  renderMCQ();
+}
+function renderMCQ(){
+  const area=document.getElementById('mcq-area');
+  const{questions,idx}=quizState;
+  if(idx>=questions.length){showResult();return;}
+  const q=questions[idx];
+  document.getElementById('quiz-prog').style.width=(idx/questions.length*100)+'%';
+  document.getElementById('quiz-counter').textContent=`${idx+1}/${questions.length}`;
+  area.innerHTML=`<div class="q-badge">${TOPICS.find(t=>t.id===q.topic)?.icon||'?'} ${TOPICS.find(t=>t.id===q.topic)?.name||q.topic}</div><div class="q-text">${q.q}</div><div class="options" id="opts">${q.opts.map((o,i)=>`<button class="option" onclick="selectOpt(${i})" data-idx="${i}"><span class="opt-letter">${'ABCD'[i]}</span>${o}</button>`).join('')}</div><div class="explanation" id="expl"><div class="expl-title">Explanation</div><div>${q.exp}</div>${q.code?`<div class="expl-code">${q.code.replace(/\n/g,'<br>')}</div>`:''}</div><div class="q-actions"><button class="btn-next hidden" id="btn-next" onclick="nextQ()">Next Question</button><button class="btn-skip" onclick="skipQ()">Skip</button></div>`;
+  quizState.answered=false;
+}
+function selectOpt(i){
+  if(quizState.answered)return;
+  quizState.answered=true;
+  const q=quizState.questions[quizState.idx];
+  document.querySelectorAll('.option').forEach((o,idx)=>{o.disabled=true;if(idx===q.ans)o.classList.add('correct');else if(idx===i)o.classList.add('wrong');});
+  document.getElementById('expl').classList.add('show');
+  document.getElementById('btn-next').classList.remove('hidden');
+  const ok=i===q.ans;
+  if(ok){quizState.score++;state.correct++;showToast('Correct!','success');}else showToast('Wrong!','error');
+  state.solved++;
+  if(!state.topicScores[q.topic])state.topicScores[q.topic]={done:0,correct:0};
+  state.topicScores[q.topic].done++;
+  if(ok)state.topicScores[q.topic].correct++;
+  updateStreak();checkBadges();saveState();
+}
+function nextQ(){quizState.idx++;renderMCQ();}
+function skipQ(){quizState.idx++;renderMCQ();}
+function showResult(){
+  const area=document.getElementById('mcq-area');
+  const{questions,score}=quizState;
+  const pct=Math.round(score/questions.length*100);
+  const emoji=pct>=80?'🎉':pct>=50?'👍':'😅';
+  const msg=pct>=80?'Excellent work!':pct>=50?'Good effort, keep practicing!':'Keep trying, you will improve!';
+  area.innerHTML=`<div class="result-card"><div class="result-emoji">${emoji}</div><div class="result-score">${pct}%</div><div class="result-msg">${msg}</div><div class="result-breakdown"><div class="rb-item"><div class="rb-num" style="color:var(--accent2)">${score}</div><div class="rb-label">Correct</div></div><div class="rb-item"><div class="rb-num" style="color:var(--accent4)">${questions.length-score}</div><div class="rb-label">Wrong</div></div></div><button class="btn-retry" onclick="initQuiz(quizState.topic)">Try Again</button><button class="btn-dash" onclick="showView('dashboard')">Dashboard</button></div>`;
+}
+
+// TRUE/FALSE
+function initTF(){
+  const qs=shuffle(ALL_QUESTIONS.map(q=>{const isTrue=Math.random()>0.5;return{text:isTrue?q.q:q.opts[(q.ans+1)%q.opts.length]+' — is this correct?',answer:isTrue,exp:q.exp};})).slice(0,10);
+  tfState={questions:qs,idx:0,score:0};
+  renderTF();
+}
+function renderTF(){
+  const area=document.getElementById('tf-area');
+  const{questions,idx}=tfState;
+  if(idx>=questions.length){area.innerHTML=`<div class="result-card"><div class="result-emoji">🎯</div><div class="result-score">${Math.round(tfState.score/questions.length*100)}%</div><div class="result-msg">True/False Complete!</div><button class="btn-retry" onclick="initTF()">Play Again</button></div>`;return;}
+  const q=questions[idx];
+  area.innerHTML=`<div class="q-badge">Question ${idx+1}/${questions.length}</div><div class="q-text">"${q.text}"<br><br><span style="color:var(--muted);font-size:16px">Is this True or False?</span></div><div style="display:flex;gap:14px;margin-bottom:20px;"><button class="option" style="flex:1;justify-content:center;font-size:18px;" onclick="answerTF(true)">True</button><button class="option" style="flex:1;justify-content:center;font-size:18px;" onclick="answerTF(false)">False</button></div><div class="explanation hidden" id="tf-expl"><div class="expl-title">Answer</div><div id="tf-expl-text"></div></div><button class="btn-next hidden" id="tf-next">Next</button>`;
+}
+function answerTF(val){
+  const q=tfState.questions[tfState.idx];
+  const ok=val===q.answer;
+  if(ok)tfState.score++;
+  document.querySelectorAll('.option').forEach(o=>o.disabled=true);
+  document.getElementById('tf-expl').classList.remove('hidden');
+  document.getElementById('tf-expl-text').textContent=(ok?'Correct!':'Wrong!')+' '+q.exp;
+  showToast(ok?'Correct!':'Wrong!',ok?'success':'error');
+  document.getElementById('tf-next').classList.remove('hidden');
+  document.getElementById('tf-next').onclick=()=>{tfState.idx++;renderTF();};
+  state.solved++;if(ok)state.correct++;updateStreak();checkBadges();saveState();
+}
+function switchTab(tab,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(el)el.classList.add('active');
+  if(tab==='truefalse')initTF();
+}
+
+// ═══════════════════════════════════════════════════════
+// PRACTICE
+// ═══════════════════════════════════════════════════════
+function initPractice(){practiceState.idx=0;renderPractice();}
+function renderPractice(){
+  const area=document.getElementById('practice-area');
+  if(practiceState.idx>=PRACTICE_Qs.length){area.innerHTML=`<div class="result-card"><div class="result-emoji">🎉</div><div class="result-score">Done!</div><div class="result-msg">All practice complete!</div><button class="btn-retry" onclick="initPractice()">Restart</button></div>`;return;}
+  const q=PRACTICE_Qs[practiceState.idx];
+  area.innerHTML=`<div class="q-badge">Practice ${practiceState.idx+1}/${PRACTICE_Qs.length}</div><div class="q-text" style="font-size:17px">${q.q}</div><div class="code-block"><code>${q.pre?q.pre.replace(/\n/g,'<br>')+'<br>':''}<input class="code-blank" id="blank-input" placeholder="${q.hint}" autocomplete="off" autocorrect="off">${q.post.replace(/\n/g,'<br>')}</code></div><div class="explanation hidden" id="p-expl"><div class="expl-title">Answer</div><div id="p-expl-text"></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="check-btn" onclick="checkPractice()">Check</button><button class="btn-skip" onclick="()=>{practiceState.idx++;renderPractice();}">Skip</button></div>`;
+  document.getElementById('blank-input').focus();
+  document.getElementById('blank-input').onkeydown=(e)=>{if(e.key==='Enter')checkPractice();};
+}
+function checkPractice(){
+  const q=PRACTICE_Qs[practiceState.idx];
+  const val=document.getElementById('blank-input').value.trim();
+  const ok=q.ans.some(a=>val.toLowerCase()===a.toLowerCase());
+  const inp=document.getElementById('blank-input');
+  inp.classList.add(ok?'correct':'wrong');inp.disabled=true;
+  document.getElementById('p-expl').classList.remove('hidden');
+  document.getElementById('p-expl-text').innerHTML=ok?`Correct! Answer: <code style="color:var(--accent2)">${q.ans[0]}</code>`:`Wrong. Correct answer: <code style="color:var(--accent2)">${q.ans[0]}</code>`;
+  showToast(ok?'Correct!':'Wrong!',ok?'success':'error');
+  state.solved++;if(ok)state.correct++;updateStreak();checkBadges();saveState();
+  setTimeout(()=>{practiceState.idx++;renderPractice();},1800);
+}
+
+// ═══════════════════════════════════════════════════════
+// FLASHCARDS
+// ═══════════════════════════════════════════════════════
+function initFlash(topicId){
+  let qs=topicId?TOPICS.find(t=>t.id===topicId).qs:ALL_QUESTIONS;
+  flashState={questions:shuffle([...qs]),idx:0,flipped:false};
+  renderFlash();
+}
+function renderFlash(){
+  const area=document.getElementById('flash-area');
+  const{questions,idx}=flashState;
+  document.getElementById('flash-counter').textContent=`${idx+1}/${questions.length}`;
+  const q=questions[idx];
+  area.innerHTML=`<div class="flash-card" id="flash-card" onclick="flipCard()"><div class="flash-front">${q.q}</div><div class="flash-back">${q.exp}${q.code?`<div class="expl-code">${q.code.replace(/\n/g,'<br>')}</div>`:''}</div><div class="flash-hint">Click to reveal answer</div></div><div class="flash-nav"><button class="flash-btn" onclick="prevFlash()">←</button><span style="color:var(--muted);font-size:13px">${idx+1} / ${questions.length}</span><button class="flash-btn" onclick="nextFlash()">→</button><button class="flash-btn" onclick="initFlash(null)" style="margin-left:8px;font-size:13px;width:auto;padding:0 12px">Shuffle</button></div>`;
+}
+function flipCard(){document.getElementById('flash-card').classList.toggle('flipped');}
+function nextFlash(){if(flashState.idx<flashState.questions.length-1){flashState.idx++;renderFlash();}}
+function prevFlash(){if(flashState.idx>0){flashState.idx--;renderFlash();}}
+
+// ═══════════════════════════════════════════════════════
+// ASK ANYTHING
+// ═══════════════════════════════════════════════════════
+function useHint(text){document.getElementById('ask-input').value=text;document.getElementById('ask-input').focus();}
+
+function submitQuestion(){
+  const input=document.getElementById('ask-input');
+  const q=input.value.trim();
+  if(!q)return;
+  
+  const history=document.getElementById('chat-history');
+  
+  // Add user message
+  const userDiv=document.createElement('div');
+  userDiv.className='chat-msg chat-user';
+  userDiv.innerHTML=`<div class="chat-avatar">?</div><div class="chat-bubble">${escapeHtml(q)}</div>`;
+  history.appendChild(userDiv);
+  
+  input.value='';
+  const btn=document.getElementById('ask-btn');
+  btn.disabled=true;btn.textContent='Thinking...';
+  
+  // Typing indicator
+  const typingDiv=document.createElement('div');
+  typingDiv.className='chat-msg chat-bot';
+  typingDiv.innerHTML=`<div class="chat-avatar">?</div><div class="chat-bubble typing-dots"><span>.</span><span>.</span><span>.</span></div>`;
+  history.appendChild(typingDiv);
+  history.scrollTop=history.scrollHeight;
+  
+  // Simulate thinking delay
+  setTimeout(()=>{
+    const response=processQuestion(q);
+    typingDiv.querySelector('.chat-bubble').className='chat-bubble';
+    typingDiv.querySelector('.chat-bubble').innerHTML=response;
+    history.scrollTop=history.scrollHeight;
+    btn.disabled=false;btn.textContent='Ask';
+    state.askCount++;
+    checkBadges();saveState();
+  }, 800+Math.random()*600);
+}
+
+// Enter key to submit
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey&&currentView==='ask'&&document.activeElement===document.getElementById('ask-input')){
+    e.preventDefault();submitQuestion();
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// ROADMAP
+// ═══════════════════════════════════════════════════════
+const ROADMAP=[
+  {icon:'🐍',title:'Advanced OOP Module',desc:'Decorators, metaclasses, descriptors, and abstract base classes.',status:'soon'},
+  {icon:'📁',title:'File I/O Deep Dive',desc:'CSV, JSON, XML, SQLite database operations with real projects.',status:'soon'},
+  {icon:'🌐',title:'Web Scraping Course',desc:'BeautifulSoup, Selenium, API calls — build real scrapers.',status:'soon'},
+  {icon:'🧪',title:'Unit Testing',desc:'pytest, unittest, mocking — learn to test your code properly.',status:'soon'},
+  {icon:'📦',title:'Package Management',desc:'pip, virtualenv, requirements.txt, publishing to PyPI.',status:'soon'},
+  {icon:'🔥',title:'Flask Mini Bootcamp',desc:'Build 3 real web apps from scratch with Flask.',status:'soon'},
+  {icon:'📊',title:'Data Analysis Basics',desc:'Pandas, NumPy, Matplotlib — intro to data science.',status:'soon'},
+  {icon:'🤖',title:'Automation Scripts',desc:'Email automation, file management, web automation with Python.',status:'soon'},
+  {icon:'🎮',title:'Game Development',desc:'Build 3 games with Pygame — from Pong to platformers.',status:'later'},
+  {icon:'🧮',title:'Algorithm Challenges',desc:'Sorting, searching, dynamic programming practice problems.',status:'later'},
+  {icon:'⚡',title:'Async Python',desc:'asyncio, aiohttp, concurrent programming patterns.',status:'later'},
+  {icon:'🐳',title:'Docker for Python',desc:'Containerize Python apps, Dockerfile, docker-compose.',status:'later'},
+  {icon:'🔀',title:'Git & GitHub Workflow',desc:'Version control, branching, PRs, CI/CD for Python projects.',status:'later'},
+  {icon:'🔧',title:'Debugging Masterclass',desc:'pdb, logging, profiling, performance optimization.',status:'later'},
+  {icon:'🗣️',title:'Voice Assistant Project',desc:'Build a voice-controlled assistant using speech recognition.',status:'later'},
+  {icon:'📱',title:'Mobile App with Kivy',desc:'Create cross-platform mobile apps using Python.',status:'later'},
+  {icon:'🔐',title:'Security Fundamentals',desc:'Encryption, hashing, secure coding practices in Python.',status:'later'},
+  {icon:'📈',title:'Machine Learning Intro',desc:'Scikit-learn basics, regression, classification, clustering.',status:'later'},
+  {icon:'🧩',title:'Design Patterns',desc:'Singleton, Factory, Observer, Strategy patterns in Python.',status:'planned'},
+  {icon:'🌐',title:'Django Full Course',desc:'Complete Django web framework with real-world project.',status:'planned'},
+  {icon:'🎯',title:'Competitive Programming',desc:'Fast I/O, common tricks, problem-solving strategies.',status:'planned'},
+  {icon:'💻',title:'CLI Tool Building',desc:'Click, argparse — build professional command-line tools.',status:'planned'},
+  {icon:'🧠',title:'AI Chatbot from Scratch',desc:'Build a rule-based and NLP chatbot without frameworks.',status:'planned'},
+  {icon:'🖼️',title:'Image Processing',desc:'Pillow, OpenCV basics — filters, transforms, face detection.',status:'planned'},
+  {icon:'🌍',title:'Multi-language Support',desc:'Add Hindi, Spanish, French translations to the platform.',status:'planned'},
+];
+
+function renderRoadmap(){
+  const grid=document.getElementById('roadmap-grid');
+  grid.innerHTML=ROADMAP.map(r=>`
+    <div class="roadmap-item">
+      <div class="roadmap-icon">${r.icon}</div>
+      <div class="roadmap-text">
+        <h4>${r.title}</h4>
+        <p>${r.desc}</p>
+        <span class="roadmap-status status-${r.status}">${r.status==='soon'?'Coming Soon':r.status==='later'?'In Pipeline':'Planned'}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// LEADERBOARD + BADGES
+// ═══════════════════════════════════════════════════════
+const FAKE_LB=[
+  {name:'Ravi Kumar',score:1420,streak:12},
+  {name:'Priya Sharma',score:1380,streak:9},
+  {name:'Rahul Singh',score:1250,streak:7},
+  {name:'Anjali Verma',score:1100,streak:5},
+  {name:'Aditya Patel',score:980,streak:8},
+];
+const BADGES_DEF=[
+  {id:'first',icon:'🌱',name:'First Step',desc:'Solve your first question',cond:s=>s.solved>=1},
+  {id:'ten',icon:'🔟',name:'Getting Started',desc:'Solve 10 questions',cond:s=>s.solved>=10},
+  {id:'fifty',icon:'🏅',name:'Half Century',desc:'Solve 50 questions',cond:s=>s.solved>=50},
+  {id:'perfect',icon:'💯',name:'Perfect Score',desc:'Get 10 correct answers',cond:s=>s.correct>=10},
+  {id:'streak3',icon:'🔥',name:'3-Day Streak',desc:'Practice 3 days in a row',cond:s=>s.streak>=3},
+  {id:'accurate',icon:'🎯',name:'Sharpshooter',desc:'80%+ accuracy (min 10)',cond:s=>s.solved>10&&(s.correct/s.solved)>=0.8},
+  {id:'topics',icon:'🗺️',name:'Explorer',desc:'Try all 8 topics',cond:s=>Object.keys(s.topicScores||{}).length>=8},
+  {id:'master',icon:'👑',name:'Python Master',desc:'Solve 100 questions',cond:s=>s.solved>=100},
+  {id:'asker',icon:'❓',name:'Curious Mind',desc:'Ask 5 questions',cond:s=>s.askCount>=5},
+  {id:'asker10',icon:'💡',name:'Knowledge Seeker',desc:'Ask 20 questions',cond:s=>s.askCount>=20},
+];
+function checkBadges(){
+  BADGES_DEF.forEach(b=>{
+    if(!state.badges.includes(b.id)&&b.cond(state)){state.badges.push(b.id);showToast('New Badge: '+b.icon+' '+b.name,'success');}
+  });
+}
+function updateStreak(){
+  const today=new Date().toDateString();
+  if(state.lastDate!==today){
+    const yesterday=new Date(Date.now()-86400000).toDateString();
+    state.streak=(state.lastDate===yesterday)?state.streak+1:1;
+    state.lastDate=today;
+  }
+}
+function renderLeaderboard(){
+  const myScore=state.correct*10+state.solved*2+state.askCount*5;
+  const allPlayers=[...FAKE_LB,{name:'You',score:myScore,streak:state.streak,isMe:true}].sort((a,b)=>b.score-a.score);
+  document.getElementById('lb-list').innerHTML=allPlayers.map((p,i)=>`
+    <div class="lb-item" style="${p.isMe?'border-color:var(--accent);background:rgba(124,106,247,.08)':''}">
+      <div class="lb-rank" style="color:${i===0?'#f7c76a':i===1?'#aaa':i===2?'#cd7f32':'var(--muted)'}">${i===0?'1st':i===1?'2nd':i===2?'3rd':i+1+'th'}</div>
+      <div class="lb-name">${p.name}${p.isMe?' (you)':''}</div>
+      <div style="font-size:12px;color:var(--muted)">${p.streak} day streak</div>
+      <div class="lb-score">${p.score} pts</div>
+    </div>
+  `).join('');
+  document.getElementById('badge-grid').innerHTML=BADGES_DEF.map(b=>{
+    const earned=state.badges.includes(b.id);
+    return `<div class="badge-item ${earned?'':'locked'}"><div class="badge-icon">${b.icon}</div><div class="badge-name">${b.name}</div><div class="badge-desc">${b.desc}</div></div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+type;
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+renderDashboard();
+renderRoadmap();
+</script>
+</body>
+</html>
+
+
